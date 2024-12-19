@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function para({
+export function Para({
   children,
   className,
 }: {

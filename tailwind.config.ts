@@ -51,12 +51,11 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
         brand: {
-          bg: "#fef6e4",
-          heading: "#001858",
-          text: "#172c66",
-          btn: "#f582ae",
-          section: "#f3d2c1",
-          blue: "#8bd3dd",
+          bg: "#1e1e1e",
+          heading: "#ffffff",
+          text: "#ffffff",
+          btn: "#1e1e1e",
+          green: "#04D31C",
         },
       },
       borderRadius: {

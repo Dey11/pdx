@@ -1,23 +1,37 @@
-import { SignInButton, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
 
-import { H3 } from "./typography/h3";
-import { Button } from "./ui/button";
-
-[].forEach(function (ok) {
-  console.log(ok);
-});
-
+const headerContents = [
+  {
+    name: "Home",
+    url: "/",
+  },
+  {
+    name: "Dashboard",
+    url: "/dashboard",
+  },
+  {
+    name: "About",
+    url: "/about",
+  },
+  {
+    name: "Join waitlist",
+    url: "/waitlist",
+  },
+];
 const Header = () => {
   return (
-    <header className="flex border-b border-black p-3">
-      <div className="mx-auto flex w-full max-w-screen-lg items-center justify-between">
-        <H3>Logo</H3>
-        <SignedOut>
-          <Button asChild>
-            <SignInButton />
-          </Button>
-        </SignedOut>
-      </div>
+    <header className="sticky top-5 z-40 mx-auto mt-4 flex w-fit rounded-xl bg-[#131415] px-2 py-1 text-[10px] shadow-[0px_0px_3px_#EBE9E9_inset] transition-shadow delay-300 duration-300 ease-in-out hover:shadow-[0px_0px_5px_#00FF1E] sm:text-sm">
+      <ul className="mx-auto flex items-center justify-between py-1 sm:gap-x-16 sm:px-6">
+        {headerContents.map((item) => {
+          return (
+            <Link href={item.url} key={item.url} className="">
+              <li className="rounded-lg px-3 font-semibold hover:bg-[#2a2d2f]">
+                {item.name}
+              </li>
+            </Link>
+          );
+        })}
+      </ul>
     </header>
   );
 };

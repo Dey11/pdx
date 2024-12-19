@@ -1,7 +1,6 @@
-import { ClerkProvider } from "@clerk/nextjs";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-  return <ClerkProvider>{children}</ClerkProvider>;
+  return <>{children}</>;
 };
 
 export default Providers;

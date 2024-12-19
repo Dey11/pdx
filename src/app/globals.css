@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* shadcn designs */
-/* @layer base {
+@layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -57,66 +57,6 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-} */
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer base {
-  :root {
-    --background: 40 100% 96%; /* #fef6e4 */
-    --foreground: 220 100% 10%; /* #001858 */
-    --card: 40 100% 96%; /* Same as --background */
-    --card-foreground: 220 100% 10%; /* Same as --foreground */
-    --popover: 40 100% 96%; /* Same as --background */
-    --popover-foreground: 220 100% 10%; /* Same as --foreground */
-    --primary: 220 100% 10%; /* Same as --foreground */
-    --primary-foreground: 40 100% 96%; /* Same as --background */
-    --secondary: 186 46% 69%; /* #8bd3dd */
-    --secondary-foreground: 220 100% 10%; /* Same as --foreground */
-    --muted: 186 46% 69%; /* Same as --secondary */
-    --muted-foreground: 220 27% 40%; /* #172c66 */
-    --accent: 350 77% 73%; /* #f582ae */
-    --accent-foreground: 220 100% 10%; /* Same as --foreground */
-    --destructive: 350 77% 73%; /* Same as --accent */
-    --destructive-foreground: 220 100% 10%; /* Same as --foreground */
-    --border: 186 46% 69%; /* Same as --secondary */
-    --input: 186 46% 69%; /* Same as --secondary */
-    --ring: 220 100% 10%; /* Same as --foreground */
-    --chart-1: 40 100% 85%; /* Derived from #f3d2c1 */
-    --chart-2: 186 46% 69%; /* Same as --secondary */
-    --chart-3: 350 77% 73%; /* Same as --accent */
-    --chart-4: 40 100% 96%; /* Same as --background */
-    --chart-5: 350 77% 73%; /* Same as --accent */
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 220 100% 10%; /* #001858 */
-    --foreground: 40 100% 96%; /* #fef6e4 */
-    --card: 220 100% 10%; /* Same as --background */
-    --card-foreground: 40 100% 96%; /* Same as --foreground */
-    --popover: 220 100% 10%; /* Same as --background */
-    --popover-foreground: 40 100% 96%; /* Same as --foreground */
-    --primary: 40 100% 96%; /* Same as --foreground */
-    --primary-foreground: 220 100% 10%; /* Same as --background */
-    --secondary: 186 46% 69%; /* #8bd3dd */
-    --secondary-foreground: 40 100% 96%; /* Same as --foreground */
-    --muted: 186 46% 69%; /* Same as --secondary */
-    --muted-foreground: 220 27% 40%; /* #172c66 */
-    --accent: 350 77% 73%; /* #f582ae */
-    --accent-foreground: 40 100% 96%; /* Same as --foreground */
-    --destructive: 350 77% 73%; /* Same as --accent */
-    --destructive-foreground: 40 100% 96%; /* Same as --foreground */
-    --border: 186 46% 69%; /* Same as --secondary */
-    --input: 186 46% 69%; /* Same as --secondary */
-    --ring: 40 100% 96%; /* Same as --foreground */
-    --chart-1: 220 27% 40%; /* Derived from #172c66 */
-    --chart-2: 186 46% 69%; /* Same as --secondary */
-    --chart-3: 350 77% 73%; /* Same as --accent */
-    --chart-4: 40 100% 85%; /* Derived from #f3d2c1 */
-    --chart-5: 350 77% 73%; /* Same as --accent */
-  }
 }
 
 @layer base {
@@ -126,4 +66,19 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #04d31c;
+  border-radius: 8px;
 }
