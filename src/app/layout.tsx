@@ -21,12 +21,6 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const kyivType = localFont({
-  src: "./fonts/KyivTypeSerif-Black.otf",
-  variable: "--font-kyiv-type",
-  weight: "100 900",
-});
-
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
@@ -52,7 +46,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body
-          className={`${kyivType.style} dark bg-[#131212] tracking-wide antialiased`}
+          className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
         >
           <Image
             src="/logo.png"
