@@ -82,7 +82,8 @@ export default function Home() {
           <span className="text-5xl text-brand-green">X</span>
         </H2>
 
-        <div className="absolute -left-20 -z-10 size-80 rounded-full bg-[#00FF1E] blur-[120px]" />
+        <div className="absolute -left-[20dvw] -z-10 size-[40dvw] rounded-full bg-[#00FF1E] blur-[120px]" />
+        {/* <div className="absolute -left-[50dvw] -z-10 size-[60dvw] rounded-full bg-[#00FF1E] blur-[120px]" /> */}
 
         <Para className="mx-auto max-w-6xl">
           PDX is designed to revolutionize how students and learners access

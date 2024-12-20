@@ -21,6 +21,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const kyivType = localFont({
+  src: "./fonts/KyivTypeSerif-Black.otf",
+  variable: "--font-kyiv-type",
+  weight: "100 900",
+});
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
@@ -46,7 +52,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body
-          className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
+          className={`${kyivType.style} dark bg-[#131212] tracking-wide antialiased`}
         >
           <Image
             src="/logo.png"
@@ -57,7 +63,7 @@ export default function RootLayout({
           />
 
           <div className="relative">
-            <div className="absolute -top-[15vh] left-1/2 right-1/2 -z-20 size-[300px] -translate-x-1/2 rounded-full bg-[#00FF1E]/60 blur-[100px] sm:-top-[60dvh] sm:size-[600px] sm:blur-[120px]" />
+            <div className="absolute -top-[15vh] left-1/2 right-1/2 -z-20 size-[40dvh] -translate-x-1/2 rounded-full bg-[#00FF1E]/60 blur-[100px] sm:-top-[60dvh] sm:size-[90dvh] sm:blur-[120px]" />
           </div>
 
           <Header />
