@@ -1,17 +1,18 @@
+import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 import {
-  ArrowRight,
   BookOpenText,
   Clock7,
   FlaskConical,
   LucideProps,
   PiggyBank,
-  SquareArrowRight,
 } from "lucide-react";
 
 import ComparisonTable from "@/components/comparison-table";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { H4 } from "@/components/typography/h4";
@@ -19,9 +20,14 @@ import { Para } from "@/components/typography/para";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const dmserif = DM_Serif_Text({
+  weight: "400",
+  subsets: ["latin", "latin-ext"],
+});
+
 export default function Home() {
   return (
-    <main className="pb-10">
+    <main className="mx-auto pb-10">
       <section className="flex min-h-screen flex-col items-center justify-center px-2 sm:-my-10">
         <div className="mb-10 flex cursor-pointer items-center gap-x-1.5 rounded-xl bg-gradient-to-r from-[#FFFFFF]/50 to-[#FFFFFF]/10 p-2 px-3 transition-all duration-300 hover:shadow-[0px_0px_5px_#00FF1E]">
           <BookOpenText className="size-4 text-brand-btn" />
@@ -29,7 +35,9 @@ export default function Home() {
         </div>
 
         <div className="mb-8 text-center">
-          <H1 className="mx-auto w-fit decoration-brand-green hover:underline">
+          <H1
+            className={`mx-auto w-fit decoration-brand-green hover:underline`}
+          >
             Solve. Learn. Share.
           </H1>
           <Para className="max-w-2xl">
@@ -60,7 +68,7 @@ export default function Home() {
             height={20}
           />
 
-          <Para className="peer pl-10 pt-2 text-[10px] opacity-0 transition-all duration-300 ease-in-out peer-hover:opacity-100">
+          <Para className="peer pl-10 pt-2 text-[10px] opacity-0 backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100">
             *Waitlisted users will get a discounted price upon launch
           </Para>
         </div>
@@ -76,8 +84,10 @@ export default function Home() {
         />
       </section>
 
-      <section className="relative px-5 text-center sm:pt-10">
-        <H2 className="mx-auto w-fit decoration-brand-green hover:underline sm:mb-5">
+      <section className="relative mt-10 px-5 text-center sm:mt-20 sm:pt-10">
+        <H2
+          className={`mx-auto w-fit decoration-brand-green hover:underline sm:mb-5 ${dmserif.className}`}
+        >
           Simplify your next study session with PD
           <span className="text-5xl text-brand-green">X</span>
         </H2>
@@ -101,8 +111,10 @@ export default function Home() {
         </Para>
       </section>
 
-      <section className="pt-20 text-center">
-        <H2 className="mx-auto mb-10 w-fit decoration-brand-green hover:underline sm:mb-20">
+      <section className="pt-32 text-center">
+        <H2
+          className={`mx-auto mb-10 w-fit decoration-brand-green hover:underline sm:mb-20 ${dmserif.className}`}
+        >
           What does PD<span className="text-5xl text-brand-green">X</span>{" "}
           offer?
         </H2>
@@ -140,7 +152,9 @@ export default function Home() {
       </section>
 
       <section className="px-5 pt-40">
-        <H2 className="mx-auto mb-12 w-fit decoration-brand-green hover:underline">
+        <H2
+          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
+        >
           Why is PD<span className="text-5xl text-brand-green">X</span> better
           than ChatGPT
         </H2>

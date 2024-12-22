@@ -1,4 +1,8 @@
+import { DM_Serif_Text } from "next/font/google";
+
 import { cn } from "@/lib/utils";
+
+const dmSerif = DM_Serif_Text({ weight: "400", subsets: ["latin"] });
 
 export function H3({
   children,
@@ -10,7 +14,7 @@ export function H3({
   return (
     <h3
       className={cn(
-        "scroll-m-20 text-2xl font-semibold tracking-tight",
+        ` ${dmSerif.className} scroll-m-20 text-2xl font-semibold tracking-tight`,
         className
       )}
     >

@@ -1,6 +1,5 @@
 import Image from "next/image";
-
-import { H1 } from "./typography/h1";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -14,9 +13,15 @@ const Footer = () => {
       />
 
       <ul className="z-40 flex w-full flex-wrap justify-end gap-4 p-4 text-xs">
-        <li>Contact Us</li>
-        <li>Privacy Policy</li>
-        <li>Terms of Service</li>
+        <Link href={"/contact"}>
+          <li>Contact Us</li>
+        </Link>
+        <Link href={"/policy"}>
+          <li>Privacy Policy</li>
+        </Link>
+        <Link href={"/terms"}>
+          <li>Terms of Service</li>
+        </Link>
       </ul>
 
       <p className="absolute -bottom-[10dvw] -left-[1dvw] -right-[4dvw] z-20 w-full text-center text-[14.8dvw] font-extrabold tracking-tighter text-black">
