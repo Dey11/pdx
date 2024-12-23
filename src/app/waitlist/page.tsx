@@ -12,7 +12,7 @@ import { H2 } from "@/components/typography/h2";
 import { Para } from "@/components/typography/para";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ActionResponse, WaitlistFormData } from "@/lib/types/waitlist";
+import { ActionResponse } from "@/lib/types/waitlist";
 
 const page = () => {
   const initialState: ActionResponse = {
@@ -35,7 +35,7 @@ const page = () => {
         height={100}
       />
 
-      <div className="pb-10">
+      <div className="px-4 pb-10">
         <H1 className="bg-gradient-to-r from-[#D3D3D3] to-[#8E8B8B] bg-clip-text text-center text-transparent">
           Join the waitlist to
         </H1>
@@ -58,13 +58,13 @@ const page = () => {
             defaultValue={state?.data?.name}
             minLength={3}
             autoComplete="name"
-            className="rounded-lg border-[1.6px] border-[#C1C1C1] bg-[#242424] pl-9 capitalize placeholder:pl-1 focus:border-0 focus:shadow-[0px_0px_30px_#00FF1E]"
+            className="rounded-lg border-[1.6px] border-[#C1C1C1] bg-[#242424] pl-9 placeholder:pl-1 focus:border-0 focus:shadow-[0px_0px_30px_#00FF1E]"
           />
           <User className="absolute left-2 top-1/2 size-5 -translate-y-1/2 text-[#C1C1C1]" />
         </label>
         {state?.errors?.name && (
           <p className="text-center text-xs text-red-500">
-            {state.errors.name[0]}
+            {state?.errors?.name[0]}
           </p>
         )}
 
@@ -83,7 +83,7 @@ const page = () => {
         </label>
         {state?.errors?.email && (
           <p className="text-center text-xs text-red-500">
-            {state.errors.email}
+            {state?.errors?.email[0]}
           </p>
         )}
 

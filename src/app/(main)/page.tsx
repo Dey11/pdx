@@ -1,5 +1,6 @@
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 import {
@@ -55,10 +56,12 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto">
-          <Button className="peer mx-auto flex items-center gap-x-2 rounded-xl bg-white px-3 py-1.5 text-brand-btn shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:bg-gray-100 hover:shadow-[0px_0px_30px_#00FF1E]">
-            <span className="font-bold">Join the Waitlist</span>
-            <Image src="/home/arrow.svg" alt="Arrow" width={25} height={25} />
-          </Button>
+          <Link href={"/waitlist"} className="peer">
+            <Button className="peer mx-auto flex items-center gap-x-2 rounded-xl bg-white px-3 py-1.5 text-brand-btn shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:bg-gray-100 hover:shadow-[0px_0px_30px_#00FF1E]">
+              <span className="font-bold">Join the Waitlist</span>
+              <Image src="/home/arrow.svg" alt="Arrow" width={25} height={25} />
+            </Button>
+          </Link>
 
           <Image
             src="/home/curved-arrow.svg"
