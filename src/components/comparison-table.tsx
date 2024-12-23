@@ -86,7 +86,7 @@ export default function ComparisonTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="flex size-4 items-center justify-center rounded-full bg-[#03D31C]/20 backdrop-blur-sm lg:size-6">
+                      <div className="flex size-4 items-center justify-center rounded-full bg-[#03D31C]/20 backdrop-blur-sm lg:size-5">
                         <Check className="size-4 text-[#03D31C]" />
                       </div>
                       <span className="text-bg-text text-sm">
@@ -96,7 +96,7 @@ export default function ComparisonTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="flex size-4 items-center justify-center rounded-full bg-[#576265] lg:size-6">
+                      <div className="flex size-4 items-center justify-center rounded-full bg-[#576265] lg:size-4">
                         <X className="size-4 text-[#353535]" />
                       </div>
                       <span className="text-bg-text text-sm">

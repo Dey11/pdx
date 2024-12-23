@@ -4,6 +4,7 @@ import React from "react";
 
 import { H1 } from "@/components/typography/h1";
 import { Para } from "@/components/typography/para";
+import { EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Privacy policy | Pdx",
@@ -15,244 +16,252 @@ const page = () => {
     <div className="mx-auto min-h-screen max-w-3xl px-4">
       <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-green" />
 
-      <H1 className="pt-2 text-center lg:text-5xl">Privacy Policy</H1>
+      <H1 className="pt-5 text-center lg:text-5xl">Privacy Policy</H1>
       <Para className="text-center text-xs">
-        Learn more about how PDX collects and uses data and your rights as a PDX
-        user
+        Learn how PDX collects, uses, and protects your personal information
       </Para>
 
-      <main className="pb-16 pt-10">
+      <main className="py-16">
         <Para className="font-medium underline">UPDATED DECEMBER 31, 2024</Para>
 
         <Para className="mt-6">
-          Welcome to PDX ("we," "our," or "us"). By accessing or using our
-          platform, services, or products (collectively, the "Services"), you
-          ("User," "you," or "your") agree to comply with and be bound by these
-          Terms of Use ("Terms"). Please read these Terms carefully before using
-          PDX. If you do not agree with these Terms, you must not use our
-          Services.
+          At PDX ("we," "our," "us"), we value your privacy and are committed to
+          protecting your personal information. This Privacy Policy ("Policy")
+          explains how we collect, use, disclose, and protect information
+          obtained through your use of our platform, products, and services
+          (collectively, the "Services"). By accessing or using our Services,
+          you consent to the practices described in this Policy.
         </Para>
 
         <div className="mt-8 space-y-8">
           <section>
             <h2 className="mb-3 text-xl font-semibold">
-              1. Acceptance of Terms
+              1. Information We Collect
             </h2>
-            <Para>
-              By creating an account, accessing, or using our Services, you
-              agree to these Terms, our Privacy Policy, and any other policies
-              or guidelines we provide.
+            <Para className="mb-3">
+              We collect the following types of information:
             </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">2. Services Provided</h2>
-            <Para className="mb-3">PDX offers tools to:</Para>
+            <h3 className="mb-2 font-medium">a. Personal Information</h3>
+            <Para className="mb-2">
+              Information you provide directly to us, such as:
+            </Para>
             <ul className="mb-3 list-disc space-y-2 pl-6">
-              <li>Parse syllabi and generate study materials</li>
-              <li>Create downloadable PDFs</li>
+              <li>Name</li>
+              <li>Email address</li>
               <li>
-                Provide access to a community marketplace for uploading and
-                purchasing modules
+                Payment information (e.g., billing address, transaction details)
               </li>
-              <li>Enable cost-sharing features for collaborative purchases</li>
+              <li>Account credentials (e.g., username, password)</li>
             </ul>
-            <Para>
-              While PDX strives to provide accurate and high-quality tools, we
-              do not guarantee the accuracy, reliability, or completeness of
-              syllabus parsing and study material generation. Users acknowledge
-              that the generated content is intended for supplementary use and
-              should be independently verified for academic purposes.
-            </Para>
-            <Para className="mt-3">
-              The Services are subject to updates, and we reserve the right to
-              modify or discontinue any aspect of our Services without prior
-              notice.
-            </Para>
-          </section>
 
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">3. Eligibility</h2>
-            <Para>
-              You must be at least 13 years old to use PDX. By accessing our
-              Services, you represent that you are of legal age and have the
-              capacity to enter into a binding agreement.
+            <h3 className="mb-2 font-medium">b. Usage Data</h3>
+            <Para className="mb-2">
+              Automatically collected information, including:
             </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              4. Account Responsibilities
-            </h2>
-            <Para>
-              You must provide accurate and complete information when creating
-              an account. Providing false or misleading information may result
-              in the suspension or termination of your account, and PDX reserves
-              the right to pursue legal action if deemed necessary.
-            </Para>
-            <Para className="mt-3">
-              You are responsible for maintaining the confidentiality of your
-              account credentials.
-            </Para>
-            <Para className="mt-3">
-              You agree to notify us immediately of any unauthorized access or
-              use of your account.
-            </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              5. Usage Rights and Restrictions
-            </h2>
-            <Para className="mb-3">
-              Permitted Use: You may use the Services for personal or academic
-              purposes only.
-            </Para>
-            <Para className="mb-3">Prohibited Use: You must not:</Para>
             <ul className="mb-3 list-disc space-y-2 pl-6">
-              <li>Use the Services for illegal activities</li>
               <li>
-                Upload or share copyrighted, harmful, or misleading content
+                Device information (e.g., IP address, browser type, operating
+                system)
               </li>
               <li>
-                Attempt to reverse-engineer, exploit, or interfere with our
-                platform
+                Usage patterns (e.g., pages visited, time spent on the platform)
               </li>
+              <li>Log data (e.g., timestamps, access errors)</li>
             </ul>
+
+            <h3 className="mb-2 font-medium">c. Uploaded Content</h3>
             <Para>
-              We reserve the right to suspend or terminate accounts that violate
-              these Terms.
+              Any files, syllabi, or modules you upload to our platform.
+            </Para>
+
+            <h3 className="mb-2 mt-3 font-medium">
+              d. Community Marketplace Data
+            </h3>
+            <Para>
+              Information related to content shared, sold, or purchased through
+              the marketplace, including sales earnings and pricing data.
             </Para>
           </section>
 
           <section>
             <h2 className="mb-3 text-xl font-semibold">
-              6. Community Contributions
+              2. How We Use Your Information
             </h2>
-            <Para>
-              When uploading modules to the PDX community marketplace, you
-              retain ownership of your content but grant PDX a non-exclusive,
-              royalty-free, worldwide license to distribute, display, and sell
-              the content. This license remains in effect for as long as the
-              content is available on the marketplace or until you remove it.
-            </Para>
-            <Para className="mt-3">
-              PDX reserves the right to review, modify, or remove content that
-              violates our guidelines.
-            </Para>
-            <Para className="mt-3">
-              Earnings from module sales will be shared according to the pricing
-              plan under which the user operates.
-            </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              7. Payments and Refunds
-            </h2>
-            <Para className="mb-3">
-              Free Plan: Access is provided with limited features at no cost.
-            </Para>
-            <Para className="mb-3">
-              Paid Plans: Payment is required to access Pro Learner and Elite
-              Scholar plans. Details of benefits are available on our website.
-            </Para>
-            <Para>
-              Refunds: Payments are non-refundable unless otherwise required by
-              law or explicitly stated in a promotional offer. Refunds may only
-              be considered in exceptional scenarios such as duplicate payments
-              or billing errors, at the sole discretion of PDX. Users must
-              provide documented evidence to support their claim within 14 days
-              of the transaction.
-            </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              8. Intellectual Property
-            </h2>
-            <Para>
-              All materials generated by PDX, including study guides and PDFs,
-              are provided for personal use only. Redistribution or resale of
-              generated content is prohibited.
-            </Para>
-            <Para className="mt-3">
-              PDX retains all rights to its software, branding, and proprietary
-              algorithms.
-            </Para>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              9. Liability Disclaimer
-            </h2>
-            <Para>
-              PDX provides study materials and resources as-is. While we strive
-              to ensure accuracy and quality, we make no guarantees regarding
-              the completeness, reliability, or suitability of the generated
-              content. To the maximum extent permitted by law, PDX's liability
-              for any claims, damages, or losses arising from your use of our
-              Services is limited to the amount you have paid to PDX, if any, in
-              the 12 months preceding the claim. PDX is not liable for:
-            </Para>
-            <ul className="mt-3 list-disc space-y-2 pl-6">
-              <li>Errors or inaccuracies in study materials</li>
-              <li>Any damages resulting from the use of our Services</li>
+            <Para className="mb-3">We use the collected information to:</Para>
+            <ul className="mb-3 list-disc space-y-2 pl-6">
+              <li>Provide, operate, and improve our Services</li>
+              <li>Process transactions and manage accounts</li>
+              <li>Personalize user experiences and recommendations</li>
+              <li>
+                Communicate updates, promotions, or customer support responses
+              </li>
+              <li>
+                Enforce our Terms of Use and prevent fraudulent activities
+              </li>
+              <li>Comply with legal obligations</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold">10. Privacy</h2>
+            <h2 className="mb-3 text-xl font-semibold">
+              3. Sharing Your Information
+            </h2>
+            <Para className="mb-3">
+              We do not sell or rent your personal information to third parties.
+              However, we may share information with:
+            </Para>
+            <ul className="mb-3 list-disc space-y-2 pl-6">
+              <li>
+                Service Providers: Third-party vendors who assist in payment
+                processing, cloud storage, or analytics
+              </li>
+              <li>
+                Legal Authorities: When required by law, subpoena, or to protect
+                our legal rights
+              </li>
+              <li>
+                Community Marketplace Users: Limited profile information may be
+                visible to other users for transactions
+              </li>
+              <li>
+                Business Transfers: In the event of a merger, acquisition, or
+                sale of assets
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-xl font-semibold">4. Data Retention</h2>
             <Para>
-              Your privacy is important to us. Please review our{" "}
-              <Link href={"/policy"}>Privacy Policy</Link>
-              to understand how we collect, use, and protect your personal
-              information.
+              We retain your information for as long as necessary to provide our
+              Services, comply with legal obligations, resolve disputes, and
+              enforce agreements. Upon account closure, we may retain certain
+              data for legal or legitimate business purposes.
+            </Para>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-xl font-semibold">5. Your Rights</h2>
+            <Para className="mb-3">
+              Depending on your jurisdiction, you may have the following rights:
+            </Para>
+            <ul className="mb-3 list-disc space-y-2 pl-6">
+              <li>
+                Access and Correction: Request access to or correction of your
+                personal data
+              </li>
+              <li>
+                Data Portability: Obtain a copy of your information in a
+                portable format
+              </li>
+              <li>Deletion: Request the deletion of your data</li>
+              <li>
+                Objection and Restriction: Object to or restrict certain data
+                processing activities
+              </li>
+              <li>Withdrawal of Consent: Revoke previously granted consent</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-xl font-semibold">6. Security Measures</h2>
+            <Para className="mb-3">
+              We implement industry-standard security measures to protect your
+              information, including:
+            </Para>
+            <ul className="mb-3 list-disc space-y-2 pl-6">
+              <li>Data encryption (in transit and at rest)</li>
+              <li>Access controls and authentication mechanisms</li>
+              <li>Regular security audits and vulnerability assessments</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-xl font-semibold">
+              7. Cookies and Tracking Technologies
+            </h2>
+            <Para className="mb-3">
+              We use cookies and similar technologies to enhance your
+              experience, including:
+            </Para>
+            <ul className="mb-3 list-disc space-y-2 pl-6">
+              <li>Essential Cookies: Necessary for platform functionality</li>
+              <li>
+                Analytical Cookies: To understand user behavior and improve
+                Services
+              </li>
+            </ul>
+            <Para>
+              You can manage cookie preferences through your browser settings.
             </Para>
           </section>
 
           <section>
             <h2 className="mb-3 text-xl font-semibold">
-              11. Modifications to Terms
+              8. Children's Privacy
             </h2>
             <Para>
-              We reserve the right to update these Terms at any time. Changes
-              will be effective upon posting. Your continued use of the Services
-              after changes are posted constitutes acceptance of the revised
-              Terms.
+              Our Services are not intended for individuals under the age of 13.
+              We do not knowingly collect personal information from children. If
+              we become aware of such data collection, we will delete it
+              promptly.
             </Para>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold">12. Termination</h2>
+            <h2 className="mb-3 text-xl font-semibold">9. Third-Party Links</h2>
             <Para>
-              We may suspend or terminate your account if you violate these
-              Terms or engage in conduct that disrupts the platform or infringes
-              upon others' rights. Termination does not relieve you of
-              obligations incurred under these Terms.
+              Our platform may contain links to third-party websites or
+              services. PDX is not responsible for the privacy practices, data
+              collection, or content of these third-party services. We encourage
+              users to review the privacy policies of any external websites they
+              engage with to understand how their data may be collected and
+              used.
             </Para>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold">13. Governing Law</h2>
+            <h2 className="mb-3 text-xl font-semibold">
+              10. International Data Transfers
+            </h2>
             <Para>
-              These Terms are governed by and construed in accordance with the
-              laws of [Your Country/Region], without regard to conflict of law
-              principles.
+              Your information may be transferred to and processed in countries
+              outside your own, where data protection laws may differ. To ensure
+              compliance with data protection regulations such as GDPR, we use
+              mechanisms like Standard Contractual Clauses (SCCs) or rely on
+              adequacy decisions approved by the European Commission for such
+              transfers. By using our Services, you consent to such transfers.
             </Para>
           </section>
 
           <section>
-            <h2 className="mb-3 text-xl font-semibold">14. Contact Us</h2>
+            <h2 className="mb-3 text-xl font-semibold">
+              11. Changes to This Policy
+            </h2>
             <Para>
-              If you have questions or concerns about these Terms, please
-              contact us at support@pdx.com.
+              We reserve the right to update this Policy at any time. In the
+              event of significant changes, we will notify users via email or
+              prominently announce the updates on our platform. Users are
+              encouraged to periodically review this Policy to stay informed
+              about how we protect their data. Changes will be effective upon
+              posting, and the "Last Updated" date will reflect the latest
+              revision. Continued use of our Services constitutes acceptance of
+              the updated Policy.
+            </Para>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-xl font-semibold">12. Contact Us</h2>
+            <Para>
+              If you have questions or concerns about this Privacy Policy,
+              please contact us at:{" "}
+              <span className="text-brand-green">{EMAIL}</span>
             </Para>
           </section>
 
           <Para className="mt-8 font-medium">
             By using PDX, you acknowledge that you have read, understood, and
-            agreed to these Terms of Use.
+            agreed to this Privacy Policy.
           </Para>
         </div>
       </main>

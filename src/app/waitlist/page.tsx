@@ -2,6 +2,7 @@
 
 import { Poppins } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import { useActionState } from "react";
 
 import { Mail, User } from "lucide-react";
@@ -34,12 +35,16 @@ const page = () => {
 
   return (
     <div className="z-10 flex h-[80dvh] flex-col items-center justify-center">
+      <Link href="/" className="absolute right-10 top-10 font-semibold">
+        {"<"} Go Back
+      </Link>
+
       <Image
         src={"/waitlist/logo.svg"}
         priority
         alt="logo"
-        width={100}
-        height={100}
+        width={90}
+        height={90}
       />
 
       <div className="px-4 pb-10">
@@ -99,7 +104,7 @@ const page = () => {
         )}
 
         <Button type="submit" disabled={isPending} className="bg-[#242424]">
-          {isPending ? "Submitting the form..." : "Join the waitlist"}
+          {isPending ? "Registering you in..." : "Join the waitlist"}
         </Button>
         {state.success ? (
           <Para className="text-center text-xs text-green-500">

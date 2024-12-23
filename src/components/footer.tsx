@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { INSTAGRAM, TWITTER } from "@/lib/constants";
+
 const Footer = () => {
   return (
-    <div className="relative mt-10 h-[20dvw] w-full overflow-clip bg-[#212121]">
+    <div className="relative mt-10 h-[35dvw] w-full overflow-clip bg-[#212121] sm:h-[20dvw]">
       <Image
         src={"/logo.png"}
         alt="Logo"
@@ -13,14 +15,37 @@ const Footer = () => {
       />
 
       <ul className="z-40 flex w-full flex-wrap justify-end gap-4 p-4 text-xs">
-        <Link href={"/contact"}>
-          <li>Contact Us</li>
+        <Link href={"/about"}>
+          <li>About us</li>
         </Link>
         <Link href={"/policy"}>
           <li>Privacy Policy</li>
         </Link>
         <Link href={"/terms"}>
-          <li>Terms of Service</li>
+          <li>Terms of Use</li>
+        </Link>
+      </ul>
+      <ul className="z-40 flex w-full flex-wrap items-center justify-end gap-4 px-4 text-xs">
+        <span>Other links:</span>
+        <Link href={`${INSTAGRAM}`}>
+          <li>
+            <Image
+              src={"/footer/insta.svg"}
+              alt="insta"
+              width={20}
+              height={20}
+            />
+          </li>
+        </Link>
+        <Link href={`${TWITTER}`}>
+          <li>
+            <Image
+              src={"/footer/twitter.svg"}
+              alt="twitter"
+              width={20}
+              height={20}
+            />
+          </li>
         </Link>
       </ul>
 

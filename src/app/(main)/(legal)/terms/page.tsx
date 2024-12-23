@@ -4,6 +4,7 @@ import React from "react";
 
 import { H1 } from "@/components/typography/h1";
 import { Para } from "@/components/typography/para";
+import { EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Terms of use | Pdx",
@@ -13,15 +14,15 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-green" />
+      <div className="mx-auto mt-[15dvh] h-[2px] w-28 rounded-md bg-brand-green" />
 
-      <H1 className="pt-2 text-center lg:text-5xl">Terms of Use</H1>
+      <H1 className="pt-5 text-center lg:text-5xl">Terms of Use</H1>
       <Para className="text-center text-xs">
         Learn more about how PDX collects and uses data and your rights as a PDX
         user
       </Para>
 
-      <main className="pb-16 pt-10">
+      <main className="py-16">
         <Para className="font-medium underline">UPDATED DECEMBER 31, 2024</Para>
 
         <Para className="mt-6">
@@ -260,7 +261,8 @@ const page = () => {
             <h2 className="mb-3 text-xl font-semibold">14. Contact Us</h2>
             <Para>
               If you have questions or concerns about these Terms, please
-              contact us at support-pdx@gmail.com.
+              contact us at{" "}
+              <span className="font-semibold text-brand-green">{EMAIL}</span>.
             </Para>
           </section>
 

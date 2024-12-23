@@ -1,6 +1,6 @@
+import dynamic from "next/dynamic";
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
-import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 import {
@@ -12,13 +12,11 @@ import {
 } from "lucide-react";
 
 import ComparisonTable from "@/components/comparison-table";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { H4 } from "@/components/typography/h4";
 import { Para } from "@/components/typography/para";
-import { Button } from "@/components/ui/button";
+import { WaitlistButton } from "@/components/ui/progress-btn";
 import { cn } from "@/lib/utils";
 
 const dmserif = DM_Serif_Text({
@@ -55,23 +53,18 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative mx-auto">
-          <Link href={"/waitlist"} className="peer">
-            <Button className="peer mx-auto flex items-center gap-x-2 rounded-xl bg-white px-3 py-1.5 text-brand-btn shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:bg-gray-100 hover:shadow-[0px_0px_30px_#00FF1E]">
-              <span className="font-bold">Join the Waitlist</span>
-              <Image src="/home/arrow.svg" alt="Arrow" width={25} height={25} />
-            </Button>
-          </Link>
+        <div className="relative mx-auto flex flex-col items-center justify-center">
+          <WaitlistButton />
 
           <Image
             src="/home/curved-arrow.svg"
             alt="Arrow"
-            className="peer absolute bottom-5 left-10 opacity-0 transition-all duration-300 ease-in-out peer-hover:opacity-100"
+            className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
             width={20}
             height={20}
           />
 
-          <Para className="peer pl-10 pt-2 text-[10px] opacity-0 backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100">
+          <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
             *Waitlisted users will get a discounted price upon launch
           </Para>
         </div>
