@@ -17,7 +17,7 @@ export function H2({
   return (
     <h2
       className={cn(
-        `scroll-m-20 text-4xl font-semibold tracking-tight first:mt-0 lg:text-5xl ${dmSerif.className}",`,
+        `scroll-m-20 text-4xl font-semibold tracking-tight first:mt-0 lg:text-5xl ${dmSerif.className}`,
         className
       )}
     >

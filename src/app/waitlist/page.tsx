@@ -1,5 +1,6 @@
 "use client";
 
+import { Poppins } from "next/font/google";
 import Image from "next/image";
 import { useActionState } from "react";
 
@@ -7,12 +8,18 @@ import { Mail, User } from "lucide-react";
 import Confetti from "react-confetti";
 
 import { addToWaitlist } from "@/app/actions/waitlist";
-import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { Para } from "@/components/typography/para";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ActionResponse } from "@/lib/types/waitlist";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 const page = () => {
   const initialState: ActionResponse = {
@@ -36,10 +43,14 @@ const page = () => {
       />
 
       <div className="px-4 pb-10">
-        <H1 className="bg-gradient-to-r from-[#D3D3D3] to-[#8E8B8B] bg-clip-text text-center text-transparent">
+        <H2
+          className={`${poppins.className} bg-gradient-to-r from-[#D3D3D3] to-[#8E8B8B] bg-clip-text text-center font-bold text-transparent`}
+        >
           Join the waitlist to
-        </H1>
-        <H2 className="bg-gradient-to-b from-[#00FF1E] to-[#04D31C] bg-clip-text pb-2 text-center text-transparent">
+        </H2>
+        <H2
+          className={`${poppins.className} bg-gradient-to-b from-[#00FF1E] to-[#04D31C] bg-clip-text pb-2 text-center font-bold text-transparent lg:text-4xl`}
+        >
           Unlock your learning power
         </H2>
       </div>
