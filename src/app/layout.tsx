@@ -15,8 +15,72 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Pdx",
-  description: "Transform the way you study",
+  metadataBase: new URL("https://usepdx.tech"),
+  title: {
+    default: "PDX - Transform Your Study Experience",
+    template: "%s | PDX",
+  },
+  description:
+    "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+  keywords: [
+    "study materials",
+    "AI learning",
+    "AI education",
+    "AI Agents",
+    "PDF generation",
+    "education",
+    "syllabus",
+    "study guide",
+    "learning platform",
+  ],
+  authors: [{ name: "PDX Team" }],
+  creator: "PDX Team",
+  publisher: "PDX",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://usepdx.tech",
+    siteName: "PDX",
+    title: "PDX - Transform Your Study Experience",
+    description:
+      "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PDX - Transform Your Study Experience",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PDX - Transform Your Study Experience",
+    description:
+      "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+    images: ["/og-image.png"],
+    creator: "@pdxstudios",
+    site: "@pdxstudios",
+  },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  // viewport: {
+  //   width: "device-width",
+  //   initialScale: 1,
+  //   maximumScale: 1,
+  // },
+  // themeColor: "#04D31C",
 };
 
 export default function RootLayout({

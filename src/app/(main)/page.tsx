@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
@@ -23,6 +24,21 @@ const dmserif = DM_Serif_Text({
   weight: "400",
   subsets: ["latin", "latin-ext"],
 });
+
+export const metadata: Metadata = {
+  description:
+    "Transform your syllabus into perfectly designed PDFs with PDX. Our AI-powered platform creates tailored study materials in minutes, making learning more efficient and accessible.",
+  openGraph: {
+    title: "PDX - Transform Your Study Experience",
+    description:
+      "Transform your syllabus into perfectly designed PDFs with PDX. Our AI-powered platform creates tailored study materials in minutes, making learning more efficient and accessible.",
+  },
+  twitter: {
+    title: "PDX - Transform Your Study Experience",
+    description:
+      "Transform your syllabus into perfectly designed PDFs with PDX. Our AI-powered platform creates tailored study materials in minutes, making learning more efficient and accessible.",
+  },
+};
 
 export default function Home() {
   return (

@@ -2,9 +2,19 @@ import { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Waitlist | Pdx",
+  title: "Join Waitlist | PDX",
   description:
-    "Join the waitlist to get early access and exclusive discounts to PDX",
+    "Join the PDX waitlist to get early access and exclusive discounts. Transform your study experience with AI-powered PDF generation and tailored study materials.",
+  openGraph: {
+    title: "Join PDX Waitlist - Get Early Access & Exclusive Discounts",
+    description:
+      "Join the PDX waitlist to get early access and exclusive discounts. Transform your study experience with AI-powered PDF generation and tailored study materials.",
+  },
+  twitter: {
+    title: "Join PDX Waitlist - Get Early Access & Exclusive Discounts",
+    description:
+      "Join the PDX waitlist to get early access and exclusive discounts. Transform your study experience with AI-powered PDF generation and tailored study materials.",
+  },
 };
 export default function WaitlistLayout({
   children,

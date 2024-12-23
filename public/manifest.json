@@ -1,0 +1,23 @@
+{
+  "name": "PDX - Transform Your Study Experience",
+  "short_name": "PDX",
+  "description": "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131212",
+  "theme_color": "#04D31C",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
