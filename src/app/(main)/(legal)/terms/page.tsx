@@ -220,7 +220,9 @@ const page = () => {
             <h2 className="mb-3 text-xl font-semibold">10. Privacy</h2>
             <Para>
               Your privacy is important to us. Please review our{" "}
-              <Link href="/policy">Privacy Policy</Link>
+              <Link href="/policy" className="underline">
+                Privacy Policy
+              </Link>{" "}
               to understand how we collect, use, and protect your personal
               information.
             </Para>

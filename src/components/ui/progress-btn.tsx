@@ -1,6 +1,7 @@
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import React from "react";
 
 import { TOTAL_GOAL } from "@/lib/constants";
@@ -15,6 +16,7 @@ const dmserif = DM_Serif_Text({
 });
 
 export const WaitlistButton = async () => {
+  await connection();
   const currentSignups = await prisma.waitlistUsers.count();
   const totalSignups = TOTAL_GOAL;
   const remainingSignups = totalSignups - currentSignups;
