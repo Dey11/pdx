@@ -22,7 +22,7 @@ const page = () => {
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium underline">UPDATED DECEMBER 31, 2024</Para>
+        <Para className="font-medium underline">UPDATED DECEMBER 25, 2024</Para>
 
         <Para className="mt-6">
           At PDX ("we," "our," "us"), we value your privacy and are committed to

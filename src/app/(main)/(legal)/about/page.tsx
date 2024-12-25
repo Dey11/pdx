@@ -22,7 +22,7 @@ const page = () => {
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium underline">UPDATED DECEMBER 31, 2024</Para>
+        <Para className="font-medium underline">UPDATED DECEMBER 25, 2024</Para>
 
         <div className="mt-8 space-y-8">
           <section>
