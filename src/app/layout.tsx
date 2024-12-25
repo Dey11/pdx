@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { Suspense } from "react";
 
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 
 import Providers from "@/components/providers";
@@ -105,6 +106,7 @@ export default function RootLayout({
           <NextTopLoader showSpinner={false} color="#04D31C" />
           {/* max-w-screen-xl */}
           <Analytics />
+          <SpeedInsights />
           <div className="mx-auto">
             <Suspense>{children}</Suspense>
           </div>
