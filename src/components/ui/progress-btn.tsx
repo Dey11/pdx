@@ -43,11 +43,13 @@ export const WaitlistButton = async () => {
           <Image src="/home/arrow.svg" alt="Arrow" width={25} height={25} />
         </Button>
       </div>
-      <p
-        className={`z-10 pt-2 text-center text-sm text-brand-text shadow-xl backdrop-blur-sm ${dmserif.className}`}
-      >
-        {remainingSignups} Remaining
-      </p>
+      {remainingSignups > 0 && (
+        <p
+          className={`z-10 pt-2 text-center text-sm text-brand-text shadow-xl backdrop-blur-sm ${dmserif.className}`}
+        >
+          {remainingSignups} Remaining
+        </p>
+      )}
     </Link>
   );
 };
