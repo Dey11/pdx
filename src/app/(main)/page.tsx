@@ -1,8 +1,7 @@
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { ForwardRefExoticComponent, RefAttributes, Suspense } from "react";
 
 import {
   BookOpenText,
@@ -70,19 +69,20 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto flex flex-col items-center justify-center">
-          <WaitlistButton />
+          <Suspense fallback={<div className="h-28"></div>}>
+            <WaitlistButton />
+            <Image
+              src="/home/curved-arrow.svg"
+              alt="Arrow"
+              className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
+              width={20}
+              height={20}
+            />
 
-          <Image
-            src="/home/curved-arrow.svg"
-            alt="Arrow"
-            className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
-            width={20}
-            height={20}
-          />
-
-          <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
-            *Waitlisted users will get a discounted price upon launch
-          </Para>
+            <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
+              *Waitlisted users will get a discounted price upon launch
+            </Para>
+          </Suspense>
         </div>
       </section>
 
