@@ -45,6 +45,7 @@ export default function Home() {
       <section className="flex min-h-screen flex-col items-center justify-center px-2 sm:-my-10">
         <div className="mb-10 flex cursor-pointer items-center gap-x-1.5 rounded-xl bg-gradient-to-r from-[#FFFFFF]/50 to-[#FFFFFF]/10 p-2 px-3 transition-all duration-300 hover:shadow-[0px_0px_5px_#00FF1E]">
           <BookOpenText className="size-4 text-brand-btn" />
+
           <span className="text-xs">Unlock your learning power</span>
         </div>
 
