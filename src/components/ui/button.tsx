@@ -21,6 +21,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         brand:
           "bg-brand-btn text-brand-text hover:bg-brand-btn/90 font-semibold",
+        glowy:
+          "bg-brand-btn text-brand-text hover:bg-brand-btn/90 font-semibold hover:shadow-[0px_0px_5px_#00FF1E]",
       },
       size: {
         default: "h-10 px-4 py-2",
