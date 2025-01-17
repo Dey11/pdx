@@ -1,36 +1,159 @@
-import Image from "next/image";
-import React from "react";
+import {
+  BookOpen,
+  Brain,
+  FileText,
+  Lightbulb,
+  PenTool,
+  Users,
+} from "lucide-react";
 
 import { H1 } from "@/components/typography/h1";
+import { H2 } from "@/components/typography/h2";
 import { H3 } from "@/components/typography/h3";
-import { Para } from "@/components/typography/para";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
-const page = () => {
+const studyMaterials = [
+  {
+    id: "1",
+    name: "Introduction to Quantum Mechanics",
+    type: "Notes",
+    date: "2023-10-10",
+  },
+  {
+    id: "2",
+    name: "Organic Chemistry Reactions",
+    type: "Notes",
+    date: "2023-10-10",
+  },
+  {
+    id: "3",
+    name: "World War II Timeline",
+    type: "Notes",
+    date: "2023-10-10",
+  },
+];
+
+type Tool = {
+  icon: React.ComponentType<{ className?: string }>;
+  name: string;
+  description: string;
+  live: boolean;
+  href: string;
+};
+
+const tools = [
+  {
+    icon: Brain,
+    name: "AI Study Material Generator",
+    description: "Create custom study materials with AI assistance",
+    live: true,
+    href: "/tools/generate",
+  },
+  {
+    icon: FileText,
+    name: "Interactive Flashcards",
+    description: "Boost your memory with dynamic flashcards",
+    live: false,
+    href: "/tools/flashcards",
+  },
+  {
+    icon: Users,
+    name: "Collaborative Study Groups",
+    description: "Join or create study groups with peers",
+    live: false,
+    href: "/tools/generate",
+  },
+  {
+    icon: PenTool,
+    name: "Smart Quiz Creator",
+    description: "Generate quizzes from your study materials",
+    live: false,
+    href: "/tools/generate",
+  },
+];
+
+const page = async () => {
+  const session = await auth();
+
   return (
-    <div className="flex h-[80dvh] flex-col items-center justify-center gap-y-10 text-2xl">
-      <H1>Coming Soon.</H1>
-      <H3>Join our waitlist to get notified when it launches</H3>
-      <div className="relative mx-auto">
-        <Button className="peer mx-auto flex items-center gap-x-2 rounded-xl bg-white px-3 py-1.5 text-brand-btn shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:bg-gray-100 hover:shadow-[0px_0px_30px_#00FF1E]">
-          <span className="font-bold">Join the Waitlist</span>
-          <Image src="/home/arrow.svg" alt="Arrow" width={25} height={25} />
-        </Button>
+    <div className="container mx-auto max-w-[1400px] p-5">
+      <H1 className="text-4xl text-brand-green md:text-5xl">
+        Welcome back, {session?.user?.name}
+      </H1>
 
-        <Image
-          src="/home/curved-arrow.svg"
-          alt="Arrow"
-          className="peer absolute bottom-5 left-10 opacity-0 transition-all duration-300 ease-in-out peer-hover:opacity-100"
-          width={20}
-          height={20}
-        />
+      <section className="grid w-full grid-cols-1 gap-5 pt-5 md:grid-cols-2">
+        <div className="rounded-xl border bg-brand-bg p-5">
+          <H2 className="flex items-center gap-x-3 text-xl sm:text-2xl md:text-3xl">
+            <BookOpen className="size-5 text-brand-green md:size-8" />
+            Recent Study Materials
+          </H2>
+          <div className="mt-5 flex flex-col gap-y-3">
+            {studyMaterials.map((material, index) => {
+              return (
+                <div
+                  className="flex items-center justify-between gap-1"
+                  key={index}
+                >
+                  <div className="text-sm">
+                    <p className="line-clamp-2">{material.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {material.date}
+                    </p>
+                  </div>
+                  <Button className="" variant={"outline"}>
+                    Study
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-col justify-between rounded-xl border bg-brand-bg p-5">
+          <H2 className="flex items-center gap-x-3 text-xl sm:text-2xl md:text-3xl">
+            <Lightbulb className="size-5 text-brand-green md:size-8" />
+            Motivational Quotes
+          </H2>
 
-        <Para className="peer pl-10 pt-2 text-[10px] opacity-0 transition-all duration-300 ease-in-out peer-hover:opacity-100">
-          *Waitlisted users will get a discounted price upon launch
-        </Para>
-      </div>
+          <p className="mt-5 border-l-4 border-brand-green pl-4 text-sm italic sm:text-base">
+            "When studying a new concept, try to explain it in your own words as
+            if you're teaching it to someone else. This technique, known as the
+            'Feynman Technique,' helps identify gaps in your understanding and
+            reinforces your learning."
+          </p>
+          <p className="mt-2 flex justify-end text-xs text-muted-foreground sm:text-base">
+            - Richard Feynman
+          </p>
+        </div>
+      </section>
+
+      <section className="my-10">
+        <H2 className="text-brand-green">Featured Tools</H2>
+
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {tools.map((tool, index) => {
+            return <FeaturedTool key={index} tool={tool} />;
+          })}
+        </div>
+      </section>
     </div>
   );
 };
 
 export default page;
+
+const FeaturedTool = ({ tool }: { tool: Tool }) => {
+  return (
+    <div className="flex flex-col items-center justify-between gap-y-4 rounded-xl border bg-brand-bg p-5 text-center">
+      <tool.icon className="size-8 text-brand-green" />
+      <H3 className="flex items-center gap-x-3">{tool.name}</H3>
+      <p className="text-sm text-muted-foreground">{tool.description}</p>
+      <Button
+        className="bg-brand-green text-brand-bg hover:bg-brand-green/90"
+        variant={"glowy"}
+      >
+        Try Now
+      </Button>
+    </div>
+  );
+};
