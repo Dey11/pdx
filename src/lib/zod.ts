@@ -1,4 +1,4 @@
-import { object, string } from "zod";
+import { object, string, z } from "zod";
 
 export const signInSchema = object({
   email: string({ required_error: "Email is required" })
@@ -17,4 +17,14 @@ export const waitlistSchema = object({
     )
     .min(1, "Email is required"),
   name: string().min(3, "Name must be at least 3 characters"),
+});
+
+export const generateTopicsSchema = object({
+  language: string().optional(),
+  subject: string().min(1, "Subject is required"),
+  syllabus: string().min(3, "Syllabus is required"),
+  complexity: z.enum(["beginner", "intermediate", "advanced"]),
+  type: z.enum(["qna", "theory"]),
+  exam: string().optional(),
+  course: string().optional(),
 });
