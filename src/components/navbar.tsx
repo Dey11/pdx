@@ -17,14 +17,16 @@ import {
 
 const navbarLinks = [
   { name: "Dashboard", link: "/dashboard" },
-  { name: "Generate", link: "/tools/generate" },
-  { name: "Community", link: "/tools/community" },
+  { name: "Generate", link: "/dashboard/generate" },
+  { name: "Community", link: "/dashboard/community" },
   { name: "Settings", link: "/settings" },
 ];
 
 const Navbar = () => {
   const pathname = usePathname();
   const session = useSession();
+
+  console.log(pathname);
 
   return (
     <div className="flex items-center justify-between border-b border-b-muted-foreground/40 px-5 py-3 text-white">
@@ -37,7 +39,7 @@ const Navbar = () => {
             <Link
               href={link.link}
               key={link.name}
-              className={`hover:text-brand-green ${pathname === link.link ? "text-brand-green" : ""}`}
+              className={`hover:text-brand-green ${pathname === link.link || pathname.split("/")[1] === link.link ? "text-brand-green" : ""}`}
             >
               {link.name}
             </Link>
