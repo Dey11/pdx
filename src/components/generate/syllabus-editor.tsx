@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
-import { Zap } from "lucide-react";
+import { Loader2, Zap } from "lucide-react";
+
+import { TopicsType } from "@/lib/types/topics";
+import { generateTopicsSchema } from "@/lib/zod";
 
 import { H2 } from "../typography/h2";
 import { H3 } from "../typography/h3";
@@ -21,7 +24,7 @@ type MaterialType = "theory" | "qna";
 type ComplexityType = "beginner" | "intermediate" | "advanced";
 type SyllabusEditorProps = {
   setSteps: (steps: number) => void;
-  setTopics: (topics: string[]) => void;
+  setTopics: (topics: TopicsType) => void;
 };
 
 export const SyllabusEditor = ({
@@ -37,11 +40,31 @@ export const SyllabusEditor = ({
     course: "",
     language: "",
   });
+  const [error, setError] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const handleSubmit = () => {
+    startTransition(async () => {
+      try {
+        setError("");
+        const res = generateTopicsSchema.safeParse(formData);
+        if (!res.success) {
+          setError(res.error.errors[0].message);
+          console.log(res.error);
+          return;
+        }
 
-  const handleSubmit = async (formData: FormData) => {
-    const syllabus = formData.get("syllabus") as string;
-    setSteps(2);
-    setTopics(syllabus.split("\n"));
+        const data = await fetch("/api/generate-topics", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+        const topics = await data.json();
+        setTopics(topics.data);
+        setSteps(2);
+      } catch (err) {
+        setError("Something went wrong. Please try again.");
+      }
+    });
   };
 
   const handleChange = (
@@ -56,17 +79,17 @@ export const SyllabusEditor = ({
   };
 
   return (
-    <form className="mx-auto max-w-[870px] pt-10" action={handleSubmit}>
+    <form className="mx-auto max-w-[870px] py-10" action={handleSubmit}>
       <H2 className="text-center text-brand-green">
         Create Your Study Material
       </H2>
 
-      <section className="mx-auto grid grid-cols-2 gap-5 pt-10">
+      <section className="mx-auto grid grid-cols-1 gap-5 pt-10 md:grid-cols-2">
         <div className="flex flex-col justify-between rounded-lg bg-brand-bg p-5">
           <H3>Syllabus Content</H3>
 
           <Textarea
-            className="h-60 w-96 rounded-lg shadow-lg"
+            className="h-60 w-full rounded-lg shadow-lg"
             placeholder="Place your syllabus here. Please copy and paste the content from your syllabus document."
             name="syllabus"
             value={formData.syllabus}
@@ -147,21 +170,32 @@ export const SyllabusEditor = ({
         </div>
       </section>
 
-      <Button
-        variant={"glowy"}
-        className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-green text-brand-bg hover:bg-brand-green/80"
-        disabled={
-          !formData.subject ||
-          !formData.exam ||
-          !formData.course ||
-          !formData.language ||
-          !formData.type ||
-          !formData.complexity
-        }
-      >
-        <Zap />
-        Generate Topics
-      </Button>
+      {!isPending ? (
+        <Button
+          variant={"glowy"}
+          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-green text-brand-bg hover:bg-brand-green/80"
+          disabled={
+            !formData.syllabus ||
+            !formData.subject ||
+            !formData.type ||
+            !formData.complexity
+          }
+        >
+          <Zap />
+          Generate Topics
+        </Button>
+      ) : (
+        <Button
+          variant={"glowy"}
+          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-green text-brand-bg hover:bg-brand-green/80"
+          disabled
+        >
+          <Loader2 className="animate-spin" />
+          Generating Topics...
+        </Button>
+      )}
+
+      {error && <p className="mt-4 text-center text-red-500">{error}</p>}
     </form>
   );
 };

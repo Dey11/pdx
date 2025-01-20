@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 
+import { GeneratingMessage } from "@/components/generate/generating-message";
 import { SyllabusEditor } from "@/components/generate/syllabus-editor";
+import { TopicEditor } from "@/components/generate/topic-editor";
+import { TopicsType } from "@/lib/types/topics";
 import { cn } from "@/lib/utils";
 
 const page = () => {
   const [steps, setSteps] = useState(1);
-  const [topics, setTopics] = useState<string[]>([]);
+  const [topics, setTopics] = useState<TopicsType>();
 
   return (
     <div className="container mx-auto max-w-[1400px] px-5">
@@ -16,6 +19,15 @@ const page = () => {
       {steps === 1 && (
         <SyllabusEditor setSteps={setSteps} setTopics={setTopics} />
       )}
+      {steps === 2 && (
+        <TopicEditor
+          topics={topics!}
+          setTopics={setTopics}
+          setSteps={setSteps}
+        />
+      )}
+
+      {steps === 3 && <GeneratingMessage />}
     </div>
   );
 };
@@ -24,7 +36,7 @@ export default page;
 
 const StepUI = ({ step }: { step: number }) => {
   return (
-    <div className="mx-auto flex w-[40dvw] items-center justify-between gap-x-5 py-5 text-center">
+    <div className="mx-auto flex w-full items-center justify-between gap-x-5 py-5 text-center sm:w-[40dvw]">
       <div className="flex flex-col items-center justify-center">
         <div
           className={

@@ -1,4 +1,4 @@
-import { object, string, z } from "zod";
+import { array, boolean, number, object, string, z } from "zod";
 
 export const signInSchema = object({
   email: string({ required_error: "Email is required" })
@@ -27,4 +27,30 @@ export const generateTopicsSchema = object({
   type: z.enum(["qna", "theory"]),
   exam: string().optional(),
   course: string().optional(),
+});
+
+export const topicsSchema = object({
+  topics: array(
+    object({
+      id: string(),
+      name: string(),
+      weightage: z.enum(["low", "medium", "high"]),
+      subtopics: array(
+        object({
+          id: string(),
+          title: string(),
+        })
+      ),
+      numericals: array(
+        object({
+          id: string(),
+          title: string(),
+        })
+      ),
+      formulas: boolean(),
+      examples: boolean(),
+      completed: boolean(),
+      tryCount: number(),
+    })
+  ),
 });
