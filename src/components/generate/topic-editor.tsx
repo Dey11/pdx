@@ -203,6 +203,8 @@ export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
           method: "POST",
           body: JSON.stringify({
             topics: topicsArr,
+            instruction: topics.instruction,
+            moduleName: topics.moduleName,
           }),
           headers: { "Content-Type": "application/json" },
         });

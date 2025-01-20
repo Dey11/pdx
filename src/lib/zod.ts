@@ -30,6 +30,8 @@ export const generateTopicsSchema = object({
 });
 
 export const topicsSchema = object({
+  moduleName: string(),
+  instruction: string(),
   topics: array(
     object({
       id: string(),
