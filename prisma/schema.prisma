@@ -38,18 +38,6 @@ model Session {
   @@map("sessions")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
-  @@map("users")
-}
-
 model VerificationToken {
   identifier String
   token      String
@@ -59,8 +47,167 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+
+  credits            Int              @default(0)
+  reservedCredits    Int              @default(0) @map("reserve_credits")
+  subscriptionType   SubscriptionType @default(student)
+  subscriptionExpiry DateTime?        @map("subscription_expiry")
+
+  accounts         Account[]
+  sessions         Session[]
+  Material         Material[]
+  Transaction      Transaction[]
+  UserActivity     UserActivity[]
+  CouponRedemption CouponRedemption[]
+
+  @@map("users")
+}
+
+model Material {
+  id          String       @id @default(ulid())
+  userId      String       @map("user_id")
+  title       String
+  description String?
+  course      String?
+  exam        String?
+  language    String?      @default("english")
+  complexity  Complexity   @default(advanced)
+  type        MaterialType @default(theory)
+  subject     String
+  status      Status       @default(pending)
+  pdfUrl      String?      @map("pdf_url")
+  price       Int?         @default(0)
+  isPublic    Boolean      @default(false) @map("is_public")
+
+  completedParts Int @default(0) @map("completed_parts")
+  totalParts     Int @default(0) @map("total_parts")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  UserActivity UserActivity[]
+  Task         MaterialTask[]
+}
+
+model MaterialTask {
+  id               String  @id @default(ulid())
+  materialId       String  @map("material_id")
+  topic            String
+  data             Json
+  status           Status  @default(pending)
+  tokensUsed       Int     @default(0) @map("tokens_used")
+  partialResultUrl String? @map("partial_result")
+
+  currIndex  Int @default(0) @map("curr_index")
+  totalIndex Int @default(0) @map("total_index")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id     String        @id @default(ulid())
+  userId String        @map("user_id")
+  type   PaymentType
+  amount Decimal
+  status PaymentStatus @default(pending)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserActivity {
+  id         String             @id @default(ulid())
+  userId     String             @map("user_id")
+  action     UserActivityAction
+  materialId String?            @map("material_id")
+  details    Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  material Material? @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CouponCode {
+  id                 String    @id @default(ulid())
+  code               String    @unique
+  description        String?   @default("")
+  credits            Int       @default(0)
+  maxRedemptions     Int       @default(0) @map("max_redemptions")
+  currentRedemptions Int       @default(0) @map("current_redemptions")
+  expiresAt          DateTime? @map("expires_at")
+  isActive           Boolean   @default(true) @map("is_active")
+
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  CouponRedemption CouponRedemption[]
+}
+
+model CouponRedemption {
+  id         String   @id @default(ulid())
+  userId     String   @map("user_id")
+  couponId   String   @map("coupon_id")
+  redeemedAt DateTime @default(now()) @map("redeemed_at")
+
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon CouponCode @relation(fields: [couponId], references: [id], onDelete: Cascade)
+}
+
 model WaitlistUsers {
   id    Int    @id @default(autoincrement())
   email String @unique
   name  String
+}
+
+enum MaterialType {
+  theory
+  qna
+}
+
+enum Complexity {
+  beginner
+  intermediate
+  advanced
+}
+
+enum PaymentType {
+  credits
+  subscription
+}
+
+enum PaymentStatus {
+  success
+  failed
+  pending
+}
+
+enum SubscriptionType {
+  scholar
+  prodigy
+  student
+  visionary
+}
+
+enum Status {
+  pending
+  inprogress
+  completed
+  failed
+}
+
+enum UserActivityAction {
+  generate
 }
