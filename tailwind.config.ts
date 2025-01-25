@@ -53,7 +53,7 @@ export default {
         brand: {
           bg: "#1e1e1e",
           heading: "#ffffff",
-          text: "#ffffff",
+          text: "#131415",
           btn: "#1e1e1e",
           green: "#04D31C",
         },
