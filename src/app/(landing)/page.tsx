@@ -201,7 +201,7 @@ type PillElement = {
 
 const Pill = ({ Icon, title }: PillElement) => {
   return (
-    <div className="flex items-center gap-x-2 rounded-2xl bg-brand-bg px-2 py-1 text-xs text-brand-text hover:shadow-[0px_0px_5px_#00FF1E]">
+    <div className="flex items-center gap-x-2 rounded-2xl bg-brand-bg px-2 py-1 text-xs text-white hover:shadow-[0px_0px_5px_#00FF1E]">
       <Icon className="size-4 text-brand-green" />
       {title}
     </div>
