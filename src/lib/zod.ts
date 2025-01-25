@@ -30,8 +30,15 @@ export const generateTopicsSchema = object({
 });
 
 export const topicsSchema = object({
+  type: z.enum(["qna", "theory"]),
+  credits: number(),
   moduleName: string(),
   instruction: string(),
+  complexity: z.enum(["beginner", "intermediate", "advanced"]),
+  exam: string().optional(),
+  course: string().optional(),
+  subject: string(),
+  language: string().optional(),
   topics: array(
     object({
       id: string(),

@@ -24,12 +24,14 @@ type MaterialType = "theory" | "qna";
 type ComplexityType = "beginner" | "intermediate" | "advanced";
 type SyllabusEditorProps = {
   setSteps: (steps: number) => void;
+  setCredits: (steps: number) => void;
   setTopics: (topics: TopicsType) => void;
 };
 
 export const SyllabusEditor = ({
   setSteps,
   setTopics,
+  setCredits,
 }: SyllabusEditorProps) => {
   const [formData, setFormData] = useState({
     syllabus: "",
@@ -49,7 +51,7 @@ export const SyllabusEditor = ({
         const res = generateTopicsSchema.safeParse(formData);
         if (!res.success) {
           setError(res.error.errors[0].message);
-          console.log(res.error);
+          console.error(res.error);
           return;
         }
 
@@ -59,7 +61,17 @@ export const SyllabusEditor = ({
           headers: { "Content-Type": "application/json" },
         });
         const topics = await data.json();
-        setTopics(topics.data);
+        const stateData = {
+          ...topics.data,
+          type: formData.type,
+          complexity: formData.complexity,
+          course: formData.course,
+          exam: formData.exam,
+          subject: formData.subject,
+          language: formData.language,
+        };
+        setTopics(stateData);
+        setCredits(topics.credits);
         setSteps(2);
       } catch (err) {
         setError("Something went wrong. Please try again.");

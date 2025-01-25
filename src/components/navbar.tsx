@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { LogOut, Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -18,15 +18,13 @@ import {
 const navbarLinks = [
   { name: "Dashboard", link: "/dashboard" },
   { name: "Generate", link: "/dashboard/generate" },
-  { name: "Community", link: "/dashboard/community" },
+  { name: "Materials", link: "/history" },
   { name: "Settings", link: "/settings" },
 ];
 
 const Navbar = () => {
   const pathname = usePathname();
   const session = useSession();
-
-  console.log(pathname);
 
   return (
     <div className="flex items-center justify-between border-b border-b-muted-foreground/40 px-5 py-3 text-white">

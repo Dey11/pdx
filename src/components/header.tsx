@@ -14,8 +14,8 @@ const headerContents = [
     url: "/about",
   },
   {
-    name: "Join waitlist",
-    url: "/waitlist",
+    name: "Pricing",
+    url: "/pricing",
   },
 ];
 const Header = () => {

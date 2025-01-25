@@ -11,23 +11,34 @@ import { cn } from "@/lib/utils";
 const page = () => {
   const [steps, setSteps] = useState(1);
   const [topics, setTopics] = useState<TopicsType>();
+  const [generatingMaterialId, setGeneratingMaterialId] = useState<string>();
+  const [credits, setCredits] = useState<number>(0);
 
   return (
     <div className="container mx-auto max-w-[1400px] px-5">
       <StepUI step={steps} />
 
       {steps === 1 && (
-        <SyllabusEditor setSteps={setSteps} setTopics={setTopics} />
+        <SyllabusEditor
+          setSteps={setSteps}
+          setTopics={setTopics}
+          setCredits={setCredits}
+        />
       )}
       {steps === 2 && (
         <TopicEditor
+          credits={credits}
+          setCredits={setCredits}
           topics={topics!}
           setTopics={setTopics}
           setSteps={setSteps}
+          setGeneratingMaterialId={setGeneratingMaterialId}
         />
       )}
 
-      {steps === 3 && <GeneratingMessage />}
+      {steps === 3 && (
+        <GeneratingMessage generatingMaterialId={generatingMaterialId!} />
+      )}
     </div>
   );
 };

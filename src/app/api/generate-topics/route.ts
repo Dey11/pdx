@@ -5,7 +5,9 @@ import { generateObject } from "ai";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { systemPrompt } from "@/lib/prompts/system";
+import { ratelimit } from "@/lib/rate-limit";
 import { generateTopicsSchema } from "@/lib/zod";
 
 const google = createGoogleGenerativeAI({
@@ -20,9 +22,33 @@ export async function POST(req: NextRequest) {
   try {
     const session = await auth();
 
-    // if (!session) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { success } = await ratelimit.limit(session.user.id!);
+
+    if (!success) {
+      return NextResponse.json({ error: "Rate Limited", status: 429 });
+    }
+
+    const materialInDb = await prisma.material.findMany({
+      where: {
+        userId: session.user.id,
+      },
+    });
+
+    const isPending = materialInDb.some(
+      (material) =>
+        material.status === "pending" || material.status === "inprogress"
+    );
+
+    if (isPending) {
+      return NextResponse.json(
+        { error: "You have a pending material" },
+        { status: 400 }
+      );
+    }
 
     const body = await req.json();
 
@@ -76,9 +102,28 @@ export async function POST(req: NextRequest) {
       prompt: body.syllabus,
     });
 
-    return new NextResponse(JSON.stringify({ data: object }), {
-      status: 200,
-    });
+    const easyTopics = object.submodules.filter(
+      (obj) => obj.weightage === "low"
+    );
+    const mediumTopics = object.submodules.filter(
+      (obj) => obj.weightage === "medium"
+    );
+    const hardTopics = object.submodules.filter(
+      (obj) => obj.weightage === "high"
+    );
+
+    const credits =
+      easyTopics.length * 4 +
+      mediumTopics.length * 7 +
+      hardTopics.length * 10 +
+      usage.totalTokens / 1000;
+
+    return new NextResponse(
+      JSON.stringify({ data: object, credits: Math.round(credits) }),
+      {
+        status: 200,
+      }
+    );
   } catch (err) {
     console.error(err);
     return new NextResponse(JSON.stringify({ error: "Something went wrong" }), {

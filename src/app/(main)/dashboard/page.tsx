@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import {
   BookOpen,
   Brain,
@@ -7,32 +9,12 @@ import {
   Users,
 } from "lucide-react";
 
+import RecentMaterials from "@/components/dashboard/recent-materials";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { H3 } from "@/components/typography/h3";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
-
-const studyMaterials = [
-  {
-    id: "1",
-    name: "Introduction to Quantum Mechanics",
-    type: "Notes",
-    date: "2023-10-10",
-  },
-  {
-    id: "2",
-    name: "Organic Chemistry Reactions",
-    type: "Notes",
-    date: "2023-10-10",
-  },
-  {
-    id: "3",
-    name: "World War II Timeline",
-    type: "Notes",
-    date: "2023-10-10",
-  },
-];
 
 type Tool = {
   icon: React.ComponentType<{ className?: string }>;
@@ -48,7 +30,7 @@ const tools = [
     name: "AI Study Material Generator",
     description: "Create custom study materials with AI assistance",
     live: true,
-    href: "/tools/generate",
+    href: "/dashboard/generate",
   },
   {
     icon: FileText,
@@ -88,26 +70,10 @@ const page = async () => {
             <BookOpen className="size-5 text-brand-green md:size-8" />
             Recent Study Materials
           </H2>
-          <div className="mt-5 flex flex-col gap-y-3">
-            {studyMaterials.map((material, index) => {
-              return (
-                <div
-                  className="flex items-center justify-between gap-1"
-                  key={index}
-                >
-                  <div className="text-sm">
-                    <p className="line-clamp-2">{material.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {material.date}
-                    </p>
-                  </div>
-                  <Button className="" variant={"outline"}>
-                    Study
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
+
+          <Suspense>
+            <RecentMaterials />
+          </Suspense>
         </div>
         <div className="flex flex-col justify-between rounded-xl border bg-brand-bg p-5">
           <H2 className="flex items-center gap-x-3 text-xl sm:text-2xl md:text-3xl">
@@ -151,8 +117,9 @@ const FeaturedTool = ({ tool }: { tool: Tool }) => {
       <Button
         className="bg-brand-green text-brand-bg hover:bg-brand-green/90"
         variant={"glowy"}
+        disabled={!tool.live}
       >
-        Try Now
+        {tool.live ? "Try Now" : "Coming soon"}
       </Button>
     </div>
   );

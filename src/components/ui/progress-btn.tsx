@@ -45,7 +45,7 @@ export const WaitlistButton = async () => {
       </div>
       {remainingSignups > 0 && (
         <p
-          className={`z-10 pt-2 text-center text-sm text-brand-text shadow-xl backdrop-blur-sm ${dmserif.className}`}
+          className={`text-brand-white z-10 pt-2 text-center text-sm shadow-xl backdrop-blur-sm ${dmserif.className}`}
         >
           {remainingSignups} Remaining
         </p>

@@ -19,6 +19,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TopicsType } from "@/lib/types/topics";
 
+import { H2 } from "../typography/h2";
+import { H3 } from "../typography/h3";
+
 interface SubmodulesType {
   id: string;
   name: string;
@@ -38,12 +41,31 @@ interface SubmodulesType {
 }
 
 type TopicEditorProps = {
+  credits: number;
+  setCredits: (credits: number) => void;
   topics: TopicsType;
   setTopics: (topics: TopicsType) => void;
   setSteps: (steps: number) => void;
+  setGeneratingMaterialId: (materialId: string) => void;
 };
 
-export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
+export function TopicEditor({
+  credits,
+  setCredits,
+  topics,
+  setTopics,
+  setSteps,
+  setGeneratingMaterialId,
+}: TopicEditorProps) {
+  if (!topics.submodules) {
+    return (
+      <H3 className="flex h-[40dvh] items-center justify-center px-5 text-center text-red-500">
+        Please reload the page and fill in the form again - some error occured
+        on our half.
+      </H3>
+    );
+  }
+
   const [topicsArr, setTopicsArr] = useState<SubmodulesType[]>(() => {
     return topics.submodules.map((submodule, idx) => ({
       id: `topic-${idx}-${crypto.randomUUID()}`,
@@ -63,7 +85,6 @@ export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
       tryCount: submodule.tryCount,
     }));
   });
-
   const [editingTopic, setEditingTopic] = useState<string | null>(null);
   const [editingSubtopic, setEditingSubtopic] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -205,10 +226,23 @@ export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
             topics: topicsArr,
             instruction: topics.instruction,
             moduleName: topics.moduleName,
+            type: topics.type,
+            complexity: topics.complexity,
+            subject: topics.subject,
+            course: topics.course,
+            exam: topics.exam,
+            language: topics.language,
+            credits,
           }),
           headers: { "Content-Type": "application/json" },
         });
         const response = await res.json();
+        if (response?.error) {
+          setError(response.error);
+          setCredits(response.credits);
+          return;
+        }
+        setGeneratingMaterialId(response.materialId);
         setSteps(3);
       } catch (err) {
         console.error(err);
@@ -426,13 +460,19 @@ export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
         </CardContent>
       </Card>
 
-      <div className="my-5 text-center text-red-500">Hi</div>
+      {credits && (
+        <div className="my-5 text-center text-brand-green">
+          Approx Credits Required: {credits}.
+        </div>
+      )}
+
+      {error && <div className="my-5 text-center text-red-500">{error}</div>}
 
       {!isPending ? (
         <Button
           type="submit"
           variant={"glowy"}
-          className="w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
+          className="my-5 w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
         >
           Generate Study Material
         </Button>
@@ -440,7 +480,7 @@ export function TopicEditor({ topics, setTopics, setSteps }: TopicEditorProps) {
         <Button
           type="submit"
           variant={"glowy"}
-          className="w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
+          className="my-5 w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
           disabled
         >
           Generating Study Material...
