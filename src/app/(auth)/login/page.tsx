@@ -97,12 +97,12 @@ const SignIn = () => {
             </Button>
           </form>
           {success && (
-            <div className="w-62 text-wrap text-center text-xs text-green-500">
+            <div className="w-62 max-w-[260px] text-wrap text-center text-xs text-green-500">
               {success}
             </div>
           )}
           {error && (
-            <div className="w-80 text-wrap text-center text-xs text-red-500">
+            <div className="w-80 max-w-[260px] text-wrap text-center text-xs text-red-500">
               {error}
             </div>
           )}
