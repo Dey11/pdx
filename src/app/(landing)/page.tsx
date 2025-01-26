@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes, Suspense } from "react";
 
 import {
@@ -16,6 +17,7 @@ import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { H4 } from "@/components/typography/h4";
 import { Para } from "@/components/typography/para";
+import { Button } from "@/components/ui/button";
 import { WaitlistButton } from "@/components/ui/progress-btn";
 import { cn } from "@/lib/utils";
 
@@ -69,20 +71,25 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto flex flex-col items-center justify-center">
-          <Suspense fallback={<div className="h-28"></div>}>
-            <WaitlistButton />
-            <Image
-              src="/home/curved-arrow.svg"
-              alt="Arrow"
-              className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
-              width={20}
-              height={20}
-            />
+          {/* <Suspense fallback={<div className="h-28"></div>}> */}
+          {/* <WaitlistButton /> */}
+          <Link href={"/dashboard"}>
+            <Button className="bg-brand-heading shadow-[0px_3px_10px_#04D31C] hover:bg-brand-heading/90 hover:shadow-[0px_0px_15px_#04d31c]">
+              Go to Dashboard
+            </Button>
+          </Link>
+          <Image
+            src="/home/curved-arrow.svg"
+            alt="Arrow"
+            className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
+            width={20}
+            height={20}
+          />
 
-            <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
-              *Waitlisted users will get a discounted price upon launch
-            </Para>
-          </Suspense>
+          <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
+            *Waitlisted users will get a discounted price upon launch
+          </Para>
+          {/* </Suspense> */}
         </div>
       </section>
 
