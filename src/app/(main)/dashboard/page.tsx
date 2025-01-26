@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 
 import {
@@ -114,13 +115,15 @@ const FeaturedTool = ({ tool }: { tool: Tool }) => {
       <tool.icon className="size-8 text-brand-green" />
       <H3 className="flex items-center gap-x-3">{tool.name}</H3>
       <p className="text-sm text-muted-foreground">{tool.description}</p>
-      <Button
-        className="bg-brand-green text-brand-bg hover:bg-brand-green/90"
-        variant={"glowy"}
-        disabled={!tool.live}
-      >
-        {tool.live ? "Try Now" : "Coming soon"}
-      </Button>
+      <Link href={tool.href}>
+        <Button
+          className="bg-brand-green text-brand-bg hover:bg-brand-green/90"
+          variant={"glowy"}
+          disabled={!tool.live}
+        >
+          {tool.live ? "Try Now" : "Coming soon"}
+        </Button>
+      </Link>
     </div>
   );
 };
