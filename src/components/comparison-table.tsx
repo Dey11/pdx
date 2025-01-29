@@ -12,29 +12,19 @@ import {
 
 const features = [
   {
-    name: "Tailored Study Materials",
-    pdx: "Automatically customized to your syllabus",
-    chatgpt: "Requires manual input and prompts",
-  },
-  {
-    name: "PDF Generation",
-    pdx: "Professionally designed, downloadable PDFs",
-    chatgpt: "No built-in PDF creation",
-  },
-  {
     name: "Syllabus Parsing",
     pdx: "Parses and structures syllabus automatically",
     chatgpt: "Needs manual topic breakdown",
   },
   {
-    name: "Cost Sharing",
-    pdx: "Share costs with classmates or friends",
-    chatgpt: "No collaborative pricing features",
+    name: "Tailored materials",
+    pdx: "Gives detailed, ready made materials",
+    chatgpt: "Need to learn prompt engineering",
   },
   {
-    name: "Community Marketplace",
-    pdx: "Earn by uploading modules and sharing with others",
-    chatgpt: "No community-sharing option",
+    name: "Context Handling",
+    pdx: "One shot material generation",
+    chatgpt: "Need to prompt multiple times",
   },
   {
     name: "Ease of Use",
@@ -51,13 +41,18 @@ const features = [
     pdx: "Instant materials in minutes",
     chatgpt: "Requires multiple interactions and refinements",
   },
+  {
+    name: "PDF Generation",
+    pdx: "Professionally designed, downloadable PDFs",
+    chatgpt: "No built-in PDF creation",
+  },
 ];
 
 export default function ComparisonTable() {
   return (
     <Card className="mx-auto w-full max-w-4xl border-[#c3c3c3]/50 bg-[#131111] shadow-[0_0_40px_#04D31C]">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold text-brand-text">
+        <CardTitle className="text-3xl font-bold text-brand-heading">
           Feature Comparison
         </CardTitle>
       </CardHeader>

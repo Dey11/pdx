@@ -40,6 +40,7 @@
     "react": "19.0.0",
     "react-confetti": "^6.2.2",
     "react-dom": "19.0.0",
+    "react-player": "^2.16.0",
     "standardwebhooks": "^1.0.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
