@@ -54,7 +54,7 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
 
-  credits         Int     @default(0)
+  credits         Int     @default(50)
   reservedCredits Int     @default(0) @map("reserve_credits")
   subscriptionId  String? @unique @map("subscription_id")
 
