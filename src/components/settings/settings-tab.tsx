@@ -1,4 +1,4 @@
-import { CreditCard, Gift, HandHelping } from "lucide-react";
+import { ArrowLeftRight, CreditCard, Gift } from "lucide-react";
 
 import { TabType } from "@/app/(main)/settings/page";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ const SettingsTabs = ({ activeTab, setActiveTab }: SettingsTabsProps) => {
         <div
           key={tab.id}
           className={cn(
-            "flex cursor-pointer items-center gap-1 rounded-sm p-1 px-2 text-sm hover:bg-brand-text/90",
+            "flex cursor-pointer items-center gap-1 rounded-sm p-1 px-2 text-xs hover:bg-brand-text/90 sm:text-sm",
             activeTab === tab.name &&
               "bg-brand-green font-medium text-brand-text hover:bg-brand-green/80"
           )}
@@ -40,11 +40,11 @@ const tabs = [
     name: "Redeem",
     icon: Gift,
   },
-  // {
-  //   id: 3,
-  //   name: "Support",
-  //   icon: HandHelping,
-  // },
+  {
+    id: 3,
+    name: "Transactions",
+    icon: ArrowLeftRight,
+  },
 ];
 
 export default SettingsTabs;

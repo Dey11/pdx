@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 
 import { FAQ } from "@/components/pricing/faq";
 import PricingSection from "@/components/pricing/pricing-section";
+import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { EMAIL } from "@/lib/constants";
 
@@ -9,8 +10,8 @@ const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-[1400px] pt-[20dvh] text-center">
       <div className="container">
-        <H2>Plans made for</H2>
-        <H2 className="text-brand-green">Your needs</H2>
+        <H1>Plans made for</H1>
+        <H1 className="text-brand-green">Your needs</H1>
 
         <Suspense>
           <PricingSection />

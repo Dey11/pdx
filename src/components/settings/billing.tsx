@@ -26,7 +26,7 @@ const BillingSection = () => {
 
   useEffect(() => {
     fetchCreditDetails();
-  }, [session]);
+  }, []);
 
   return (
     <div className="my-10 w-full rounded-lg bg-brand-bg p-5">
@@ -46,6 +46,10 @@ const BillingSection = () => {
           Buy more credits
         </Button>
       </Link>
+
+      <div className="pt-2 text-center text-xs">
+        Please reload your page to see updated credits after a transaction.
+      </div>
     </div>
   );
 };

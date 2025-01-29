@@ -1,4 +1,5 @@
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useTransition } from "react";
 
 import { CheckCircle, XCircle } from "lucide-react";
 
@@ -21,6 +22,7 @@ type PricingTabProps = {
   isActive: boolean;
   currentPlan: "Student" | "Prodigy" | "Visionary" | "Scholar";
   onClick: () => void;
+  setError: (error: string | null) => void;
 };
 
 export function PricingTab({
@@ -31,15 +33,42 @@ export function PricingTab({
   isActive,
   currentPlan,
   onClick,
+  setError,
 }: PricingTabProps) {
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const fetchPaymentLink = () => {
+    startTransition(async () => {
+      try {
+        setError("");
+        const data = await fetch(`/api/payment-link/${name}`);
+        const res = await data.json();
+
+        if (res.error) {
+          setError(res.error);
+          return;
+        }
+
+        // HOW TO REDIRECT IT TO A NEW TAB
+        console.log(res.url);
+        router.replace(res.url);
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong. Please try again later.");
+      }
+    });
+  };
+
   return (
     <div className="relative">
       {isActive && (
-        <div className="from-8% absolute -top-5 left-0 right-0 -z-10 h-12 rounded-t-3xl bg-gradient-to-r from-[#576265] via-[#757A7B] via-40% to-[#576265] to-75%">
-          <H3 className="text-sm">Best value</H3>
+        <div className="from-8% absolute -top-7 left-0 right-0 -z-10 h-20 rounded-t-3xl bg-gradient-to-r from-[#576265] via-[#757A7B] via-40% to-[#576265] to-75%">
+          <H3 className="text-base">Best value</H3>
         </div>
       )}
-      <div
+      <form
+        action={fetchPaymentLink}
         className={cn(
           "w-full max-w-sm cursor-pointer rounded-3xl p-[1px]",
           "bg-gradient-to-b from-[#04D31C] to-[#666666]"
@@ -63,7 +92,8 @@ export function PricingTab({
                     ? "once"
                     : duration === "monthly"
                       ? "mo"
-                      : "yr"}
+                      : "yr"}{" "}
+                  + tax
                 </span>
               </H2>
             </div>
@@ -90,13 +120,14 @@ export function PricingTab({
             </ul>
           </div>
           <Button
-            className="mb-2 mt-10 w-full bg-brand-green hover:bg-brand-green/80"
-            disabled={name == currentPlan}
+            className="mb-2 mt-10 w-full rounded-xl bg-brand-green hover:bg-brand-green/80"
+            disabled={pending || name == currentPlan}
+            onClick={() => {}}
           >
             {name == currentPlan ? "Current Plan" : "Buy Now"}
           </Button>
         </Card>
-      </div>
+      </form>
     </div>
   );
 }

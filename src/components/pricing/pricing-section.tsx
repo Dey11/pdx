@@ -74,17 +74,40 @@ const pricingPlans = {
       price: "$2",
       duration: "one-time" as const,
       features: [
-        { id: 1, name: "50 credits ~ 2-3 topics", isAvailable: true },
+        { id: 1, name: "150 credits ~ 1 subject", isAvailable: true },
         { id: 2, name: "High quality materials", isAvailable: true },
-        { id: 3, name: "Material downloads", isAvailable: true },
-        { id: 4, name: "Customer support", isAvailable: true },
+        { id: 3, name: "Basic Customer support", isAvailable: true },
+        { id: 4, name: "Material downloads", isAvailable: true },
+      ],
+    },
+    {
+      name: "Plus",
+      price: "$8",
+      duration: "one-time" as const,
+      features: [
+        { id: 1, name: "700 credits ~ 4-5 subjects", isAvailable: true },
+        { id: 2, name: "High quality materials", isAvailable: true },
+        { id: 3, name: "Basic customer support", isAvailable: true },
+        { id: 4, name: "Material Downloads", isAvailable: true },
+      ],
+    },
+    {
+      name: "Pro",
+      price: "$15",
+      duration: "one-time" as const,
+      features: [
+        { id: 1, name: "1500 credits ~ 10-11 subjects", isAvailable: true },
+        { id: 2, name: "High quality materials", isAvailable: true },
+        { id: 3, name: "Priority customer support", isAvailable: true },
+        { id: 4, name: "Material Downloads", isAvailable: true },
       ],
     },
   ],
 };
 
 const PricingSection = () => {
-  const [selectedTab, setSelectedTab] = useState<PricingType>("monthly");
+  const [selectedTab, setSelectedTab] = useState<PricingType>("one-time");
+  const [error, setError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<
     "Student" | "Visionary" | "Prodigy" | "Scholar"
   >("Student");
@@ -124,14 +147,14 @@ const PricingSection = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="mx-auto mb-12 flex w-fit gap-1 rounded-3xl bg-brand-text p-1 text-sm font-semibold shadow-[0px_1px_3px_#00FF1E]">
-        {(["monthly", "annually", "one-time"] as PricingType[]).map((tab) => (
+        {(["one-time"] as PricingType[]).map((tab) => (
           <button
             key={tab}
             className={cn(
-              "cursor-pointer rounded-3xl px-4 py-2 capitalize transition-colors",
-              selectedTab === tab
-                ? "bg-white text-brand-bg"
-                : "text-white hover:bg-white/10"
+              "cursor-pointer rounded-3xl px-4 py-2 capitalize transition-colors"
+              // selectedTab === tab
+              //   ? "bg-white text-brand-bg"
+              //   : "text-white hover:bg-white/10"
             )}
             onClick={() => setSelectedTab(tab)}
           >
@@ -147,7 +170,7 @@ const PricingSection = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-6"
+          className="flex flex-wrap items-center justify-center gap-6 pt-10"
         >
           {pricingPlans[selectedTab].map((plan, index) => (
             <PricingTab
@@ -156,13 +179,16 @@ const PricingSection = () => {
               price={plan.price}
               duration={plan.duration}
               features={plan.features}
-              isActive={plan.name.includes("Prodigy")}
+              isActive={plan.name.includes("Plus")}
               onClick={() => setSelectedTab(selectedTab)}
               currentPlan={"Student"}
+              setError={setError}
             />
           ))}
         </motion.div>
       </AnimatePresence>
+
+      {error && <div className="mt-4 text-red-500">{error}</div>}
     </div>
   );
 };

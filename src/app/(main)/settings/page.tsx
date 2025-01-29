@@ -2,15 +2,16 @@
 
 import React, { useState } from "react";
 
+import { TransactionList } from "@/components/generate/transactions";
 import BillingSection from "@/components/settings/billing";
 import RedeemSection from "@/components/settings/redeem-section";
 import SettingsTabs from "@/components/settings/settings-tab";
 import { H2 } from "@/components/typography/h2";
 
-export type TabType = "Billing" | "Redeem";
+export type TabType = "Billing" | "Redeem" | "Transactions";
 
 const page = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("Redeem");
+  const [activeTab, setActiveTab] = useState<TabType>("Billing");
 
   return (
     <div className="mx-auto min-h-[70dvh] max-w-[1200px] p-4 px-4">
@@ -20,6 +21,7 @@ const page = () => {
 
       {activeTab === "Billing" && <BillingSection />}
       {activeTab === "Redeem" && <RedeemSection />}
+      {activeTab === "Transactions" && <TransactionList />}
     </div>
   );
 };
