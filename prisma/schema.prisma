@@ -54,10 +54,9 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
 
-  credits            Int              @default(0)
-  reservedCredits    Int              @default(0) @map("reserve_credits")
-  subscriptionType   SubscriptionType @default(student)
-  subscriptionExpiry DateTime?        @map("subscription_expiry")
+  credits         Int     @default(0)
+  reservedCredits Int     @default(0) @map("reserve_credits")
+  subscriptionId  String? @unique @map("subscription_id")
 
   accounts         Account[]
   sessions         Session[]
@@ -65,8 +64,29 @@ model User {
   Transaction      Transaction[]
   UserActivity     UserActivity[]
   CouponRedemption CouponRedemption[]
+  Subscription     Subscription[]
 
   @@map("users")
+}
+
+model Subscription {
+  id      String           @id @default(cuid())
+  userId  String           @map("user_id")
+  plan    SubscriptionType @default(student) @map("subscription_type")
+  credits Int              @default(0) @map("credits")
+  price   Int              @default(0) @map("price")
+  status  String?          @map("status")
+
+  startedAt DateTime  @default(now()) @map("started_at")
+  expiredAt DateTime? @map("expired_at")
+
+  renewal Boolean @default(false) @map("renewal")
+  refId   String? @unique @map("ref_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Material {
@@ -115,16 +135,25 @@ model MaterialTask {
 }
 
 model Transaction {
-  id     String        @id @default(ulid())
-  userId String        @map("user_id")
-  type   PaymentType
-  amount Decimal
-  status PaymentStatus @default(pending)
+  id             String      @id @default(ulid())
+  userId         String      @map("user_id")
+  dodoCustomerId String      @map("dodo_customer_id")
+  type           PaymentType
+  amount         Float
+  tax            Float       @default(0)
+  status         String      @default("processing")
+  currency       String?
+
+  productId String? @map("product_id")
+  quantity  Int?    @default(1)
+
+  paymentId   String? @map("payment_id")
+  paymentLink String? @map("payment_link")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserActivity {
@@ -188,11 +217,12 @@ enum PaymentType {
   subscription
 }
 
-enum PaymentStatus {
-  success
-  failed
-  pending
-}
+// enum PaymentStatus {
+//   succeeded
+//   failed
+//   processing
+//   cancelled
+// }
 
 enum SubscriptionType {
   scholar
