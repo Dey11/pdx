@@ -45,7 +45,7 @@ const SignIn = () => {
   return (
     <div>
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex flex-col gap-y-5 rounded-lg bg-brand-bg p-5 shadow-md backdrop-blur-xl">
+        <div className="mx-2 flex flex-col gap-y-5 rounded-lg bg-brand-bg p-5 shadow-md backdrop-blur-xl">
           <div className="pb-2">
             <H3 className="tracking-wide">Login to UsePdx</H3>
             <Muted>Choose your preferred login method</Muted>

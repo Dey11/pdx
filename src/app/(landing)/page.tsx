@@ -74,11 +74,12 @@ export default function Home() {
           {/* <Suspense fallback={<div className="h-28"></div>}> */}
           {/* <WaitlistButton /> */}
           <Link href={"/dashboard"}>
-            <Button className="bg-brand-heading shadow-[0px_3px_10px_#04D31C] hover:bg-brand-heading/90 hover:shadow-[0px_0px_15px_#04d31c]">
+            {/* <Button className="rounded-2xl shadow-[0px_3px_10px_#04D31C] hover:bg-brand-heading/90 hover:shadow-[0px_0px_15px_#04d31c]"> */}
+            <Button className="mx-auto flex w-fit gap-1 rounded-3xl bg-brand-heading px-3 text-sm font-semibold shadow-[0px_3px_10px_#00FF1E] transition-colors hover:bg-brand-green hover:text-brand-heading hover:shadow-[0px_0px_15px_#04d31c]">
               Go to Dashboard
             </Button>
           </Link>
-          <Image
+          {/* <Image
             src="/home/curved-arrow.svg"
             alt="Arrow"
             className="peer absolute bottom-5 left-6 opacity-100 transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0"
@@ -88,7 +89,7 @@ export default function Home() {
 
           <Para className="opacity:100 peer pt-0 text-[10px] backdrop-blur-lg transition-all duration-300 ease-in-out peer-hover:opacity-100 lg:opacity-0">
             *Waitlisted users will get a discounted price upon launch
-          </Para>
+          </Para> */}
           {/* </Suspense> */}
         </div>
       </section>

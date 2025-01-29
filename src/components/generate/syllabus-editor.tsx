@@ -107,21 +107,23 @@ export const SyllabusEditor = ({
             value={formData.syllabus}
             onChange={handleChange}
           />
-
-          <Select
-            name="complexity"
-            value={formData.complexity}
-            onValueChange={(value) => handleSelectChange("complexity", value)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Complexity Level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="advanced">Advanced</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="beginner">Beginner</SelectItem>
-            </SelectContent>
-          </Select>
+          <label>
+            <span>Complexity</span>
+            <Select
+              name="complexity"
+              value={formData.complexity}
+              onValueChange={(value) => handleSelectChange("complexity", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Complexity Level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="advanced">Advanced</SelectItem>
+                <SelectItem value="intermediate">Intermediate</SelectItem>
+                <SelectItem value="beginner">Beginner</SelectItem>
+              </SelectContent>
+            </Select>
+          </label>
         </div>
 
         <div className="flex flex-col gap-2 rounded-lg bg-brand-bg p-5">
@@ -136,7 +138,9 @@ export const SyllabusEditor = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="theory">Theory</SelectItem>
-              <SelectItem value="qna">QNA (Question Bank)</SelectItem>
+              <SelectItem disabled={true} value="qna">
+                Question Bank (Coming soon)
+              </SelectItem>
             </SelectContent>
           </Select>
 

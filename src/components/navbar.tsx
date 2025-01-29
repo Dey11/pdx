@@ -2,11 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 
 import { LogOut, Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { Button } from "./ui/button";
 
 const navbarLinks = [
   { name: "Dashboard", link: "/dashboard" },
@@ -28,7 +38,9 @@ const Navbar = () => {
 
   return (
     <div className="flex items-center justify-between border-b border-b-muted-foreground/40 px-5 py-3 text-white">
-      <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />
+      <Link href={"/"}>
+        <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />
+      </Link>
 
       {/* Desktop Links */}
       <div className="hidden items-center justify-center gap-x-5 text-muted-foreground sm:flex">
@@ -95,10 +107,35 @@ const Navbar = () => {
             className="rounded-full"
           />
         )}
-        <LogOut className="size-5 cursor-pointer" onClick={() => signOut()} />
+        {/* <LogOut className="size-5 cursor-pointer" onClick={() => signOut()} /> */}
+        <LogOutBtn />
       </div>
     </div>
   );
 };
 
 export default Navbar;
+
+const LogOutBtn = () => {
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <LogOut className="size-5 cursor-pointer" />
+      </DialogTrigger>
+      <DialogContent className="w-40 p-10 text-center">
+        <DialogHeader className="flex flex-col items-center justify-center gap-5">
+          <DialogTitle>Log out?</DialogTitle>
+          <Button
+            variant={"outline"}
+            className="w-full"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Yes
+          </Button>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
