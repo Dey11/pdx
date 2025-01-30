@@ -93,7 +93,6 @@ export function PricingTab({
                     : duration === "monthly"
                       ? "mo"
                       : "yr"}{" "}
-                  + tax
                 </span>
               </H2>
             </div>

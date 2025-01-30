@@ -65,6 +65,11 @@ export default function Home() {
             <span className="text-brand-green">PDX</span>—your personal
             AI-powered learning solution, providing tailored study materials.
           </Para>
+
+          <p className="text-lg font-semibold text-brand-green">
+            {" "}
+            Join now to get 75 free credits to test it out
+          </p>
         </div>
 
         <div className="mb-10 flex flex-wrap items-center justify-center gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { GeneratingMessage } from "@/components/generate/generating-message";
 import { SyllabusEditor } from "@/components/generate/syllabus-editor";
@@ -13,6 +13,28 @@ const page = () => {
   const [topics, setTopics] = useState<TopicsType>();
   const [generatingMaterialId, setGeneratingMaterialId] = useState<string>();
   const [credits, setCredits] = useState<number>(0);
+  const [userCredits, setUserCredits] = useState<number>(0);
+  const [error, setError] = useState<string>("");
+
+  const fetchUserCredits = async () => {
+    try {
+      setError("");
+      const res = await fetch("/api/user/credits");
+      const data = await res.json();
+      if (data?.error) {
+        setError(data.error);
+        return;
+      }
+      setUserCredits(data.credits);
+    } catch (err) {
+      console.error(err);
+      setError("Error fetching user credits");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserCredits();
+  }, []);
 
   return (
     <div className="container mx-auto max-w-[1400px] px-5">
@@ -38,6 +60,13 @@ const page = () => {
 
       {steps === 3 && (
         <GeneratingMessage generatingMaterialId={generatingMaterialId!} />
+      )}
+
+      {error && <div className="mt-2 text-center text-red-500">{error}</div>}
+      {userCredits && (
+        <div className="mt-2 w-full text-center text-brand-green">
+          Current credits: {userCredits}
+        </div>
       )}
     </div>
   );
