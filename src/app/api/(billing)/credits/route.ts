@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const code = body.code;
+    const code = body.code.toUpperCase();
 
     const findCoupon = await prisma.couponCode.findUnique({
       where: {

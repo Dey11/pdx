@@ -22,8 +22,8 @@ const RedeemSection = () => {
           setError("Please enter a coupon code");
           return;
         }
-        if (code.length !== 6) {
-          setError("Coupon code must be 6 characters long");
+        if (code.length < 5) {
+          setError("Coupon code must be atleast 5 characters long");
           return;
         }
         const data = await fetch("/api/credits", {
@@ -31,7 +31,11 @@ const RedeemSection = () => {
           body: JSON.stringify({ code }),
         });
         const res = await data.json();
-        setSuccess(res.credits + " coupons redeemed successfully!");
+        if (res.error) {
+          setError(res.error);
+          return;
+        }
+        setSuccess(res.credits + " credits redeemed successfully!");
       } catch (err) {
         setError("Invalid code");
         console.error(err);

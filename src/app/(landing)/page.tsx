@@ -61,7 +61,7 @@ export default function Home() {
             Solve. Learn. Share.
           </H1>
           <Para className="max-w-2xl">
-            Turn your syllabus into study material PDFs{" "}
+            Turn your syllabus into study material PDFs with{" "}
             <span className="text-brand-green">PDX</span>—your personal
             AI-powered learning solution, providing tailored study materials.
           </Para>

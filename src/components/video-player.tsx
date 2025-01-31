@@ -23,7 +23,7 @@ export default function VideoPlayer() {
             maxWidth: "800px",
             maxHeight: "450px",
           }}
-          url={"https://www.youtube.com/watch?v=wKQC4_lOras"}
+          url={"https://youtu.be/BFSo8g82Bxs"}
         />
       </div>
     )
