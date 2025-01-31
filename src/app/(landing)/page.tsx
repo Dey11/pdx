@@ -227,7 +227,7 @@ const offerings = [
   {
     id: 4,
     title: "Download & share",
-    text: "Vioila! Your personalized PDF is ready to be downloaded and shared with your friends.",
+    text: "Voila! Your personalized PDF is ready to be downloaded and shared with your friends.",
     icon: FileDown,
   },
 ];

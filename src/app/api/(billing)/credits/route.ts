@@ -62,6 +62,10 @@ export async function POST(req: NextRequest) {
             session.user.id!
           );
           if (isCouponValid) {
+            await prisma.user.update({
+              where: { id: session.user.id },
+              data: { credits: { increment: findCoupon.credits } },
+            });
             return NextResponse.json({ credits: findCoupon.credits });
           } else {
             return NextResponse.json({
@@ -81,6 +85,10 @@ export async function POST(req: NextRequest) {
           session.user.id!
         );
         if (isCouponValid) {
+          await prisma.user.update({
+            where: { id: session.user.id },
+            data: { credits: { increment: findCoupon.credits } },
+          });
           return NextResponse.json({ credits: findCoupon.credits });
         } else {
           return NextResponse.json({
