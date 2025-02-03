@@ -17,6 +17,12 @@ import { H3 } from "@/components/typography/h3";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 
+export const metadata = {
+  title: "Dashboard",
+  description:
+    "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution",
+};
+
 type Tool = {
   icon: React.ComponentType<{ className?: string }>;
   name: string;

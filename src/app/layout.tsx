@@ -19,21 +19,20 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL("https://usepdx.tech"),
   title: {
-    default: "PDX - Transform Your Study Experience",
+    default: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
     template: "%s | PDX",
   },
   description:
-    "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+    "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
   keywords: [
-    "study materials",
-    "AI learning",
-    "AI education",
-    "AI Agents",
-    "PDF generation",
-    "education",
-    "syllabus",
-    "study guide",
-    "learning platform",
+    "AI study materials",
+    "custom study guides",
+    "syllabus to PDF",
+    "educational AI",
+    "exam preparation",
+    "academic PDF generator",
+    "AI notes",
+    "AI study guides",
   ],
   authors: [{ name: "PDX Team" }],
   creator: "PDX Team",
@@ -51,9 +50,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://usepdx.tech",
     siteName: "PDX",
-    title: "PDX - Transform Your Study Experience",
+    title: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
     description:
-      "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+      "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
     images: [
       {
         url: "/og-image.png",
@@ -65,14 +64,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PDX - Transform Your Study Experience",
+    title: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
     description:
-      "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution. Get tailored study materials in minutes.",
+      "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
     images: ["/og-image.png"],
-    creator: "@pdxstudios",
-    site: "@pdxstudios",
+    creator: "@usepdx_",
+    site: "@usepdx_",
   },
-  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

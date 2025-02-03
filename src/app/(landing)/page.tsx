@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 import { DM_Serif_Text } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,11 +8,14 @@ import {
   Clock7,
   FileDown,
   FlaskConical,
+  GraduationCap,
   LucideProps,
   Pencil,
   PiggyBank,
   ScanEye,
+  School,
   Upload,
+  Users,
 } from "lucide-react";
 
 import ComparisonTable from "@/components/comparison-table";
@@ -22,6 +24,12 @@ import { H2 } from "@/components/typography/h2";
 import { H3 } from "@/components/typography/h3";
 import { Muted } from "@/components/typography/muted";
 import { Para } from "@/components/typography/para";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/video-player";
 
@@ -30,25 +38,10 @@ const dmserif = DM_Serif_Text({
   subsets: ["latin", "latin-ext"],
 });
 
-export const metadata: Metadata = {
-  description:
-    "Transform your syllabus into study material PDFs with PDX, our AI-powered platform creates tailored study materials in minutes.",
-  openGraph: {
-    title: "PDX - Transform Your Study Experience",
-    description:
-      "Transform your syllabus into study material PDFs with PDX, our AI-powered platform creates tailored study materials in minutes.",
-  },
-  twitter: {
-    title: "PDX - Transform Your Study Experience",
-    description:
-      "Transform your syllabus into study material PDFs with PDX, our AI-powered platform creates tailored study materials in minutes.",
-  },
-};
-
 export default function Home() {
   return (
     <main className="mx-auto px-3 pb-10">
-      <section className="-my-20 flex min-h-screen flex-col items-center justify-center px-2">
+      <section className="-my-12 flex min-h-screen flex-col items-center justify-center px-2">
         <div className="mb-10 flex cursor-pointer items-center gap-x-1.5 rounded-xl bg-gradient-to-r from-[#FFFFFF]/50 to-[#FFFFFF]/10 p-2 px-3 transition-all duration-300 hover:shadow-[0px_0px_5px_#00FF1E]">
           <BookOpenText className="size-4 text-brand-btn" />
           <span className="text-xs">Unlock your learning power</span>
@@ -58,15 +51,15 @@ export default function Home() {
           <H1
             className={`mx-auto w-fit decoration-brand-green hover:underline`}
           >
-            Solve. Learn. Share.
+            Generate Study Materials
           </H1>
-          <Para className="max-w-2xl">
-            Turn your syllabus into study material PDFs with{" "}
-            <span className="text-brand-green">PDX</span>—your personal
-            AI-powered learning solution, providing tailored study materials.
+          <Para className="mx-auto max-w-2xl">
+            Transform any syllabus into detailed study material PDFs with{" "}
+            <span className="text-brand-green">PDX</span>—your AI-powered study
+            material generator. Get comprehensive notes, examples in minutes.
           </Para>
 
-          <p className="text-lg font-semibold text-brand-green">
+          <p className="mx-auto text-lg font-semibold text-brand-green">
             {" "}
             Join now to get 75 free credits to test it out
           </p>
@@ -153,12 +146,6 @@ export default function Home() {
             <OfferingBox offering={offerings[3]} />
           </div>
         </div>
-
-        <Para className="mx-auto max-w-xl">
-          Topper or backbencher - we've got you covered! PDX can generate
-          anything from last minute notes to detailed materials for your exams
-          months away.
-        </Para>
       </section>
 
       <section className="px-5 pt-40">
@@ -170,6 +157,60 @@ export default function Home() {
 
         <ComparisonTable />
       </section>
+
+      <section className="px-5 pt-40">
+        <H2
+          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
+        >
+          Perfect for Everyone
+        </H2>
+
+        <div className="pt-4">
+          <div className="relative mx-auto w-full max-w-2xl rounded-full border-2 border-brand-green">
+            <div className="absolute left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
+            <div className="absolute right-0 size-2 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-white bg-brand-green" />
+            <div className="absolute right-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-5 pt-5">
+            {userTypes.map((type, index) => (
+              <div
+                key={type.title}
+                className="flex w-80 flex-col gap-5 rounded-2xl border border-brand-green bg-[#0a0a0a] p-4 text-left hover:shadow-[0px_0px_5px_#00FF1E]"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="size-10 rounded-full border-4 border-[#222222] bg-[#171717] p-2">
+                    {type.icon && <type.icon className="size-4 text-white" />}
+                  </div>
+                  <div>User Type {index + 1}</div>
+                </div>
+                <H3>{type.title}</H3>
+                <div className="text-sm">{type.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 pt-40">
+        <H2
+          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
+        >
+          Frequently Asked Questions
+        </H2>
+        <Accordion type="single" collapsible className="mx-auto max-w-3xl">
+          {faqs.map((faq, index) => (
+            <AccordionItem key={index} value={`item-${index}`}>
+              <AccordionTrigger className="text-left">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent>
+                <Para>{faq.answer}</Para>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
     </main>
   );
 }
@@ -177,15 +218,15 @@ export default function Home() {
 const pillElements = [
   {
     icon: PiggyBank,
-    title: "Affordable Price",
+    title: "Cost-Effective Study Materials",
   },
   {
     icon: FlaskConical,
-    title: "Tailored Materials",
+    title: "Customized Notes Generator",
   },
   {
     icon: Clock7,
-    title: "Study material in minutes",
+    title: "Instant PDF Generation",
   },
 ];
 
@@ -208,26 +249,26 @@ const Pill = ({ Icon, title }: PillElement) => {
 const offerings = [
   {
     id: 1,
-    title: "Upload your syllabus",
-    text: "Upload your detailed syllabus, the more the divisions, the better the output.",
+    title: "Upload Your Course Syllabus",
+    text: "Simply paste your syllabus text - more detailed syllabi generate better study materials.",
     icon: Upload,
   },
   {
     id: 2,
-    title: "Personalize your PDF",
-    text: "Make the PDF best suited for you by choosing from our list of predefined options.",
+    title: "Customize Study Material",
+    text: "Choose from various options to generate study materials that match your learning style.",
     icon: Pencil,
   },
   {
     id: 3,
-    title: "Review & edit",
-    text: "Edit the topics and subtopics proposed by our AI to make it perfect for your needs.",
+    title: "Preview Generated Content",
+    text: "Review the AI-generated study material outline before final PDF generation.",
     icon: ScanEye,
   },
   {
     id: 4,
-    title: "Download & share",
-    text: "Voila! Your personalized PDF is ready to be downloaded and shared with your friends.",
+    title: "Get Your Study Material PDF",
+    text: "Download your comprehensive study material in PDF format, ready for exam preparation.",
     icon: FileDown,
   },
 ];
@@ -255,3 +296,47 @@ const OfferingBox = ({ offering }: { offering: OfferingType }) => {
     </div>
   );
 };
+
+const userTypes = [
+  {
+    title: "College & University Students",
+    description:
+      "Generate comprehensive exam preparation materials, chapter summaries, and detailed study guides for better academic performance.",
+    icon: GraduationCap,
+  },
+  {
+    title: "Educators & Professors",
+    description:
+      "Create detailed course materials, lecture notes, and study guides for your students in minutes, not hours.",
+    icon: School,
+  },
+  {
+    title: "Self-Study & Online Learners",
+    description:
+      "Convert any learning material or course syllabus into structured, comprehensive study guides for effective self-paced learning.",
+    icon: Users,
+  },
+];
+
+const faqs = [
+  {
+    question: "How does PDX generate study materials from my syllabus?",
+    answer:
+      "Our advanced AI analyzes your syllabus and generates comprehensive study materials including detailed explanations, examples, and key concepts. Each study guide is tailored to your specific course content and learning requirements.",
+  },
+  {
+    question: "What's included in the generated study materials?",
+    answer:
+      "Our AI generates comprehensive study materials (50-150+ pages) including detailed topic explanations, key concepts, examples, summaries, and important points for each section of your syllabus.",
+  },
+  {
+    question: "Can I edit the generated content?",
+    answer:
+      "Not at the moment but we are working to add this feature! Expect this in the coming weeks.",
+  },
+  {
+    question: "What formats are supported for syllabus upload?",
+    answer:
+      "We support only copy-pasting your syllabus directly for now. We are working to add support for PDFs and other formats.",
+  },
+];

@@ -16,6 +16,7 @@
     "@hello-pangea/dnd": "^17.0.0",
     "@prisma/client": "6.3.0",
     "@prisma/extension-accelerate": "^1.2.1",
+    "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-dropdown-menu": "^2.1.5",
     "@radix-ui/react-select": "^2.1.5",
