@@ -20,7 +20,7 @@ export function GeneratingMessage({
     const pollProgress = async () => {
       try {
         const response = await fetch(
-          `/api/theory/progress/${generatingMaterialId}`
+          `/api/generation/progress/${generatingMaterialId}`
         );
         const data = await response.json();
         setProgress({ completed: data.completedParts, total: data.totalParts });
@@ -54,6 +54,7 @@ export function GeneratingMessage({
     setDownloadError(null);
     try {
       const response = await fetch(
+        // todo: qna download
         `/api/theory/download/${generatingMaterialId}`
       );
       if (!response.ok) throw new Error("Failed to get download URL");

@@ -138,9 +138,7 @@ export const SyllabusEditor = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="theory">Theory</SelectItem>
-              <SelectItem disabled={true} value="qna">
-                Question Bank (Coming soon)
-              </SelectItem>
+              <SelectItem value="qna">Question Bank</SelectItem>
             </SelectContent>
           </Select>
 

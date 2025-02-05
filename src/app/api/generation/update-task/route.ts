@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       data: {
         status: res.data.success ? "completed" : "failed",
         partialResultUrl: res.data.key || "",
-        tokensUsed: res.data.usage || 0, // DO SOMETHING FOR CALCULATING THE TOKENS USED
+        tokensUsed: res.data.usage || 0,
       },
     });
 

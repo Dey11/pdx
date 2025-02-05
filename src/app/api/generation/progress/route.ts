@@ -7,6 +7,7 @@ import { mergePdf } from "@/lib/queue";
 
 const bodySchema = z.object({
   materialId: z.string(),
+  type: z.enum(["theory", "qna"]),
 });
 
 export async function POST(req: NextRequest) {
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
 
     if (updatedMaterial.completedParts === updatedMaterial.totalParts) {
       mergePdf({ materialId: materialInDb.id });
+      // todo: handle qna
     }
 
     return NextResponse.json({ message: "Material updated" });
