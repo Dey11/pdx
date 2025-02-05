@@ -4,7 +4,20 @@ import { z } from "zod";
 import { prisma } from "./db";
 import { topicsSchema } from "./zod";
 
-const theoryQueue = new Queue("taskQueue", {
+const theoryQueue = new Queue("theoryQueue", {
+  connection: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT as unknown as number,
+    password: process.env.REDIS_PASSWORD,
+    tls: {},
+  },
+  defaultJobOptions: {
+    attempts: 1,
+    removeOnComplete: true,
+  },
+});
+
+const qnaQueue = new Queue("qnaQueue", {
   connection: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,
@@ -57,18 +70,33 @@ export async function addJobs(
       data: dbInsertableArr,
     });
 
-    res.forEach(async (element) => {
-      await theoryQueue.add("theory", {
-        instruction: jobs.instruction,
-        complexity: jobs.complexity,
-        language: jobs.language,
-        course: jobs.course,
-        exam: jobs.exam,
-        subject: jobs.subject,
-        topic: element,
+    if (jobs.type === "theory") {
+      res.forEach(async (element) => {
+        await theoryQueue.add("theory", {
+          instruction: jobs.instruction,
+          complexity: jobs.complexity,
+          language: jobs.language,
+          course: jobs.course,
+          exam: jobs.exam,
+          subject: jobs.subject,
+          topic: element,
+          type: jobs.type,
+        });
       });
-    });
-
+    } else {
+      res.forEach(async (element) => {
+        await qnaQueue.add("question", {
+          instruction: jobs.instruction,
+          complexity: jobs.complexity,
+          language: jobs.language,
+          course: jobs.course,
+          exam: jobs.exam,
+          subject: jobs.subject,
+          topic: element,
+          type: jobs.type,
+        });
+      });
+    }
     return true;
   } catch (err) {
     console.error(err);
