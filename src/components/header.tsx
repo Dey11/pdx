@@ -1,4 +1,8 @@
+import { Merriweather } from "next/font/google";
+import Image from "next/image";
 import Link from "next/link";
+
+import { Button } from "./ui/button";
 
 const headerContents = [
   {
@@ -18,21 +22,35 @@ const headerContents = [
     url: "/pricing",
   },
 ];
+
+const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
+
 const Header = () => {
   return (
-    <header className="sticky top-5 z-50 mx-auto mt-4 flex w-fit rounded-3xl bg-[#131415] text-[10px] shadow-[0px_2px_4px_#00FF1E] duration-75 ease-in-out hover:shadow-[0px_4px_6px_#00FF1E] sm:text-sm">
-      <ul className="mx-auto flex items-center justify-between py-1 sm:gap-x-3 sm:px-2">
-        {headerContents.map((item) => {
-          return (
-            <Link href={item.url} key={item.url} className="">
-              <li className="rounded-3xl px-3 py-1 font-semibold ease-in-out hover:bg-white/10 hover:text-white">
-                {item.name}
-              </li>
-            </Link>
-          );
-        })}
-      </ul>
-    </header>
+    <nav className="mt-4 flex items-center justify-between gap-16 px-4 sm:px-10">
+      <Image
+        src="/logo.png"
+        alt="PDX Study Material Generator Logo"
+        width={40}
+        height={50}
+        className="mb-1 hidden md:block"
+      />
+      <div className="flex items-center justify-center gap-4">
+        {headerContents.map((item) => (
+          <Link
+            key={item.name}
+            href={item.url}
+            className={`text-brand-heading ${merriweather.className} hover:text-brand-yellow p-1 underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:underline hover:underline-offset-4`}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
+
+      <Button className="rounded-none border border-brand-heading px-4 py-1">
+        TRY NOW
+      </Button>
+    </nav>
   );
 };
 
