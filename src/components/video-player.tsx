@@ -15,13 +15,13 @@ export default function VideoPlayer() {
 
   return (
     state && (
-      <div className="flex h-full w-full items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center sm:w-fit">
         <ReactPlayer
           style={{
             margin: "auto",
-            width: "100%",
-            maxWidth: "800px",
-            maxHeight: "450px",
+            // width: "100%",
+            maxWidth: "600px",
+            maxHeight: "350px",
           }}
           url={"https://youtu.be/BFSo8g82Bxs"}
         />

@@ -44,7 +44,7 @@ const dmserif = DM_Serif_Text({
 export default function Home() {
   return (
     <main className="mx-auto px-3 pb-10">
-      <section className="-my-16 flex min-h-screen flex-col items-center justify-center overflow-hidden px-2 text-center sm:gap-5">
+      <section className="-my-12 flex min-h-screen flex-col items-center justify-center overflow-hidden px-2 text-center sm:gap-5">
         <div
           className="absolute -z-10 h-full w-full sm:hidden"
           style={{
@@ -60,18 +60,24 @@ export default function Home() {
           }}
         />
 
-        <div className="absolute -z-20 size-[25dvh] rounded-full bg-white blur-[20dvh]" />
+        <div className="absolute -z-20 size-[15dvh] rounded-full bg-white blur-[20dvh]" />
 
-        <H1 className="animate-fade-in text-brand-heading">
+        <H1 className="animate-fade-in relative text-brand-heading">
           The personalized study materials
+          <div className="bg-brand-yellow absolute -top-1 right-0 h-3 w-1 rotate-[140deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-3 -top-1.5 h-3 w-1 rotate-[200deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-5 top-1 h-3 w-1 rotate-[80deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-4 top-4 h-3 w-1 rotate-[140deg] rounded-xl" />
+          {/* <div className="bg-brand-yellow absolute -top-3 right-0 h-3 w-1 rotate-[140deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-3 -top-3 h-3 w-1 rotate-[200deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-5 -top-1 h-3 w-1 rotate-[80deg] rounded-xl" />
+          <div className="bg-brand-yellow absolute -right-4 top-2 h-3 w-1 rotate-[140deg] rounded-xl" /> */}
         </H1>
         <H1 className="animate-fade-in text-brand-heading underline underline-offset-4">
           you've been missing
         </H1>
 
-        <Para
-          className={`max-w-lg text-center ${merriweather.className} animate-fade-in`}
-        >
+        <Para className={`animate-fade-in max-w-lg text-center`}>
           <span className="italic">Drowning in prompts?</span> Upload your
           syllabus, and let
           <span className="text-brand-blue"> PDX</span> do the heavy
@@ -87,13 +93,43 @@ export default function Home() {
         </Button>
       </section>
 
+      <section className="flex flex-wrap items-center justify-center gap-10 pt-10">
+        <VideoPlayer />
+
+        <div className="max-w-lg text-center xl:text-left">
+          <H2 className="text-brand-heading">Watch the magic</H2>
+          <H2 className="pt-2 text-brand-heading">come to life</H2>
+
+          <Para>
+            This is where all the good stuff happens –{" "}
+            <span className="font-semibold italic">The dashboard</span>. Whether
+            you're a valedictorian or a backbencher, we’ve got your back.
+            Generate <span className="font-semibold">study materials</span> and{" "}
+            <span className="font-semibold">question papers</span> tailored to
+            your syllabus and learning needs.
+          </Para>
+
+          <Para>
+            <span className="font-semibold italic">The best part?</span> You get
+            it all in beautiful <span className="font-semibold">PDFs</span>,
+            ready to{" "}
+            <span className="font-semibold italic">download and share</span>{" "}
+            with your friends.
+          </Para>
+        </div>
+      </section>
+
       <section className="px-5 pt-40">
         <H2
-          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
+          className={`text-brand-yellow mx-auto mb-12 w-fit text-center ${dmserif.className}`}
         >
-          Frequently Asked Questions
+          FAQs
         </H2>
-        <Accordion type="single" collapsible className="mx-auto max-w-3xl">
+        <Accordion
+          type="single"
+          collapsible
+          className={`mx-auto max-w-3xl ${merriweather.className}`}
+        >
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger className="text-left">

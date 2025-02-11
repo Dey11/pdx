@@ -1,4 +1,8 @@
+import { Merriweather } from "next/font/google";
+
 import { cn } from "@/lib/utils";
+
+const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 
 export function Para({
   children,
@@ -8,7 +12,12 @@ export function Para({
   className?: string;
 }) {
   return (
-    <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}>
+    <p
+      className={cn(
+        `${merriweather.className} leading-7 [&:not(:first-child)]:mt-6`,
+        className
+      )}
+    >
       {children}
     </p>
   );
