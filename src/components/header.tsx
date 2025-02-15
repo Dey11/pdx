@@ -47,7 +47,7 @@ const Header = () => {
         ))}
       </div>
 
-      <Button className="hidden rounded-none border border-brand-heading px-4 py-1 md:block">
+      <Button className="hidden rounded-none border border-b-4 border-brand-heading px-4 py-1 transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
         TRY NOW
       </Button>
     </nav>
