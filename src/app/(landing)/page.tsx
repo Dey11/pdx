@@ -1,23 +1,8 @@
 import { DM_Serif_Text, Merriweather } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { ForwardRefExoticComponent, RefAttributes, Suspense } from "react";
 
-import {
-  BookOpenText,
-  Clock7,
-  FileDown,
-  FlaskConical,
-  GraduationCap,
-  LucideProps,
-  Pencil,
-  PiggyBank,
-  ScanEye,
-  School,
-  Send,
-  Upload,
-  Users,
-} from "lucide-react";
+import { Send } from "lucide-react";
 
 import FeaturesSection from "@/components/home/features-section";
 import { H1 } from "@/components/typography/h1";
@@ -80,13 +65,15 @@ export default function Home() {
           lifting—custom study notes & exam papers in sleek PDFs, stress-free!
         </Para>
 
-        <Button
-          className={`${merriweather.className} group mt-10 flex animate-fade-in items-center gap-2 rounded-lg bg-brand-yellow font-semibold text-brand-btn shadow-md shadow-brand-yellow/70 transition-all duration-200 hover:translate-y-0.5 hover:bg-brand-yellow/80 hover:shadow-none sm:mt-0`}
-        >
-          Try for free{" "}
-          <Send className="transition-all duration-150 group-hover:rotate-[30deg]" />
-          {/* <span className="via-brand-yellow absolute inset-x-0 -bottom-1 h-2 bg-gradient-to-r from-transparent to-transparent" /> */}
-        </Button>
+        <Link href={"/dashboard"}>
+          <Button
+            className={`${merriweather.className} group mt-10 flex animate-fade-in items-center gap-2 rounded-lg bg-brand-yellow font-semibold text-brand-btn shadow-md shadow-brand-yellow/70 transition-all duration-200 hover:translate-y-0.5 hover:bg-brand-yellow/80 hover:shadow-none sm:mt-0`}
+          >
+            Try for free{" "}
+            <Send className="transition-all duration-150 group-hover:rotate-[30deg]" />
+            {/* <span className="via-brand-yellow absolute inset-x-0 -bottom-1 h-2 bg-gradient-to-r from-transparent to-transparent" /> */}
+          </Button>
+        </Link>
       </section>
 
       <section className="flex flex-wrap items-center justify-center gap-10 py-16">
