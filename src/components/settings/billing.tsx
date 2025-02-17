@@ -42,7 +42,7 @@ const BillingSection = () => {
       </div>
 
       <Link href="/pricing" className="mt-4">
-        <Button className="w-full bg-brand-green hover:bg-brand-green/80">
+        <Button className="w-full bg-brand-yellow text-black hover:bg-brand-yellow/80">
           Buy more credits
         </Button>
       </Link>

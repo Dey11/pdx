@@ -55,7 +55,7 @@ const RedeemSection = () => {
         <Input placeholder="Enter coupon code" name="coupon" />
         <Button
           disabled={isPending}
-          className="bg-brand-green font-medium hover:bg-brand-green/80"
+          className="bg-brand-yellow font-medium text-black hover:bg-brand-yellow/80"
         >
           Redeem
         </Button>
