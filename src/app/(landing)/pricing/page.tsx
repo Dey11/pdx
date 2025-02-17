@@ -31,8 +31,8 @@ const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-[1400px] pt-[20dvh] text-center">
       <div className="container">
-        <H1>Plans made for</H1>
-        <H1 className="text-brand-green">Your needs</H1>
+        <H1 className="text-brand-heading">Plans made for</H1>
+        <H1 className="text-brand-blue">Your needs</H1>
 
         <Suspense>
           <PricingSection />
@@ -42,7 +42,7 @@ const page = () => {
 
         <p>
           Still have queries? Mail us at{" "}
-          <span className="text-brand-green">{EMAIL}</span>
+          <span className="text-brand-yellow">{EMAIL}</span>
         </p>
       </div>
     </div>
