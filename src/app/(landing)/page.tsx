@@ -19,11 +19,9 @@ import {
   Users,
 } from "lucide-react";
 
-import ComparisonTable from "@/components/comparison-table";
+import FeaturesSection from "@/components/home/features-section";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
-import { H3 } from "@/components/typography/h3";
-import { Muted } from "@/components/typography/muted";
 import { Para } from "@/components/typography/para";
 import {
   Accordion,
@@ -62,22 +60,20 @@ export default function Home() {
 
         <div className="absolute -z-20 size-[15dvh] rounded-full bg-white blur-[20dvh]" />
 
-        <H1 className="animate-fade-in relative text-brand-heading">
-          The personalized study materials
-          <div className="bg-brand-yellow absolute -top-1 right-0 h-3 w-1 rotate-[140deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-3 -top-1.5 h-3 w-1 rotate-[200deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-5 top-1 h-3 w-1 rotate-[80deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-4 top-4 h-3 w-1 rotate-[140deg] rounded-xl" />
-          {/* <div className="bg-brand-yellow absolute -top-3 right-0 h-3 w-1 rotate-[140deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-3 -top-3 h-3 w-1 rotate-[200deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-5 -top-1 h-3 w-1 rotate-[80deg] rounded-xl" />
-          <div className="bg-brand-yellow absolute -right-4 top-2 h-3 w-1 rotate-[140deg] rounded-xl" /> */}
-        </H1>
-        <H1 className="animate-fade-in text-brand-heading underline underline-offset-4">
-          you've been missing
-        </H1>
+        <div className="group">
+          <H1 className="relative animate-fade-in text-brand-heading">
+            The personalized study materials
+            <div className="-top-1 right-0 hidden h-3 w-1 rotate-[140deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[-3px] group-hover:translate-y-[-3px] sm:absolute sm:block" />
+            <div className="-right-3 -top-1.5 hidden h-3 w-1 rotate-[200deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[1px] group-hover:translate-y-[-4px] sm:absolute sm:block" />
+            <div className="-right-5 top-1 hidden h-3 w-1 rotate-[80deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[4px] group-hover:translate-y-[-1px] sm:absolute sm:block" />
+            <div className="-right-4 top-4 hidden h-3 w-1 rotate-[140deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[2px] group-hover:translate-y-[2px] sm:absolute sm:block" />
+          </H1>
+          <H1 className="animate-fade-in text-brand-heading underline underline-offset-4">
+            you've been missing
+          </H1>
+        </div>
 
-        <Para className={`animate-fade-in max-w-lg text-center`}>
+        <Para className={`max-w-lg animate-fade-in text-center`}>
           <span className="italic">Drowning in prompts?</span> Upload your
           syllabus, and let
           <span className="text-brand-blue"> PDX</span> do the heavy
@@ -85,7 +81,7 @@ export default function Home() {
         </Para>
 
         <Button
-          className={`${merriweather.className} bg-brand-yellow animate-fade-in hover:bg-brand-yellow/80 shadow-brand-yellow/70 group mt-10 flex items-center gap-2 rounded-lg font-semibold text-brand-btn shadow-md transition-all duration-200 hover:translate-y-0.5 hover:shadow-none sm:mt-0`}
+          className={`${merriweather.className} group mt-10 flex animate-fade-in items-center gap-2 rounded-lg bg-brand-yellow font-semibold text-brand-btn shadow-md shadow-brand-yellow/70 transition-all duration-200 hover:translate-y-0.5 hover:bg-brand-yellow/80 hover:shadow-none sm:mt-0`}
         >
           Try for free{" "}
           <Send className="transition-all duration-150 group-hover:rotate-[30deg]" />
@@ -93,7 +89,7 @@ export default function Home() {
         </Button>
       </section>
 
-      <section className="flex flex-wrap items-center justify-center gap-10 pt-10">
+      <section className="flex flex-wrap items-center justify-center gap-10 py-16">
         <VideoPlayer />
 
         <div className="max-w-lg text-center xl:text-left">
@@ -119,9 +115,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-5 pt-40">
+      <section className="flex flex-wrap items-center justify-center py-16">
+        <FeaturesSection />
+      </section>
+
+      <section className="px-5 pt-16">
         <H2
-          className={`text-brand-yellow mx-auto mb-12 w-fit text-center ${dmserif.className}`}
+          className={`mx-auto mb-12 w-fit text-center text-brand-yellow ${dmserif.className}`}
         >
           FAQs
         </H2>

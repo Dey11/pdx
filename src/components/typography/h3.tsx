@@ -7,9 +7,11 @@ const dmSerif = DM_Serif_Text({ weight: "400", subsets: ["latin"] });
 export function H3({
   children,
   className,
+  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
     <h3
@@ -17,6 +19,7 @@ export function H3({
         ` ${dmSerif.className} scroll-m-20 text-2xl font-semibold tracking-tight`,
         className
       )}
+      onClick={onClick}
     >
       {children}
     </h3>
