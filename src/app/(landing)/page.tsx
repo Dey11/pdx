@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/video-player";
+import { EMAIL } from "@/lib/constants";
 
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 
@@ -106,6 +107,25 @@ export default function Home() {
         <FeaturesSection />
       </section>
 
+      <section className="flex flex-col flex-wrap items-center justify-center py-16">
+        <H2 className="text-center text-brand-heading">
+          Why students choose PDX and
+        </H2>
+        <H2 className="text-brand-heading underline sm:pt-2">
+          never look back
+        </H2>
+
+        <Image
+          src={"/home/why_choose_1.png"}
+          height={260}
+          width={400}
+          alt="AI study material generator"
+          className="rounded-lg pt-10 shadow-md"
+        />
+
+        <Para>AI Study Material Generator</Para>
+      </section>
+
       <section className="px-5 pt-16">
         <H2
           className={`mx-auto mb-12 w-fit text-center text-brand-yellow ${dmserif.className}`}
@@ -128,6 +148,10 @@ export default function Home() {
             </AccordionItem>
           ))}
         </Accordion>
+
+        <Para className="mt-10 text-center">
+          Still have any queries? Reach out to us at {EMAIL}
+        </Para>
       </section>
     </main>
   );
