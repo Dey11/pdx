@@ -255,8 +255,8 @@ export function TopicEditor({
     <form className="mx-auto my-10 max-w-[870px]" action={handleSubmit}>
       <Card className="bg-brand-bg text-card-foreground">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base md:text-lg">
-            <span>Topics and Subtopics</span>
+          <CardTitle className="text-center text-base text-brand-heading md:text-lg">
+            Topics and Subtopics
             {/* <Button
               type="button"
               onClick={addTopic}
@@ -472,7 +472,7 @@ export function TopicEditor({
         <Button
           type="submit"
           variant={"glowy"}
-          className="my-5 w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
+          className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
         >
           Generate Study Material
         </Button>
@@ -480,7 +480,7 @@ export function TopicEditor({
         <Button
           type="submit"
           variant={"glowy"}
-          className="my-5 w-full bg-brand-green text-primary-foreground hover:bg-brand-green/90"
+          className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
           disabled
         >
           Generating Study Material...

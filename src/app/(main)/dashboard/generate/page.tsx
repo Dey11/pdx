@@ -80,26 +80,26 @@ const StepUI = ({ step }: { step: number }) => {
       <div className="flex flex-col items-center justify-center">
         <div
           className={
-            "flex size-12 items-center justify-center rounded-full border-2 border-brand-green text-brand-green"
+            "flex size-12 items-center justify-center rounded-full border-2 border-brand-yellow text-brand-yellow"
           }
         >
           1
         </div>
-        <div className="pt-2 text-xs text-brand-green sm:text-sm">
+        <div className="pt-2 text-xs text-brand-yellow sm:text-sm">
           Enter syllabus
         </div>
       </div>
       <div
         className={cn(
           "h-[2px] w-full rounded-xl bg-muted-foreground",
-          step > 1 && "bg-brand-green"
+          step > 1 && "bg-brand-yellow"
         )}
       />
       <div className="flex flex-col items-center justify-center">
         <div
           className={cn(
-            "flex size-12 items-center justify-center rounded-full border-2 border-brand-green border-muted-foreground text-muted-foreground",
-            step >= 2 && "border-brand-green text-brand-green"
+            "flex size-12 items-center justify-center rounded-full border-2 border-brand-yellow border-muted-foreground text-muted-foreground",
+            step >= 2 && "border-brand-yellow text-brand-yellow"
           )}
         >
           2
@@ -107,7 +107,7 @@ const StepUI = ({ step }: { step: number }) => {
         <div
           className={cn(
             "pt-2 text-xs text-muted-foreground sm:text-sm",
-            step > 1 && "text-brand-green"
+            step > 1 && "text-brand-yellow"
           )}
         >
           Edit Topics
@@ -116,14 +116,14 @@ const StepUI = ({ step }: { step: number }) => {
       <div
         className={cn(
           "h-[2px] w-full rounded-xl bg-muted-foreground",
-          step === 3 && "bg-brand-green"
+          step === 3 && "bg-brand-yellow"
         )}
       />
       <div className="flex flex-col items-center justify-center">
         <div
           className={cn(
-            "flex size-12 items-center justify-center rounded-full border-2 border-muted-foreground",
-            step === 3 && "border-brand-green text-brand-green"
+            "flex size-12 items-center justify-center rounded-full border-2 border-brand-yellow border-muted-foreground text-muted-foreground",
+            step === 3 && "border-brand-yellow text-brand-yellow"
           )}
         >
           3
@@ -131,7 +131,7 @@ const StepUI = ({ step }: { step: number }) => {
         <div
           className={cn(
             "pt-2 text-xs text-muted-foreground sm:text-sm",
-            step > 2 && "text-brand-green"
+            step > 2 && "text-brand-yellow"
           )}
         >
           Generate Material
