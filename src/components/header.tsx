@@ -40,7 +40,7 @@ const Header = () => {
           <Link
             key={item.name}
             href={item.url}
-            className={`text-brand-heading ${merriweather.className} p-1 text-sm underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:text-brand-yellow hover:underline hover:underline-offset-4 sm:text-base`}
+            className={`text-brand-heading ${merriweather.className} p-1 text-xs underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:text-brand-yellow hover:underline hover:underline-offset-4 sm:text-base`}
           >
             {item.name}
           </Link>
