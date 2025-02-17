@@ -28,7 +28,7 @@ const FeaturesSection = () => {
   return (
     <div ref={containerRef}>
       <div className="flex w-full flex-col items-center justify-center">
-        <div>
+        <div className="pb-12">
           <H2
             className={`${merriweather.className} text-center text-brand-heading`}
           >
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-5 pt-16 sm:p-5">
-          <div className="flex flex-col gap-6 pt-12">
+          <div className="flex flex-col gap-6">
             <Para className="flex gap-2 text-center sm:text-left">
               <span>
                 <MousePointerClick />

@@ -18,7 +18,10 @@ import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/video-player";
 import { EMAIL } from "@/lib/constants";
 
-const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
+const merriweather = Merriweather({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
 
 const dmserif = DM_Serif_Text({
   weight: "400",
@@ -150,7 +153,8 @@ export default function Home() {
         </Accordion>
 
         <Para className="mt-10 text-center">
-          Still have any queries? Reach out to us at {EMAIL}
+          Still have any queries? Reach out to us at{" "}
+          <span className="text-brand-yellow">{EMAIL}</span>
         </Para>
       </section>
     </main>
