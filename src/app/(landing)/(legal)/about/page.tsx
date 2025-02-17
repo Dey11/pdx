@@ -14,9 +14,11 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-green" />
+      <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-yellow" />
 
-      <H1 className="pt-5 text-center lg:text-5xl">About PDX</H1>
+      <H1 className="pt-5 text-center text-brand-heading lg:text-5xl">
+        About PDX
+      </H1>
       <Para className="text-center text-xs">
         Learn more about our mission and what drives us
       </Para>
@@ -85,13 +87,13 @@ const page = () => {
             </Para>
             <div className="space-y-2">
               <Para>
-                📧 Email: <span className="text-brand-green">{EMAIL}</span>
+                📧 Email: <span className="text-brand-yellow">{EMAIL}</span>
               </Para>
               <Para>
                 Instagram:{" "}
                 <Link
                   href={INSTAGRAM}
-                  className="text-brand-green hover:underline"
+                  className="text-brand-yellow hover:underline"
                   target="_blank"
                 >
                   @pdxstudios
@@ -101,7 +103,7 @@ const page = () => {
                 Twitter:{" "}
                 <Link
                   href={TWITTER}
-                  className="text-brand-green hover:underline"
+                  className="text-brand-yellow hover:underline"
                   target="_blank"
                 >
                   @pdxstudios
