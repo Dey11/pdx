@@ -170,7 +170,7 @@ const PricingSection = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-6 pt-10"
+          className="flex flex-wrap items-center justify-center gap-10 pt-10 sm:gap-6"
         >
           {pricingPlans[selectedTab].map((plan, index) => (
             <PricingTab
