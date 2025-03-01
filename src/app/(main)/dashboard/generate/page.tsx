@@ -19,7 +19,7 @@ const page = () => {
   const fetchUserCredits = async () => {
     try {
       setError("");
-      const res = await fetch("/api/user/credits");
+      const res = await fetch("/api/credits");
       const data = await res.json();
       if (data?.error) {
         setError(data.error);
