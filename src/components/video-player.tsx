@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import ReactPlayer from "react-player/youtube";
 
+import { YOUTUBE_LINK } from "@/lib/constants";
+
 export default function VideoPlayer() {
   const [state, setState] = useState(false);
 
@@ -23,7 +25,7 @@ export default function VideoPlayer() {
             maxWidth: "600px",
             maxHeight: "350px",
           }}
-          url={"https://youtu.be/BFSo8g82Bxs"}
+          url={YOUTUBE_LINK}
         />
       </div>
     )
