@@ -92,7 +92,7 @@ export const SyllabusEditor = ({
 
   return (
     <form className="mx-auto max-w-[870px] py-10" action={handleSubmit}>
-      <H2 className="text-center text-brand-green">
+      <H2 className="text-center text-brand-heading">
         Create Your Study Material
       </H2>
 
@@ -187,7 +187,7 @@ export const SyllabusEditor = ({
       {!isPending ? (
         <Button
           variant={"glowy"}
-          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-green text-brand-bg hover:bg-brand-green/80"
+          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80"
           disabled={
             !formData.syllabus ||
             !formData.subject ||
@@ -201,7 +201,7 @@ export const SyllabusEditor = ({
       ) : (
         <Button
           variant={"glowy"}
-          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-green text-brand-bg hover:bg-brand-green/80"
+          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80"
           disabled
         >
           <Loader2 className="animate-spin" />

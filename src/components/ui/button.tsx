@@ -22,7 +22,7 @@ const buttonVariants = cva(
         brand:
           "bg-brand-btn text-brand-text hover:bg-brand-btn/90 font-semibold",
         glowy:
-          "bg-brand-btn text-brand-text hover:bg-brand-btn/90 font-semibold hover:shadow-[0px_0px_5px_#00FF1E]",
+          "bg-brand-btn text-brand-text hover:bg-brand-btn/90 font-semibold hover:shadow-[0px_0px_5px_#FFC947]",
       },
       size: {
         default: "h-10 px-4 py-2",

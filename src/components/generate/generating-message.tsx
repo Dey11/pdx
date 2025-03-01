@@ -94,7 +94,7 @@ export function GeneratingMessage({
             <div>
               <Button
                 variant={"glowy"}
-                className="mt-4 bg-brand-green text-brand-bg hover:bg-brand-green/90"
+                className="mt-4 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/90"
                 onClick={handleDownload}
                 disabled={isDownloading}
               >

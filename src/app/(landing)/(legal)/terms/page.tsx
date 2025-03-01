@@ -14,16 +14,20 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-28 rounded-md bg-brand-green" />
+      <div className="mx-auto mt-[15dvh] h-[2px] w-28 rounded-md bg-brand-yellow" />
 
-      <H1 className="pt-5 text-center lg:text-5xl">Terms of Use</H1>
+      <H1 className="pt-5 text-center text-brand-heading lg:text-5xl">
+        Terms of Use
+      </H1>
       <Para className="text-center text-xs">
         Learn more about how PDX collects and uses data and your rights as a PDX
         user
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium underline">UPDATED DECEMBER 25, 2024</Para>
+        <Para className="font-medium text-brand-blue underline underline-offset-2">
+          UPDATED DECEMBER 25, 2024
+        </Para>
 
         <Para className="mt-6">
           Welcome to PDX ("we," "our," or "us"). By accessing or using our
@@ -264,7 +268,7 @@ const page = () => {
             <Para>
               If you have questions or concerns about these Terms, please
               contact us at{" "}
-              <span className="font-semibold text-brand-green">{EMAIL}</span>.
+              <span className="font-semibold text-brand-yellow">{EMAIL}</span>.
             </Para>
           </section>
 

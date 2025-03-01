@@ -1,28 +1,12 @@
-import { DM_Serif_Text } from "next/font/google";
+import { DM_Serif_Text, Merriweather } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { ForwardRefExoticComponent, RefAttributes, Suspense } from "react";
 
-import {
-  BookOpenText,
-  Clock7,
-  FileDown,
-  FlaskConical,
-  GraduationCap,
-  LucideProps,
-  Pencil,
-  PiggyBank,
-  ScanEye,
-  School,
-  Upload,
-  Users,
-} from "lucide-react";
+import { Send } from "lucide-react";
 
-import ComparisonTable from "@/components/comparison-table";
+import FeaturesSection from "@/components/home/features-section";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
-import { H3 } from "@/components/typography/h3";
-import { Muted } from "@/components/typography/muted";
 import { Para } from "@/components/typography/para";
 import {
   Accordion,
@@ -32,6 +16,12 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/video-player";
+import { EMAIL } from "@/lib/constants";
+
+const merriweather = Merriweather({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
 
 const dmserif = DM_Serif_Text({
   weight: "400",
@@ -41,164 +31,115 @@ const dmserif = DM_Serif_Text({
 export default function Home() {
   return (
     <main className="mx-auto px-3 pb-10">
-      <section className="-my-12 flex min-h-screen flex-col items-center justify-center px-2">
-        <div className="mb-10 flex cursor-pointer items-center gap-x-1.5 rounded-xl bg-gradient-to-r from-[#FFFFFF]/50 to-[#FFFFFF]/10 p-2 px-3 transition-all duration-300 hover:shadow-[0px_0px_5px_#00FF1E]">
-          <BookOpenText className="size-4 text-brand-btn" />
-          <span className="text-xs">Unlock your learning power</span>
-        </div>
-
-        <div className="mb-8 text-center">
-          <H1
-            className={`mx-auto w-fit decoration-brand-green hover:underline`}
-          >
-            Generate Study Materials
-          </H1>
-          <Para className="mx-auto max-w-2xl">
-            Transform any syllabus into detailed study material PDFs with{" "}
-            <span className="text-brand-green">PDX</span>—your AI-powered study
-            material generator. Get comprehensive notes, examples in minutes.
-          </Para>
-
-          <p className="mx-auto text-lg font-semibold text-brand-green">
-            {" "}
-            Join now to get 75 free credits to test it out
-          </p>
-        </div>
-
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
-          {pillElements.map((pill) => (
-            <Pill key={pill.title} Icon={pill.icon} title={pill.title} />
-          ))}
-        </div>
-
-        <div className="relative mx-auto flex flex-col items-center justify-center">
-          <Link href={"/dashboard"}>
-            <Button className="mx-auto flex w-fit gap-1 rounded-3xl bg-brand-heading px-3 text-sm font-semibold shadow-[0px_3px_10px_#00FF1E] transition-colors hover:bg-brand-green hover:text-brand-heading hover:shadow-[0px_0px_15px_#04d31c]">
-              Go to Dashboard
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      <section>
-        <Image
-          src={"/home/waves.svg"}
-          alt="Waves"
-          fill
-          priority
-          className="-z-10 object-contain object-bottom"
+      <section className="-my-12 flex min-h-screen flex-col items-center justify-center overflow-hidden px-2 text-center sm:gap-5">
+        <div
+          className="absolute -z-10 h-full w-full sm:hidden"
+          style={{
+            background: `repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, transparent 1px, transparent calc(5dvh), rgba(255,255,255,0.05) calc(5dvh + 1px)),
+             repeating-linear-gradient(rgba(255,255,255,0.05) 0px, transparent 1px, transparent calc(5dvh), rgba(255,255,255,0.05) calc(5dvh + 1px))`,
+          }}
         />
-      </section>
+        <div
+          className="-z-10 hidden h-full w-full sm:absolute sm:block"
+          style={{
+            background: `repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, transparent 1px, transparent calc(5dvw), rgba(255,255,255,0.05) calc(5dvw + 1px)),
+             repeating-linear-gradient(rgba(255,255,255,0.05) 0px, transparent 1px, transparent calc(5dvw), rgba(255,255,255,0.05) calc(5dvw + 1px))`,
+          }}
+        />
 
-      <section className="relative mt-10 px-5 text-center sm:mt-20 sm:pt-10">
-        <H2
-          className={`mx-auto w-fit decoration-brand-green hover:underline sm:mb-5 ${dmserif.className}`}
-        >
-          How does PD
-          <span className="text-5xl text-brand-green">X</span> work?
-        </H2>
+        <div className="absolute -z-20 size-[15dvh] rounded-full bg-white blur-[20dvh]" />
 
-        <div className="absolute -left-[20dvw] -z-10 size-[40dvw] rounded-full bg-[#00FF1E] blur-[120px]" />
+        <div className="group">
+          <H1 className="relative animate-fade-in text-brand-heading">
+            The personalized study materials
+            <div className="-top-1 right-0 hidden h-3 w-1 rotate-[140deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[-3px] group-hover:translate-y-[-3px] sm:absolute sm:block" />
+            <div className="-right-3 -top-1.5 hidden h-3 w-1 rotate-[200deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[1px] group-hover:translate-y-[-4px] sm:absolute sm:block" />
+            <div className="-right-5 top-1 hidden h-3 w-1 rotate-[80deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[4px] group-hover:translate-y-[-1px] sm:absolute sm:block" />
+            <div className="-right-4 top-4 hidden h-3 w-1 rotate-[140deg] rounded-xl bg-brand-yellow transition-all duration-100 group-hover:translate-x-[2px] group-hover:translate-y-[2px] sm:absolute sm:block" />
+          </H1>
+          <H1 className="animate-fade-in text-brand-heading underline underline-offset-4">
+            you've been missing
+          </H1>
+        </div>
 
-        <Muted className="mx-auto max-w-6xl pb-10">
-          Let’s see how PDX transforms your syllabus into comprehensive study
-          materials.
-        </Muted>
-
-        <Suspense
-          fallback={
-            <div className="h-[50vh] w-full animate-pulse bg-gray-300" />
-          }
-        >
-          <VideoPlayer />
-        </Suspense>
-      </section>
-
-      <section className="pt-32 text-center">
-        <H2
-          className={`mx-auto mb-5 w-fit decoration-brand-green hover:underline sm:mb-10 ${dmserif.className}`}
-        >
-          What does PD<span className="text-5xl text-brand-green">X</span>{" "}
-          offer?
-        </H2>
-
-        <Para className="mx-auto max-w-sm text-center sm:max-w-2xl">
-          We generate <span className="font-semibold">high quality</span> and{" "}
-          <span className="font-semibold">personalised</span> study materials in
-          form of <span className="font-semibold">PDFs</span> and all you need
-          to do is provides us your syllabus.
+        <Para className={`max-w-lg animate-fade-in text-center`}>
+          <span className="italic">Drowning in prompts?</span> Upload your
+          syllabus, and let
+          <span className="text-brand-blue"> PDX</span> do the heavy
+          lifting—custom study notes & exam papers in sleek PDFs, stress-free!
         </Para>
 
-        <Para>Sounds simple right? Well it is that simple.</Para>
+        <Link href={"/dashboard"}>
+          <Button
+            className={`${merriweather.className} group mt-10 flex animate-fade-in items-center gap-2 rounded-lg bg-brand-yellow font-semibold text-brand-btn shadow-md shadow-brand-yellow/70 transition-all duration-200 hover:translate-y-0.5 hover:bg-brand-yellow/80 hover:shadow-none sm:mt-0`}
+          >
+            Try for free{" "}
+            <Send className="transition-all duration-150 group-hover:rotate-[30deg]" />
+            {/* <span className="via-brand-yellow absolute inset-x-0 -bottom-1 h-2 bg-gradient-to-r from-transparent to-transparent" /> */}
+          </Button>
+        </Link>
+      </section>
 
-        <div className="pt-10">
-          <div className="relative mx-auto w-full max-w-5xl rounded-full border-2 border-brand-green">
-            <div className="absolute left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
-            <div className="absolute right-0 size-2 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-white bg-brand-green" />
-            <div className="absolute right-1/3 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
-            <div className="absolute left-1/3 size-2 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-white bg-brand-green" />
-          </div>
+      <section className="flex flex-wrap items-center justify-center gap-10 py-16">
+        <VideoPlayer />
 
-          <div className="flex flex-wrap justify-center gap-5 pt-5">
-            <OfferingBox offering={offerings[0]} />
-            <OfferingBox offering={offerings[1]} />
-            <OfferingBox offering={offerings[2]} />
-            <OfferingBox offering={offerings[3]} />
-          </div>
+        <div className="max-w-lg text-center xl:text-left">
+          <H2 className="text-brand-heading">Watch the magic</H2>
+          <H2 className="pt-2 text-brand-heading">come to life</H2>
+
+          <Para>
+            This is where all the good stuff happens –{" "}
+            <span className="font-semibold italic">The dashboard</span>. Whether
+            you're a valedictorian or a backbencher, we’ve got your back.
+            Generate <span className="font-semibold">study materials</span> and{" "}
+            <span className="font-semibold">question papers</span> tailored to
+            your syllabus and learning needs.
+          </Para>
+
+          <Para>
+            <span className="font-semibold italic">The best part?</span> You get
+            it all in beautiful <span className="font-semibold">PDFs</span>,
+            ready to{" "}
+            <span className="font-semibold italic">download and share</span>{" "}
+            with your friends.
+          </Para>
         </div>
       </section>
 
-      <section className="px-5 pt-40">
-        <H2
-          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
-        >
-          Why not use ChatGPT instead?
-        </H2>
-
-        <ComparisonTable />
+      <section className="flex flex-wrap items-center justify-center py-16">
+        <FeaturesSection />
       </section>
 
-      <section className="px-5 pt-40">
-        <H2
-          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
-        >
-          Perfect for Everyone
+      <section className="flex flex-col flex-wrap items-center justify-center py-16">
+        <H2 className="text-center text-brand-heading">
+          Why students choose PDX and
+        </H2>
+        <H2 className="text-brand-heading underline sm:pt-2">
+          never look back
         </H2>
 
-        <div className="pt-4">
-          <div className="relative mx-auto w-full max-w-2xl rounded-full border-2 border-brand-green">
-            <div className="absolute left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
-            <div className="absolute right-0 size-2 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-white bg-brand-green" />
-            <div className="absolute right-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-brand-green" />
-          </div>
+        <Image
+          src={"/home/why_choose_1.png"}
+          height={260}
+          width={400}
+          alt="AI study material generator"
+          className="rounded-lg pt-10 shadow-md"
+        />
 
-          <div className="flex flex-wrap justify-center gap-5 pt-5">
-            {userTypes.map((type, index) => (
-              <div
-                key={type.title}
-                className="flex w-80 flex-col gap-5 rounded-2xl border border-brand-green bg-[#0a0a0a] p-4 text-left hover:shadow-[0px_0px_5px_#00FF1E]"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="size-10 rounded-full border-4 border-[#222222] bg-[#171717] p-2">
-                    {type.icon && <type.icon className="size-4 text-white" />}
-                  </div>
-                  <div>User Type {index + 1}</div>
-                </div>
-                <H3>{type.title}</H3>
-                <div className="text-sm">{type.description}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Para>AI Study Material Generator</Para>
       </section>
 
-      <section className="px-5 pt-40">
+      <section className="px-5 pt-16">
         <H2
-          className={`mx-auto mb-12 w-fit text-center decoration-brand-green hover:underline ${dmserif.className}`}
+          className={`mx-auto mb-12 w-fit text-center text-brand-yellow ${dmserif.className}`}
         >
-          Frequently Asked Questions
+          FAQs
         </H2>
-        <Accordion type="single" collapsible className="mx-auto max-w-3xl">
+        <Accordion
+          type="single"
+          collapsible
+          className={`mx-auto max-w-3xl ${merriweather.className}`}
+        >
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger className="text-left">
@@ -210,113 +151,15 @@ export default function Home() {
             </AccordionItem>
           ))}
         </Accordion>
+
+        <Para className="mt-10 text-center">
+          Still have any queries? Reach out to us at{" "}
+          <span className="text-brand-yellow">{EMAIL}</span>
+        </Para>
       </section>
     </main>
   );
 }
-
-const pillElements = [
-  {
-    icon: PiggyBank,
-    title: "Cost-Effective Study Materials",
-  },
-  {
-    icon: FlaskConical,
-    title: "Customized Notes Generator",
-  },
-  {
-    icon: Clock7,
-    title: "Instant PDF Generation",
-  },
-];
-
-type PillElement = {
-  Icon: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
-  title: string;
-};
-
-const Pill = ({ Icon, title }: PillElement) => {
-  return (
-    <div className="flex items-center gap-x-2 rounded-2xl bg-brand-bg px-2 py-1 text-xs text-white hover:shadow-[0px_0px_5px_#00FF1E]">
-      <Icon className="size-4 text-brand-green" />
-      {title}
-    </div>
-  );
-};
-
-const offerings = [
-  {
-    id: 1,
-    title: "Upload Your Course Syllabus",
-    text: "Simply paste your syllabus text - more detailed syllabi generate better study materials.",
-    icon: Upload,
-  },
-  {
-    id: 2,
-    title: "Customize Study Material",
-    text: "Choose from various options to generate study materials that match your learning style.",
-    icon: Pencil,
-  },
-  {
-    id: 3,
-    title: "Preview Generated Content",
-    text: "Review the AI-generated study material outline before final PDF generation.",
-    icon: ScanEye,
-  },
-  {
-    id: 4,
-    title: "Get Your Study Material PDF",
-    text: "Download your comprehensive study material in PDF format, ready for exam preparation.",
-    icon: FileDown,
-  },
-];
-
-type OfferingType = {
-  id: number;
-  title: string;
-  text: string;
-  icon?: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
-};
-
-const OfferingBox = ({ offering }: { offering: OfferingType }) => {
-  return (
-    <div className="flex w-80 flex-col gap-5 rounded-2xl border border-brand-green bg-[#0a0a0a] p-4 text-left hover:shadow-[0px_0px_5px_#00FF1E]">
-      <div className="flex items-center justify-between">
-        <div className="size-10 rounded-full border-4 border-[#222222] bg-[#171717] p-2">
-          {offering.icon && <offering.icon className="size-4 text-white" />}
-        </div>
-        <div>Step {offering.id}</div>
-      </div>
-      <H3>{offering.title}</H3>
-      <div className="text-sm">{offering.text}</div>
-    </div>
-  );
-};
-
-const userTypes = [
-  {
-    title: "College & University Students",
-    description:
-      "Generate comprehensive exam preparation materials, chapter summaries, and detailed study guides for better academic performance.",
-    icon: GraduationCap,
-  },
-  {
-    title: "Educators & Professors",
-    description:
-      "Create detailed course materials, lecture notes, and study guides for your students in minutes, not hours.",
-    icon: School,
-  },
-  {
-    title: "Self-Study & Online Learners",
-    description:
-      "Convert any learning material or course syllabus into structured, comprehensive study guides for effective self-paced learning.",
-    icon: Users,
-  },
-];
 
 const faqs = [
   {

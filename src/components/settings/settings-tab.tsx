@@ -15,9 +15,9 @@ const SettingsTabs = ({ activeTab, setActiveTab }: SettingsTabsProps) => {
         <div
           key={tab.id}
           className={cn(
-            "flex cursor-pointer items-center gap-1 rounded-sm p-1 px-2 text-xs hover:bg-brand-text/90 sm:text-sm",
+            "flex cursor-pointer items-center gap-1 rounded-sm p-1 px-2 text-xs hover:bg-brand-heading hover:text-black sm:text-sm",
             activeTab === tab.name &&
-              "bg-brand-green font-medium text-brand-text hover:bg-brand-green/80"
+              "bg-brand-yellow/90 font-medium text-black hover:bg-brand-yellow/80"
           )}
           onClick={() => setActiveTab(tab.name as TabType)}
         >

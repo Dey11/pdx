@@ -66,7 +66,7 @@ export function FAQ() {
               className="flex w-full items-center justify-between text-left"
             >
               <span className="font-medium">{faq.question}</span>
-              <span className="ml-4 transform text-brand-green transition-transform duration-200">
+              <span className="ml-4 transform text-brand-yellow transition-transform duration-200">
                 {openIndex === index ? "−" : "+"}
               </span>
             </button>

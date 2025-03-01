@@ -95,7 +95,7 @@ export default function RootLayout({
         <body
           className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
         >
-          <NextTopLoader showSpinner={false} color="#04D31C" />
+          <NextTopLoader showSpinner={false} color="#FFC947" />
           {/* max-w-screen-xl */}
           <Analytics />
           <SpeedInsights />

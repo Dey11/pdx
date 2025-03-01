@@ -146,7 +146,7 @@ const PricingSection = () => {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
-      <div className="mx-auto mb-12 flex w-fit gap-1 rounded-3xl bg-brand-text p-1 text-sm font-semibold shadow-[0px_1px_3px_#00FF1E]">
+      <div className="mx-auto mb-12 flex w-fit gap-1 rounded-3xl bg-brand-bg p-1 text-sm font-semibold shadow-[0px_1px_3px_#FFC947]">
         {(["one-time"] as PricingType[]).map((tab) => (
           <button
             key={tab}
@@ -170,7 +170,7 @@ const PricingSection = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-6 pt-10"
+          className="flex flex-wrap items-center justify-center gap-10 pt-10 sm:gap-6"
         >
           {pricingPlans[selectedTab].map((plan, index) => (
             <PricingTab

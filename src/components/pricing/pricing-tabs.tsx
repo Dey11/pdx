@@ -50,8 +50,6 @@ export function PricingTab({
           return;
         }
 
-        // HOW TO REDIRECT IT TO A NEW TAB
-        console.log(res.url);
         router.replace(res.url);
       } catch (err) {
         console.error(err);
@@ -71,7 +69,7 @@ export function PricingTab({
         action={fetchPaymentLink}
         className={cn(
           "w-full max-w-sm cursor-pointer rounded-3xl p-[1px]",
-          "bg-gradient-to-b from-[#04D31C] to-[#666666]"
+          "bg-gradient-to-b from-[#FFC947] to-[#666666]"
         )}
       >
         <Card
@@ -109,7 +107,7 @@ export function PricingTab({
                   )}
                 >
                   {feature.isAvailable ? (
-                    <CheckCircle className="h-4 w-4 text-brand-green" />
+                    <CheckCircle className="h-4 w-4 text-brand-yellow" />
                   ) : (
                     <XCircle className="h-4 w-4 text-muted-foreground" />
                   )}
@@ -119,7 +117,7 @@ export function PricingTab({
             </ul>
           </div>
           <Button
-            className="mb-2 mt-10 w-full rounded-xl bg-brand-green hover:bg-brand-green/80"
+            className="mb-2 mt-10 w-full rounded-xl bg-brand-yellow text-black hover:bg-brand-yellow/80"
             disabled={pending || name == currentPlan}
             onClick={() => {}}
           >

@@ -15,7 +15,7 @@ const page = () => {
 
   return (
     <div className="mx-auto min-h-[70dvh] max-w-[1200px] p-4 px-4">
-      <H2 className="py-8 text-brand-green">Settings</H2>
+      <H2 className="py-8 text-brand-heading">Settings</H2>
 
       <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 

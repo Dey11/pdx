@@ -1,8 +1,9 @@
 "use client";
 
+import { Merriweather } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { LogOut, Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -10,7 +11,6 @@ import { signOut, useSession } from "next-auth/react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -26,30 +26,32 @@ import {
 import { Button } from "./ui/button";
 
 const navbarLinks = [
-  { name: "Dashboard", link: "/dashboard" },
-  { name: "Generate", link: "/dashboard/generate" },
-  { name: "Materials", link: "/history" },
-  { name: "Settings", link: "/settings" },
+  { name: "DASHBOARD", link: "/dashboard" },
+  { name: "GENERATE", link: "/dashboard/generate" },
+  { name: "MATERIALS", link: "/history" },
+  { name: "SETTINGS", link: "/settings" },
 ];
-
+const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 const Navbar = () => {
   const pathname = usePathname();
   const session = useSession();
 
   return (
-    <div className="flex items-center justify-between border-b border-b-muted-foreground/40 px-5 py-3 text-white">
+    <div
+      className={`z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10 ${merriweather.className}`}
+    >
       <Link href={"/"}>
         <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />
       </Link>
 
       {/* Desktop Links */}
-      <div className="hidden items-center justify-center gap-x-5 text-muted-foreground sm:flex">
+      <div className="hidden items-center justify-center gap-x-4 text-muted-foreground sm:flex sm:gap-x-10">
         {navbarLinks.map((link) => {
           return (
             <Link
               href={link.link}
               key={link.name}
-              className={`hover:text-brand-green ${pathname === link.link || pathname.split("/")[1] === link.link ? "text-brand-green" : ""}`}
+              className={`p-1 text-xs text-brand-heading underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:text-brand-yellow hover:underline hover:underline-offset-4 sm:text-base ${pathname === link.link || pathname.split("/")[1] === link.link ? "text-brand-yellow" : ""}`}
             >
               {link.name}
             </Link>
@@ -61,14 +63,14 @@ const Navbar = () => {
       <div className="sm:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Menu className="size-5 cursor-pointer text-muted-foreground hover:text-brand-green" />
+            <Menu className="size-5 cursor-pointer text-brand-heading hover:text-brand-yellow" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-40">
             {navbarLinks.map((link) => (
               <DropdownMenuItem key={link.name} asChild>
                 <Link
                   href={link.link}
-                  className={`w-full ${pathname === link.link ? "text-brand-green" : ""}`}
+                  className={`w-full text-brand-heading ${pathname === link.link ? "text-brand-yellow" : ""}`}
                 >
                   {link.name}
                 </Link>
@@ -120,7 +122,9 @@ const LogOutBtn = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <LogOut className="size-5 cursor-pointer" />
+        <div className="hidden rounded-none border border-b-[4px] border-brand-heading px-4 py-1 transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
+          Logout
+        </div>
       </DialogTrigger>
       <DialogContent className="w-40 p-10 text-center">
         <DialogHeader className="flex flex-col items-center justify-center gap-5">
