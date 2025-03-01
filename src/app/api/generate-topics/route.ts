@@ -1,22 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { z } from "zod";
 
+import { model } from "@/lib/ai/model";
+import { MAX_TOKENS } from "@/lib/ai/model";
+import { systemPrompt } from "@/lib/ai/prompts/system";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { systemPrompt } from "@/lib/prompts/system";
 import { ratelimit } from "@/lib/rate-limit";
 import { generateTopicsSchema } from "@/lib/zod";
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-});
-
-const model = google("gemini-2.0-flash-001");
-
-const MAX_TOKENS = 8192;
 
 export async function POST(req: NextRequest) {
   try {
