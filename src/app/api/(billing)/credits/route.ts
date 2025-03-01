@@ -59,12 +59,14 @@ export async function POST(req: NextRequest) {
       findCoupon.currentRedemptions < findCoupon.maxRedemptions &&
       findCoupon.isActive
     ) {
+      const isCouponValid = await isCouponRedeemable(
+        findCoupon.id,
+        session.user.id!
+      );
+      const currDate = new Date();
+
       if (findCoupon.expiresAt) {
-        if (findCoupon.expiresAt > new Date()) {
-          const isCouponValid = await isCouponRedeemable(
-            findCoupon.id,
-            session.user.id!
-          );
+        if (findCoupon.expiresAt > currDate) {
           if (isCouponValid) {
             await prisma.user.update({
               where: { id: session.user.id },
@@ -84,10 +86,6 @@ export async function POST(req: NextRequest) {
           });
         }
       } else {
-        const isCouponValid = await isCouponRedeemable(
-          findCoupon.id,
-          session.user.id!
-        );
         if (isCouponValid) {
           await prisma.user.update({
             where: { id: session.user.id },

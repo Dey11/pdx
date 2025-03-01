@@ -83,7 +83,7 @@ const handleOneTimePayment = async (email: string, payload: WebhookPayload) => {
     return;
   }
 
-  const createTransaction = await prisma.transaction.create({
+  await prisma.transaction.create({
     data: {
       userId: userInDb?.id,
       dodoCustomerId: payload.data.customer.customer_id,
