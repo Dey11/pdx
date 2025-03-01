@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import React from "react";
 
+import Navbar from "@/components/dashboard/navbar";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
 import { auth } from "@/lib/auth";
 
 const Layout = async ({

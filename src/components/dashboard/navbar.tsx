@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 const navbarLinks = [
   { name: "DASHBOARD", link: "/dashboard" },
@@ -109,7 +109,6 @@ const Navbar = () => {
             className="rounded-full"
           />
         )}
-        {/* <LogOut className="size-5 cursor-pointer" onClick={() => signOut()} /> */}
         <LogOutBtn />
       </div>
     </div>

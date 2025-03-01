@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Send } from "lucide-react";
 
 import FeaturesSection from "@/components/home/features-section";
+import VideoPlayer from "@/components/home/video-player";
 import { H1 } from "@/components/typography/h1";
 import { H2 } from "@/components/typography/h2";
 import { Para } from "@/components/typography/para";
@@ -15,7 +16,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import VideoPlayer from "@/components/video-player";
 import { EMAIL } from "@/lib/constants";
 
 const merriweather = Merriweather({

@@ -25,35 +25,35 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     const { success } = await ratelimit.limit(session.user.id!);
-    
+
     if (!success) {
       return NextResponse.json({ error: "Rate Limited", status: 429 });
     }
-    
+
     const materialInDb = await prisma.material.findMany({
       where: {
         userId: session.user.id,
       },
     });
-    
+
     const isPending = materialInDb.some(
       (material) =>
         material.status === "pending" || material.status === "inprogress"
     );
-    
+
     if (isPending) {
       return NextResponse.json(
         { error: "You have a pending material" },
         { status: 400 }
       );
     }
-    
+
     const body = await req.json();
-    
+
     const res = generateTopicsSchema.safeParse(body);
-    
+
     if (!res.success) {
       console.error(res.error);
       return NextResponse.json({ error: res.error }, { status: 400 });
