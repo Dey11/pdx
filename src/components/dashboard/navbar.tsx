@@ -38,14 +38,16 @@ const Navbar = () => {
 
   return (
     <div
-      className={`z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10 ${merriweather.className}`}
+      className={`z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10`}
     >
       <Link href={"/"}>
         <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />
       </Link>
 
       {/* Desktop Links */}
-      <div className="hidden items-center justify-center gap-x-4 text-muted-foreground sm:flex sm:gap-x-10">
+      <div
+        className={`${merriweather.className} sm:gap-x-10" hidden items-center justify-center gap-x-4 text-muted-foreground sm:flex`}
+      >
         {navbarLinks.map((link) => {
           return (
             <Link
@@ -60,7 +62,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Dropdown */}
-      <div className="sm:hidden">
+      <div className={`sm:hidden ${merriweather.className}`}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Menu className="size-5 cursor-pointer text-brand-heading hover:text-brand-yellow" />
@@ -87,7 +89,7 @@ const Navbar = () => {
                   onClick={() => signOut()}
                 >
                   <LogOut className="mr-2 size-4" />
-                  Logout
+                  LOGOUT
                 </DropdownMenuItem>
               </>
             )}
@@ -121,8 +123,8 @@ const LogOutBtn = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="hidden rounded-none border border-b-[4px] border-brand-heading px-4 py-1 transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
-          Logout
+        <div className="hidden rounded-none border border-b-[4px] border-brand-heading px-4 py-1 text-sm font-semibold transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
+          LOGOUT
         </div>
       </DialogTrigger>
       <DialogContent className="w-40 p-10 text-center">

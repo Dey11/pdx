@@ -75,12 +75,11 @@ export default function Home() {
           >
             Try for free{" "}
             <Send className="transition-all duration-150 group-hover:rotate-[30deg]" />
-            {/* <span className="via-brand-yellow absolute inset-x-0 -bottom-1 h-2 bg-gradient-to-r from-transparent to-transparent" /> */}
           </Button>
         </Link>
       </section>
 
-      <section className="flex flex-wrap items-center justify-center gap-10 py-16">
+      <section className="flex flex-col-reverse flex-wrap items-center justify-center gap-10 py-16 xl:flex-row">
         <VideoPlayer />
 
         <div className="max-w-lg text-center xl:text-left">
