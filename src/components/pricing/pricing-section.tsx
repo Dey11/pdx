@@ -113,36 +113,36 @@ const PricingSection = () => {
   >("Student");
   const session = useSession();
 
-  const fetchPlan = async () => {
-    try {
-      const response = await fetch("/api/plan");
-      const data = await response.json();
-      switch (data.plan) {
-        case "visionary":
-          setCurrentPlan("Visionary");
-          break;
-        case "prodigy":
-          setCurrentPlan("Prodigy");
-          break;
-        case "scholar":
-          setCurrentPlan("Scholar");
-          break;
-        default:
-          setCurrentPlan("Student");
-          break;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const fetchPlan = async () => {
+  //   try {
+  //     const response = await fetch("/api/plan");
+  //     const data = await response.json();
+  //     switch (data.plan) {
+  //       case "visionary":
+  //         setCurrentPlan("Visionary");
+  //         break;
+  //       case "prodigy":
+  //         setCurrentPlan("Prodigy");
+  //         break;
+  //       case "scholar":
+  //         setCurrentPlan("Scholar");
+  //         break;
+  //       default:
+  //         setCurrentPlan("Student");
+  //         break;
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (session) {
-      fetchPlan();
-    } else {
-      setCurrentPlan("Student");
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session) {
+  //     fetchPlan();
+  //   } else {
+  //     setCurrentPlan("Student");
+  //   }
+  // }, [session]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
