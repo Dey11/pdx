@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
+import NewFeatureBanner from "@/components/feature-banner";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 
@@ -49,6 +50,7 @@ export const metadata = {
 const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <div>
+      <NewFeatureBanner />
       <Header />
 
       {children}
