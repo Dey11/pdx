@@ -98,7 +98,7 @@ export const SyllabusEditor = ({
   };
 
   return (
-    <form className="mx-auto max-w-[870px] py-10" action={handleSubmit}>
+    <form className="mx-auto max-w-[870px] py-5" action={handleSubmit}>
       <H2 className="text-center text-brand-heading">
         Create Your Study Material
       </H2>

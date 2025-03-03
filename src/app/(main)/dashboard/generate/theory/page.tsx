@@ -61,9 +61,9 @@ const page = () => {
         <GeneratingMessage generatingMaterialId={generatingMaterialId!} />
       )}
 
-      {error && <div className="mt-2 text-center text-red-500">{error}</div>}
+      {error && <div className="text-center text-red-500">{error}</div>}
       {userCredits && (
-        <div className="mt-2 w-full text-center text-brand-green">
+        <div className="mt-1 w-full text-center text-brand-green">
           Current credits: {userCredits}
         </div>
       )}

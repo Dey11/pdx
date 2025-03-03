@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Edit2, GripVertical, Plus, Save, X } from "lucide-react";
+import { Edit2, GripVertical, Loader2, Plus, Save, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -225,7 +225,7 @@ export function TopicEditor({
   };
 
   return (
-    <form className="mx-auto my-10 max-w-[870px]" action={handleSubmit}>
+    <form className="mx-auto my-5 max-w-[870px]" action={handleSubmit}>
       <Card className="bg-brand-bg text-card-foreground">
         <CardHeader>
           <CardTitle className="text-center text-base text-brand-heading md:text-lg">
@@ -424,12 +424,6 @@ export function TopicEditor({
         </CardContent>
       </Card>
 
-      {credits && (
-        <div className="my-5 text-center text-brand-green">
-          Approx Credits Required: {credits}.
-        </div>
-      )}
-
       {error && <div className="my-5 text-center text-red-500">{error}</div>}
 
       {!isPending ? (
@@ -447,8 +441,15 @@ export function TopicEditor({
           className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
           disabled
         >
+          <Loader2 className="animate-spin" />
           Generating Study Material...
         </Button>
+      )}
+
+      {credits && (
+        <div className="text-center text-brand-green">
+          Approx Credits Required: {credits}.
+        </div>
       )}
     </form>
   );
