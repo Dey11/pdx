@@ -203,7 +203,7 @@ model WaitlistUsers {
 
 enum MaterialType {
   theory
-  qna
+  qbank
 }
 
 enum Complexity {
@@ -216,13 +216,6 @@ enum PaymentType {
   credits
   subscription
 }
-
-// enum PaymentStatus {
-//   succeeded
-//   failed
-//   processing
-//   cancelled
-// }
 
 enum SubscriptionType {
   scholar
