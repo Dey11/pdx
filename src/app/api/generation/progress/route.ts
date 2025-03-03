@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const res = bodySchema.safeParse(body);
-    console.log("this is somethng---------------------------", body);
     if (!res.success) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }

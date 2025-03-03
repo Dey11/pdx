@@ -132,7 +132,7 @@ const PricingSection = () => {
           break;
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
