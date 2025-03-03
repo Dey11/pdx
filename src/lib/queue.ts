@@ -17,7 +17,7 @@ const theoryQueue = new Queue("theoryQueue", {
   },
 });
 
-const qnaQueue = new Queue("qnaQueue", {
+const qbankQueue = new Queue("qbankQueue", {
   connection: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,
@@ -49,7 +49,7 @@ type MaterialTask = {
   data: z.infer<typeof topicsSchema>["topics"][0];
 };
 
-export async function addJobs(
+export async function enqueue(
   jobs: z.infer<typeof topicsSchema>,
   materialId: string
 ) {
@@ -83,18 +83,17 @@ export async function addJobs(
           type: jobs.type,
         });
       });
-    } else {
-      res.forEach(async (element) => {
-        await qnaQueue.add("question", {
-          instruction: jobs.instruction,
-          complexity: jobs.complexity,
-          language: jobs.language,
-          course: jobs.course,
-          exam: jobs.exam,
-          subject: jobs.subject,
-          topic: element,
-          type: jobs.type,
-        });
+    } else if (jobs.type === "qbank") {
+      await qbankQueue.add("qbank", {
+        instruction: jobs.instruction,
+        complexity: jobs.complexity,
+        language: jobs.language,
+        course: jobs.course,
+        exam: jobs.exam,
+        subject: jobs.subject,
+        topics: res,
+        type: jobs.type,
+        weightage: jobs.weightage,
       });
     }
     return true;
@@ -104,9 +103,12 @@ export async function addJobs(
   }
 }
 
-export async function mergePdf(jobs: { materialId: string }) {
+export async function mergePdf(jobs: { materialId: string; type: string }) {
   try {
-    await mergePdfQueue.add("mergePdf", { materialId: jobs.materialId });
+    await mergePdfQueue.add("mergePdf", {
+      materialId: jobs.materialId,
+      type: jobs.type,
+    });
     return true;
   } catch (err) {
     console.error(err);

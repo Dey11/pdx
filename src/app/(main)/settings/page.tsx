@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 
-import { TransactionList } from "@/components/generate/transactions";
 import BillingSection from "@/components/settings/billing";
 import RedeemSection from "@/components/settings/redeem-section";
 import SettingsTabs from "@/components/settings/settings-tab";
+import { TransactionList } from "@/components/settings/transactions";
 import { H2 } from "@/components/typography/h2";
 
 export type TabType = "Billing" | "Redeem" | "Transactions";

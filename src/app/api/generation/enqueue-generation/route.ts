@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { addJobs } from "@/lib/queue";
+import { enqueue } from "@/lib/queue";
 import { topicsSchema } from "@/lib/zod";
 
 export async function POST(req: NextRequest) {
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       where: { id: session.user.id },
     });
 
-    if (user?.credits! - user?.reservedCredits! < reqCredits) {
+    if (user!.credits! - user!.reservedCredits! < reqCredits) {
       return NextResponse.json(
         {
           error: "Insufficient credits. Try deleting some topics.",
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const enqueueStatus = await addJobs(res.data, newMaterial.id);
+    const enqueueStatus = await enqueue(res.data, newMaterial.id);
     if (!enqueueStatus) {
       await prisma.material.delete({ where: { id: newMaterial.id } });
       throw new Error("Failed to enqueue jobs");

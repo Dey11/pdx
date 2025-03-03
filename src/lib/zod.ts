@@ -24,16 +24,18 @@ export const generateTopicsSchema = object({
   subject: string().min(1, "Subject is required"),
   syllabus: string().min(3, "Syllabus is required"),
   complexity: z.enum(["beginner", "intermediate", "advanced"]),
-  type: z.enum(["qna", "theory"]),
+  type: z.enum(["theory", "qbank"]),
+  weightage: z.enum(["auto", "short", "long", "medium"]).optional(),
   exam: string().optional(),
   course: string().optional(),
 });
 
 export const topicsSchema = object({
-  type: z.enum(["qna", "theory"]),
-  credits: number(),
-  moduleName: string(),
-  instruction: string(),
+  type: z.enum(["theory", "qbank"]),
+  weightage: z.enum(["auto", "short", "long", "medium"]).optional(),
+  credits: number().positive("Credits must be a positive number"),
+  moduleName: string().min(1, "Module name is required"),
+  instruction: string().min(1, "Instruction is required"),
   complexity: z.enum(["beginner", "intermediate", "advanced"]),
   exam: string().optional(),
   course: string().optional(),

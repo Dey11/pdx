@@ -27,9 +27,10 @@ import { Button } from "../ui/button";
 
 const navbarLinks = [
   { name: "DASHBOARD", link: "/dashboard" },
-  { name: "GENERATE", link: "/dashboard/generate" },
+  // { name: "GENERATE", link: "/dashboard/generate" },
   { name: "MATERIALS", link: "/history" },
   { name: "SETTINGS", link: "/settings" },
+  { name: "PRICING", link: "/pricing" },
 ];
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 const Navbar = () => {

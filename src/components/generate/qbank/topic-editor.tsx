@@ -1,26 +1,16 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit2,
-  GripVertical,
-  Minus,
-  Plus,
-  Save,
-  X,
-} from "lucide-react";
+import { Edit2, GripVertical, Plus, Save, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TopicsType } from "@/lib/types/topics";
 
-import { H2 } from "../typography/h2";
-import { H3 } from "../typography/h3";
+import { H3 } from "../../typography/h3";
 
 interface SubmodulesType {
   id: string;
@@ -44,7 +34,6 @@ type TopicEditorProps = {
   credits: number;
   setCredits: (credits: number) => void;
   topics: TopicsType;
-  setTopics: (topics: TopicsType) => void;
   setSteps: (steps: number) => void;
   setGeneratingMaterialId: (materialId: string) => void;
 };
@@ -53,14 +42,13 @@ export function TopicEditor({
   credits,
   setCredits,
   topics,
-  setTopics,
   setSteps,
   setGeneratingMaterialId,
 }: TopicEditorProps) {
   if (!topics.submodules) {
     return (
       <H3 className="flex h-[40dvh] items-center justify-center px-5 text-center text-red-500">
-        Please reload the page and fill in the form again - some error occured
+        Please reload the page and fill in the form again - some error occurred
         on our half.
       </H3>
     );
@@ -89,22 +77,6 @@ export function TopicEditor({
   const [editingSubtopic, setEditingSubtopic] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  // const addTopic = () => {
-  //   const newTopic: SubmodulesType = {
-  //     id: `topic-new-${crypto.randomUUID()}`,
-  //     name: "New Topic",
-  //     weightage: "medium",
-  //     subtopics: [],
-  //     numericals: [],
-  //     formulas: false,
-  //     examples: false,
-  //     completed: false,
-  //     tryCount: 0,
-  //   };
-  //   setTopicsArr([...topicsArr, newTopic]);
-  //   setEditingTopic(newTopic.id);
-  // };
 
   const addSubtopic = (topicId: string) => {
     setTopicsArr(
@@ -220,7 +192,7 @@ export function TopicEditor({
     startTransition(async () => {
       try {
         setError("");
-        const res = await fetch("/api/enqueue-generation", {
+        const res = await fetch("/api/generation/enqueue-generation", {
           method: "POST",
           body: JSON.stringify({
             topics: topicsArr,
@@ -232,6 +204,7 @@ export function TopicEditor({
             course: topics.course,
             exam: topics.exam,
             language: topics.language,
+            weightage: topics.weightage,
             credits,
           }),
           headers: { "Content-Type": "application/json" },
@@ -257,15 +230,6 @@ export function TopicEditor({
         <CardHeader>
           <CardTitle className="text-center text-base text-brand-heading md:text-lg">
             Topics and Subtopics
-            {/* <Button
-              type="button"
-              onClick={addTopic}
-              variant="outline"
-              size="sm"
-              className="border-primary text-primary"
-            >
-              <Plus className="mr-1 h-4 w-4" /> Add Topic
-            </Button> */}
           </CardTitle>
         </CardHeader>
         <CardContent className="max-h-[80dvh] w-full overflow-scroll">

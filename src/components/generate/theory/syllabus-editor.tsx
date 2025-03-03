@@ -7,24 +7,24 @@ import { Loader2, Zap } from "lucide-react";
 import { TopicsType } from "@/lib/types/topics";
 import { generateTopicsSchema } from "@/lib/zod";
 
-import { H2 } from "../typography/h2";
-import { H3 } from "../typography/h3";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { H2 } from "../../typography/h2";
+import { H3 } from "../../typography/h3";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Textarea } from "../ui/textarea";
+} from "../../ui/select";
+import { Textarea } from "../../ui/textarea";
 
-type MaterialType = "theory" | "qna";
+type MaterialType = "theory";
 type ComplexityType = "beginner" | "intermediate" | "advanced";
 type SyllabusEditorProps = {
   setSteps: (steps: number) => void;
-  setCredits: (steps: number) => void;
+  setCredits: (credits: number) => void;
   setTopics: (topics: TopicsType) => void;
 };
 
@@ -44,6 +44,7 @@ export const SyllabusEditor = ({
   });
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+
   const handleSubmit = () => {
     startTransition(async () => {
       try {
@@ -55,12 +56,18 @@ export const SyllabusEditor = ({
           return;
         }
 
-        const data = await fetch("/api/generate-topics", {
+        const data = await fetch("/api/generation/generate-topics", {
           method: "POST",
           body: JSON.stringify(formData),
           headers: { "Content-Type": "application/json" },
         });
         const topics = await data.json();
+
+        if (topics.error) {
+          setError(topics.error);
+          return;
+        }
+
         const stateData = {
           ...topics.data,
           type: formData.type,
@@ -138,7 +145,6 @@ export const SyllabusEditor = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="theory">Theory</SelectItem>
-              <SelectItem value="qna">Question Bank</SelectItem>
             </SelectContent>
           </Select>
 

@@ -54,8 +54,7 @@ export function GeneratingMessage({
     setDownloadError(null);
     try {
       const response = await fetch(
-        // todo: qna download
-        `/api/theory/download/${generatingMaterialId}`
+        `/api/generation/download/${generatingMaterialId}`
       );
       if (!response.ok) throw new Error("Failed to get download URL");
       const { url } = await response.json();

@@ -7,14 +7,14 @@ import { mergePdf } from "@/lib/queue";
 
 const bodySchema = z.object({
   materialId: z.string(),
-  type: z.enum(["theory", "qna"]),
+  type: z.enum(["theory", "qbank"]),
 });
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const res = bodySchema.safeParse(body);
-
+    console.log("this is somethng---------------------------", body);
     if (!res.success) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
@@ -46,8 +46,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (updatedMaterial.completedParts === updatedMaterial.totalParts) {
-      mergePdf({ materialId: materialInDb.id });
-      // todo: handle qna
+      mergePdf({ materialId: materialInDb.id, type: res.data.type });
     }
 
     return NextResponse.json({ message: "Material updated" });

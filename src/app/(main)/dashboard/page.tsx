@@ -40,16 +40,16 @@ const tools = [
   {
     icon: Brain,
     name: "AI Study Material Generator",
-    description: "Create custom study materials with AI assistance",
+    description: "Create custom theory study materials with AI",
     live: true,
-    href: "/dashboard/generate",
+    href: "/dashboard/generate/theory",
   },
   {
     icon: FileText,
-    name: "Interactive Flashcards",
-    description: "Boost your memory with dynamic flashcards",
-    live: false,
-    href: "/tools/flashcards",
+    name: "Question Bank Generator",
+    description: "Generate question banks from your syllabus",
+    live: true,
+    href: "/dashboard/generate/qbank",
   },
   {
     icon: Users,

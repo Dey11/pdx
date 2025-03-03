@@ -12,7 +12,7 @@ const DownloadBtn = ({ materialId }: { materialId: string }) => {
     setIsDownloading(true);
     setDownloadError(null);
     try {
-      const response = await fetch(`/api/theory/download/${materialId}`);
+      const response = await fetch(`/api/generation/download/${materialId}`);
       if (!response.ok) throw new Error("Failed to get download URL");
       const { url } = await response.json();
       window.open(url, "_blank");

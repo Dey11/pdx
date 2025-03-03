@@ -1,5 +1,5 @@
 export type TopicsType = {
-  type: "theory" | "qna";
+  type: "theory" | "qbank";
   moduleName: string;
   instruction: string;
   complexity: "beginner" | "intermediate" | "advanced";
@@ -7,6 +7,7 @@ export type TopicsType = {
   exam: string;
   course: string;
   language: string;
+  weightage?: "auto" | "short" | "medium" | "long";
   submodules: {
     name: string;
     weightage: "easy" | "medium" | "hard";
