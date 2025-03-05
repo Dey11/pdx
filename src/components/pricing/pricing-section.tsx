@@ -74,7 +74,7 @@ const pricingPlans = {
       price: "$2",
       duration: "one-time" as const,
       features: [
-        { id: 1, name: "150 credits ~ 1 subject", isAvailable: true },
+        { id: 1, name: "150 credits ~ 1-2 subjects", isAvailable: true },
         { id: 2, name: "High quality materials", isAvailable: true },
         { id: 3, name: "Basic Customer support", isAvailable: true },
         { id: 4, name: "Material downloads", isAvailable: true },
@@ -85,7 +85,7 @@ const pricingPlans = {
       price: "$8",
       duration: "one-time" as const,
       features: [
-        { id: 1, name: "700 credits ~ 4-5 subjects", isAvailable: true },
+        { id: 1, name: "700 credits ~ 6-7 subjects", isAvailable: true },
         { id: 2, name: "High quality materials", isAvailable: true },
         { id: 3, name: "Basic customer support", isAvailable: true },
         { id: 4, name: "Material Downloads", isAvailable: true },
@@ -96,7 +96,7 @@ const pricingPlans = {
       price: "$15",
       duration: "one-time" as const,
       features: [
-        { id: 1, name: "1500 credits ~ 10-11 subjects", isAvailable: true },
+        { id: 1, name: "1500 credits ~ 16-17 subjects", isAvailable: true },
         { id: 2, name: "High quality materials", isAvailable: true },
         { id: 3, name: "Priority customer support", isAvailable: true },
         { id: 4, name: "Material Downloads", isAvailable: true },
