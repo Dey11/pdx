@@ -82,3 +82,7 @@
   background: #ffc947;
   border-radius: 8px;
 }
+
+::selection {
+  background-color: #a57e20;
+}
