@@ -69,6 +69,9 @@ const tools = [
 
 const page = async () => {
   const session = await auth();
+  const response = await fetch("https://quotes.usepdx.tech/quote");
+  const data = await response.json();
+  const { quote, quoteAuthor } = data;
 
   return (
     <div className="container mx-auto max-w-[1400px] p-5">
@@ -94,13 +97,10 @@ const page = async () => {
           </H2>
 
           <p className="mt-5 border-l-4 border-brand-yellow pl-4 text-sm italic text-brand-heading sm:text-base">
-            "When studying a new concept, try to explain it in your own words as
-            if you're teaching it to someone else. This technique, known as the
-            'Feynman Technique,' helps identify gaps in your understanding and
-            reinforces your learning."
+            "{quote}"
           </p>
           <p className="mt-2 flex justify-end text-xs text-muted-foreground sm:text-base">
-            - Richard Feynman
+            - {quoteAuthor}
           </p>
         </div>
       </section>
