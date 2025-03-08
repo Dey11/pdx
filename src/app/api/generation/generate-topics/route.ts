@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
       },
     });
-    throw new Error("This endpoint is disabled for now");
 
     const isPending = materialInDb.some(
       (material) =>
@@ -123,7 +122,7 @@ export async function POST(req: NextRequest) {
     console.error(err);
     return new NextResponse(
       JSON.stringify({
-        error: "Server down. We are working to fix it. ETA - 2h.",
+        error: "Something went wrong",
       }),
       {
         status: 500,
