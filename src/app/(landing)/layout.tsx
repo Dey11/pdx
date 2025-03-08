@@ -50,7 +50,7 @@ export const metadata = {
 const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <div>
-      <NewFeatureBanner />
+      {/* <NewFeatureBanner /> */}
       <Header />
 
       {children}
