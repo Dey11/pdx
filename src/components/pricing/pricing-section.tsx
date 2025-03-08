@@ -71,7 +71,7 @@ const pricingPlans = {
   "one-time": [
     {
       name: "Starter",
-      price: "$2",
+      price: "$1",
       duration: "one-time" as const,
       features: [
         { id: 1, name: "150 credits ~ 1-2 subjects", isAvailable: true },
@@ -82,7 +82,7 @@ const pricingPlans = {
     },
     {
       name: "Plus",
-      price: "$8",
+      price: "$5",
       duration: "one-time" as const,
       features: [
         { id: 1, name: "700 credits ~ 6-7 subjects", isAvailable: true },
@@ -93,7 +93,7 @@ const pricingPlans = {
     },
     {
       name: "Pro",
-      price: "$15",
+      price: "$10",
       duration: "one-time" as const,
       features: [
         { id: 1, name: "1500 credits ~ 16-17 subjects", isAvailable: true },

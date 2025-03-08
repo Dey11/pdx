@@ -84,14 +84,14 @@ export function PricingTab({
 
               <H2 className="text-left text-4xl font-bold">
                 {price}
-                <span className="text-sm font-normal text-muted-foreground">
+                {/* <span className="text-sm font-normal text-muted-foreground">
                   /
                   {duration === "one-time"
                     ? "once"
                     : duration === "monthly"
                       ? "mo"
                       : "yr"}{" "}
-                </span>
+                </span> */}
               </H2>
             </div>
 
