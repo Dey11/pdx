@@ -28,14 +28,14 @@ export const WaitlistButton = async () => {
   return (
     <Link href={"/waitlist"} className="peer mx-auto w-fit">
       <div
-        className={`relative w-fit overflow-hidden rounded-2xl p-1 shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:shadow-[0px_0px_40px_#00FF1E]`}
+        className={"relative w-fit overflow-hidden rounded-2xl p-1 shadow-[0px_0px_20px_#00FF1E] transition-all duration-200 ease-in-out hover:shadow-[0px_0px_40px_#00FF1E]"}
       >
         <div
-          className={cn(`absolute bottom-0 left-0 top-0 -z-10 bg-brand-green`)}
+          className={cn("absolute bottom-0 left-0 top-0 -z-10 bg-brand-green")}
           style={{ width: `${progressPercentage}%` }}
         />
         <div
-          className={cn(`absolute bottom-0 right-0 top-0 -z-10 bg-[#868686]`)}
+          className={cn("absolute bottom-0 right-0 top-0 -z-10 bg-[#868686]")}
           style={{ width: `${100 - progressPercentage}%` }}
         />
         <Button className="peer mx-auto flex items-center gap-x-2 rounded-xl bg-white px-3 py-1.5 text-brand-btn hover:bg-gray-100">

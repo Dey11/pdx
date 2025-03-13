@@ -56,7 +56,7 @@ const FeaturesSection = () => {
               <div className="flex" key={feature.id}>
                 <div
                   className={cn(
-                    `m-2.5 size-3 flex-shrink-0 rounded-full`,
+                    "m-2.5 size-3 flex-shrink-0 rounded-full",
                     feature.id === currFeat ? "bg-brand-blue" : "bg-[#424242]"
                   )}
                 />
@@ -76,7 +76,7 @@ const FeaturesSection = () => {
                   </H3>
                   <Para
                     className={cn(
-                      `max-w-xl text-center text-base font-extralight opacity-80 sm:text-left`,
+                      "max-w-xl text-center text-base font-extralight opacity-80 sm:text-left",
                       currFeat === feature.id ? "block" : "hidden"
                     )}
                   >

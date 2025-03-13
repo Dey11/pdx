@@ -62,7 +62,7 @@ export default function Home() {
           </H1>
         </div>
 
-        <Para className={`max-w-lg animate-fade-in text-center`}>
+        <Para className={"max-w-lg animate-fade-in text-center"}>
           <span className="italic">Drowning in prompts?</span> Upload your
           syllabus, and let
           <span className="text-brand-blue"> PDX</span> do the heavy

@@ -39,7 +39,7 @@ const Navbar = () => {
 
   return (
     <div
-      className={`z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10`}
+      className={"z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10"}
     >
       <Link href={"/"}>
         <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />

@@ -35,7 +35,7 @@ const RedeemSection = () => {
           setError(res.error);
           return;
         }
-        setSuccess(res.credits + " credits redeemed successfully!");
+        setSuccess(`${res.credits  } credits redeemed successfully!`);
       } catch (err) {
         setError("Invalid code");
         console.error(err);
