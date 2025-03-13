@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -9,65 +9,9 @@ import { cn } from "@/lib/utils";
 
 import { PricingTab } from "./pricing-tabs";
 
-type PricingType = "monthly" | "annually" | "one-time";
+type PricingType = "one-time";
 
 const pricingPlans = {
-  monthly: [
-    {
-      name: "Scholar",
-      price: "$8",
-      duration: "monthly" as const,
-      features: [
-        { id: 1, name: "300 credits ~ 2-3 subjects", isAvailable: true },
-        { id: 2, name: "High quality materials", isAvailable: true },
-        { id: 3, name: "Basic customer support", isAvailable: true },
-        { id: 4, name: "Material Downloads", isAvailable: true },
-        { id: 5, name: "Extra credits carried forward", isAvailable: false },
-        { id: 6, name: "Priority access to new features", isAvailable: false },
-      ],
-    },
-    {
-      name: "Prodigy",
-      price: "$15",
-      duration: "monthly" as const,
-      features: [
-        { id: 1, name: "700 credits ~ 4-5 subjects", isAvailable: true },
-        { id: 2, name: "High quality materials", isAvailable: true },
-        { id: 3, name: "Priority customer support", isAvailable: true },
-        { id: 4, name: "Material Downloads", isAvailable: true },
-        { id: 5, name: "Extra credits carried forward", isAvailable: true },
-        { id: 6, name: "Priority access to new features", isAvailable: true },
-      ],
-    },
-    {
-      name: "Student",
-      price: "$0",
-      duration: "monthly" as const,
-      features: [
-        { id: 1, name: "25 credits ~ for testing", isAvailable: true },
-        { id: 2, name: "High quality materials", isAvailable: true },
-        { id: 4, name: "Material Downloads", isAvailable: true },
-        { id: 3, name: "Customer support", isAvailable: false },
-        { id: 5, name: "Extra credits carried forward", isAvailable: false },
-        { id: 6, name: "Priority access to new features", isAvailable: false },
-      ],
-    },
-  ],
-  annually: [
-    {
-      name: "Visionary",
-      price: "$90",
-      duration: "annually" as const,
-      features: [
-        { id: 1, name: "Unlimited credits for the year*", isAvailable: true },
-        { id: 2, name: "High quality materials", isAvailable: true },
-        { id: 3, name: "Priority customer support", isAvailable: true },
-        { id: 4, name: "Material Downloads", isAvailable: true },
-        { id: 5, name: "Benefits in Community", isAvailable: true },
-        { id: 6, name: "Best gen models, always", isAvailable: true },
-      ],
-    },
-  ],
   "one-time": [
     {
       name: "Starter",
@@ -108,41 +52,6 @@ const pricingPlans = {
 const PricingSection = () => {
   const [selectedTab, setSelectedTab] = useState<PricingType>("one-time");
   const [error, setError] = useState<string | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<
-    "Student" | "Visionary" | "Prodigy" | "Scholar"
-  >("Student");
-  const session = useSession();
-
-  // const fetchPlan = async () => {
-  //   try {
-  //     const response = await fetch("/api/plan");
-  //     const data = await response.json();
-  //     switch (data.plan) {
-  //       case "visionary":
-  //         setCurrentPlan("Visionary");
-  //         break;
-  //       case "prodigy":
-  //         setCurrentPlan("Prodigy");
-  //         break;
-  //       case "scholar":
-  //         setCurrentPlan("Scholar");
-  //         break;
-  //       default:
-  //         setCurrentPlan("Student");
-  //         break;
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (session) {
-  //     fetchPlan();
-  //   } else {
-  //     setCurrentPlan("Student");
-  //   }
-  // }, [session]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">

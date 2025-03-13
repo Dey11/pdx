@@ -11,7 +11,6 @@ import { Muted } from "../typography/muted";
 import { Button } from "../ui/button";
 
 const BillingSection = () => {
-  const session = useSession();
   const [credits, setCredits] = useState(0);
 
   const fetchCreditDetails = async () => {

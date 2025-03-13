@@ -54,7 +54,7 @@ export async function enqueue(
   materialId: string
 ) {
   try {
-    var dbInsertableArr: MaterialTask[] = [];
+    const dbInsertableArr: MaterialTask[] = [];
     jobs.topics.forEach((element, index) => {
       const temp = {
         materialId,

@@ -4,7 +4,7 @@ import { Merriweather } from "next/font/google";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll, useTransform } from "framer-motion";
 import { MousePointerClick } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -22,8 +22,6 @@ const FeaturesSection = () => {
     offset: ["start start", "end end"],
   });
   const [currFeat, setCurrFeat] = useState<number>(1);
-
-  const mainOpacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
     <div ref={containerRef}>
@@ -140,104 +138,3 @@ const Features: FeatureType[] = [
     image: "/home/feature_4.png",
   },
 ];
-
-{
-  /* <motion.div
-          style={{ opacity: opacity1, scale: scale1 }}
-          className="sticky top-[14dvh] flex flex-wrap items-center gap-5 pt-[12dvh] sm:top-[30dvh]"
-        >
-          <div className="flex">
-            <div className="m-3 size-3 flex-shrink-0 rounded-full bg-brand-blue" />
-            <div className="flex flex-col gap-3">
-              <H3 className="">1. Start with your course syllabus</H3>
-
-              <p className={`max-w-xl ${merriweather.className}`}>
-                Paste or upload your syllabus—detailed syllabi ensure precise,
-                high-quality study materials. PDX efficiently structures content
-                for complete subject coverage.
-              </p>
-            </div>
-          </div>
-
-          <Image
-            src={"/home/feature_1.png"}
-            width={800}
-            height={800}
-            alt="features"
-          />
-        </motion.div>
-        <motion.div
-          style={{ opacity: opacity2, scale: scale2 }}
-          className="sticky top-[14dvh] flex flex-wrap items-center gap-5 pt-28 sm:top-[30dvh]"
-        >
-          <div className="flex">
-            <div className="m-3 size-3 flex-shrink-0 rounded-full bg-brand-blue" />
-
-            <div className="flex flex-col gap-3">
-              <H3 className="">2. Customize your study material</H3>
-
-              <p className={`max-w-xl ${merriweather.className}`}>
-                Customize your study material according to your needs. Beginner
-                or advanced, PDX has you covered. Preparing for a specific exam?
-                Enter the exam name and PDX will generate study materials
-                tailored to your exam needs.
-              </p>
-            </div>
-          </div>
-
-          <Image
-            src={"/home/feature_2.png"}
-            width={800}
-            height={800}
-            alt="features"
-          />
-        </motion.div>
-        <motion.div
-          style={{ opacity: opacity3, scale: scale3 }}
-          className="sticky top-[14dvh] flex flex-wrap items-center gap-5 pt-28 sm:top-[30dvh]"
-        >
-          <div className="flex">
-            <div className="m-3 size-3 flex-shrink-0 rounded-full bg-brand-blue" />
-
-            <div className="flex flex-col gap-3">
-              <H3 className="">3. Preview generated content</H3>
-
-              <p className={`max-w-xl ${merriweather.className}`}>
-                Add or remove content as needed. PDX generates content in a
-                structured format, making it easy to navigate and understand.
-                Preview the generated content and make changes as needed.
-              </p>
-            </div>
-          </div>
-          <Image
-            src={"/home/feature_3.png"}
-            width={800}
-            height={800}
-            alt="features"
-          />
-        </motion.div>
-        <motion.div
-          style={{ scale: scale4 }}
-          className="sticky top-[14dvh] flex flex-wrap items-center gap-5 pt-28 sm:top-[30dvh]"
-        >
-          <div className="flex">
-            <div className="m-3 size-3 flex-shrink-0 rounded-full bg-brand-blue" />
-
-            <div className="flex flex-col gap-3">
-              <H3 className="">4. Your PDF is ready in minutes</H3>
-
-              <p className={`max-w-xl ${merriweather.className}`}>
-                PDF is ready in minutes. Download your study material in PDF
-                format and start studying. PDX makes it easy to generate,
-                customize, and download study materials.
-              </p>
-            </div>
-          </div>
-          <Image
-            src={"/home/feature_4.png"}
-            width={800}
-            height={800}
-            alt="features"
-          />
-        </motion.div> */
-}

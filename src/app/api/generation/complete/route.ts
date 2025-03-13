@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       where: { id: updateMaterial.userId },
     });
 
-    const updateUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: updateMaterial.userId },
       data: {
         reservedCredits: 0,

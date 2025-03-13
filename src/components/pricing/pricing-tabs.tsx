@@ -28,7 +28,6 @@ type PricingTabProps = {
 export function PricingTab({
   name,
   price,
-  duration,
   features,
   isActive,
   currentPlan,

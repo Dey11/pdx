@@ -61,7 +61,7 @@ const handleOneTimePayment = async (email: string, payload: WebhookPayload) => {
   });
 
   if (findTransaction) {
-    const updateTransaction = await prisma.transaction.update({
+    await prisma.transaction.update({
       where: { id: findTransaction.id },
       data: { status: payload.data.status! },
     });
@@ -70,7 +70,7 @@ const handleOneTimePayment = async (email: string, payload: WebhookPayload) => {
       const product = products.filter(
         (prod) => prod.id === payload.data.product_cart![0].product_id
       )[0];
-      const updateUser = await prisma.user.update({
+      await prisma.user.update({
         where: { id: userInDb?.id },
         data: {
           credits: {
@@ -103,7 +103,7 @@ const handleOneTimePayment = async (email: string, payload: WebhookPayload) => {
     const product = products.filter(
       (prod) => prod.id === payload.data.product_cart![0].product_id
     )[0];
-    const updateUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userInDb?.id },
       data: {
         credits: {
