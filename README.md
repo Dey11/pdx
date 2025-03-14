@@ -25,34 +25,7 @@ PDX is a Next.js application with TypeScript, Prisma, and various integrations f
 - Node.js (v18+) and pnpm (for local development without Docker)
 - Git
 
-### Option 1: Docker Setup (Recommended)
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd pdx
-   ```
-
-2. Set up environment variables:
-
-   - Copy `example.env` to `.env`
-   - Fill in the required values (see Environment Variables section)
-   - The default `DATABASE_URL` in example.env is configured for Docker
-
-3. Uncomment the development code in `next.config.ts` file
-
-4. Start the application:
-
-   ```bash
-   docker-compose up
-   ```
-
-   This will start both the PostgreSQL database and web application.
-
-5. Access the application at http://localhost:3000
-
-### Option 2: Local Development Setup
+### Local Development Setup
 
 1. Clone the repository:
 
@@ -143,37 +116,6 @@ Copy `example.env` to `.env` and fill in the following values:
 - `NEXT_PUBLIC_POSTHOG_HOST`: PostHog instance URL
 - `NEXT_PUBLIC_POSTHOG_KEY`: PostHog API key
 
-## Docker Commands
-
-- Start the application:
-
-  ```bash
-  docker-compose up
-  ```
-
-- Rebuild the application:
-
-  ```bash
-  docker-compose up --build
-  ```
-
-- Run in detached mode:
-
-  ```bash
-  docker-compose up -d
-  ```
-
-- Stop the application:
-
-  ```bash
-  docker-compose down
-  ```
-
-- View logs:
-  ```bash
-  docker-compose logs -f
-  ```
-
 ## Project Structure
 
 - `src/`
@@ -243,21 +185,9 @@ Copy `example.env` to `.env` and fill in the following values:
 
 ## Troubleshooting
 
-- If you encounter database connection issues with Docker, ensure the database service is healthy:
-
-  ```bash
-  docker-compose ps
-  ```
-
 - For authentication problems, verify your OAuth credentials and callback URLs.
 
 - Redis connection issues may require checking firewall settings or environment variables.
-
-- If you encounter issues with Docker volumes or caching, try rebuilding:
-  ```bash
-  docker-compose down -v
-  docker-compose up --build
-  ```
 
 ## Contributing
 
