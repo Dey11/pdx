@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "pnpm dlx prisma generate --no-engine && next build",
+    "build": "pnpm dlx prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },

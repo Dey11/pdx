@@ -21,11 +21,38 @@ PDX is a Next.js application with TypeScript, Prisma, and various integrations f
 
 ### Prerequisites
 
-- Node.js (v18+)
-- pnpm
+- Docker and Docker Compose (for Docker setup)
+- Node.js (v18+) and pnpm (for local development without Docker)
 - Git
 
-### Installation
+### Option 1: Docker Setup (Recommended)
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd pdx
+   ```
+
+2. Set up environment variables:
+
+   - Copy `example.env` to `.env`
+   - Fill in the required values (see Environment Variables section)
+   - The default `DATABASE_URL` in example.env is configured for Docker
+
+3. Uncomment the development code in `next.config.ts` file
+
+4. Start the application:
+
+   ```bash
+   docker-compose up
+   ```
+
+   This will start both the PostgreSQL database and web application.
+
+5. Access the application at http://localhost:3000
+
+### Option 2: Local Development Setup
 
 1. Clone the repository:
 
@@ -43,7 +70,8 @@ PDX is a Next.js application with TypeScript, Prisma, and various integrations f
 3. Set up environment variables:
 
    - Copy `example.env` to `.env`
-   - Fill in the required values (see Environment Variables section)
+   - Fill in the required values
+   - Update `DATABASE_URL` if not using the Docker PostgreSQL
 
 4. Set up the database:
 
@@ -60,25 +88,26 @@ PDX is a Next.js application with TypeScript, Prisma, and various integrations f
 
 Copy `example.env` to `.env` and fill in the following values:
 
+### Required Variables
+
+- `AUTH_SECRET`: Required - Secret key for AuthJS encryption
+- `AUTH_GOOGLE_ID`: Required - Google OAuth client ID
+- `AUTH_GOOGLE_SECRET`: Required - Google OAuth client secret
+- `GOOGLE_API_KEY`: Required - API key for Google Gemini
+
+### Database
+
+- `DATABASE_URL`: Connection URL to PostgreSQL database
+  - Default for Docker: `postgres://user:password@db/mydb`
+  - For external database, update this URL
+
 ### Authentication (AuthJS)
 
-- `AUTH_SECRET`: Secret key for AuthJS encryption
-- `AUTH_GOOGLE_ID`: Google OAuth client ID
-- `AUTH_GOOGLE_SECRET`: Google OAuth client secret
 - `AUTH_TRUST_HOST`: Set to `true` for proper callback URL construction
 
 ### Email
 
 - `AUTH_RESEND_KEY`: API key for Resend email service
-
-### Database
-
-- `DIRECT_DATABASE_URL`: Direct connection URL to NeonDB PostgreSQL database
-- `DATABASE_URL`: Prisma Accelerate connection URL for pooling
-
-### AI Integration
-
-- `GOOGLE_API_KEY`: API key for Google Gemini
 
 ### Redis Queue
 
@@ -113,6 +142,37 @@ Copy `example.env` to `.env` and fill in the following values:
 
 - `NEXT_PUBLIC_POSTHOG_HOST`: PostHog instance URL
 - `NEXT_PUBLIC_POSTHOG_KEY`: PostHog API key
+
+## Docker Commands
+
+- Start the application:
+
+  ```bash
+  docker-compose up
+  ```
+
+- Rebuild the application:
+
+  ```bash
+  docker-compose up --build
+  ```
+
+- Run in detached mode:
+
+  ```bash
+  docker-compose up -d
+  ```
+
+- Stop the application:
+
+  ```bash
+  docker-compose down
+  ```
+
+- View logs:
+  ```bash
+  docker-compose logs -f
+  ```
 
 ## Project Structure
 
@@ -181,23 +241,26 @@ Copy `example.env` to `.env` and fill in the following values:
   pnpm lint
   ```
 
-## Deployment
-
-The application can be deployed on platforms like Vercel, which integrate well with Next.js. Ensure all environment variables are properly set in the deployment environment.
-
 ## Troubleshooting
 
-- If you encounter database connection issues, check that your `DATABASE_URL` and `DIRECT_DATABASE_URL` are correctly configured.
+- If you encounter database connection issues with Docker, ensure the database service is healthy:
+
+  ```bash
+  docker-compose ps
+  ```
+
 - For authentication problems, verify your OAuth credentials and callback URLs.
+
 - Redis connection issues may require checking firewall settings or environment variables.
+
+- If you encounter issues with Docker volumes or caching, try rebuilding:
+  ```bash
+  docker-compose down -v
+  docker-compose up --build
+  ```
 
 ## Contributing
 
 1. Follow the project's code style using ESLint and Prettier
 2. Write meaningful commit messages
-3. Update documentation for any new features
-4. Test thoroughly before submitting PRs
-
-## License
-
-[Add license information here]
+3. Test thoroughly before submitting PRs
