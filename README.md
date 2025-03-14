@@ -2,7 +2,7 @@
 
 ## Overview
 
-PDX is a Next.js application with TypeScript, Prisma, and various integrations for authentication, payments, storage, and more. This README provides detailed setup instructions for developers and collaborators
+PDX is a Next.js application with TypeScript, Prisma, and various integrations for authentication, payments, storage, and more. This README provides detailed setup instructions for developers and collaborators.
 
 ## Tech Stack
 
