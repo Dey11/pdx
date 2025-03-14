@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "packageManager": "pnpm@10.6.3",
   "dependencies": {
     "@ai-sdk/google": "^1.1.17",
     "@auth/prisma-adapter": "^2.8.0",
