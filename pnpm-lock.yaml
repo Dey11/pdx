@@ -26,9 +26,6 @@ importers:
       '@prisma/client':
         specifier: 6.4.1
         version: 6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)
-      '@prisma/extension-accelerate':
-        specifier: ^1.2.2
-        version: 1.2.2(@prisma/client@6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2))
       '@radix-ui/react-accordion':
         specifier: ^1.2.3
         version: 1.2.3(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -921,12 +918,6 @@ packages:
 
   '@prisma/engines@6.4.1':
     resolution: {integrity: sha512-KldENzMHtKYwsOSLThghOIdXOBEsfDuGSrxAZjMnimBiDKd3AE4JQ+Kv+gBD/x77WoV9xIPf25GXMWffXZ17BA==}
-
-  '@prisma/extension-accelerate@1.2.2':
-    resolution: {integrity: sha512-LOlfkG6If+o8PFRzLzp26ackP/d+j2HrkTJaxuV/Wd+sdAHz/AkmzEDGbo2UpHFpxEM9hWMBe3ScSwUKYUDOXg==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      '@prisma/client': '>=4.16.1'
 
   '@prisma/fetch-engine@6.4.1':
     resolution: {integrity: sha512-uZ5hVeTmDspx7KcaRCNoXmcReOD+84nwlO2oFvQPRQh9xiFYnnUKDz7l9bLxp8t4+25CsaNlgrgilXKSQwrIGQ==}
@@ -4470,10 +4461,6 @@ snapshots:
       '@prisma/engines-version': 6.4.0-29.a9055b89e58b4b5bfb59600785423b1db3d0e75d
       '@prisma/fetch-engine': 6.4.1
       '@prisma/get-platform': 6.4.1
-
-  '@prisma/extension-accelerate@1.2.2(@prisma/client@6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2))':
-    dependencies:
-      '@prisma/client': 6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)
 
   '@prisma/fetch-engine@6.4.1':
     dependencies:
