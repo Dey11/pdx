@@ -64,29 +64,8 @@ model User {
   Transaction      Transaction[]
   UserActivity     UserActivity[]
   CouponRedemption CouponRedemption[]
-  Subscription     Subscription[]
 
   @@map("users")
-}
-
-model Subscription {
-  id      String           @id @default(cuid())
-  userId  String           @map("user_id")
-  plan    SubscriptionType @default(student) @map("subscription_type")
-  credits Int              @default(0) @map("credits")
-  price   Int              @default(0) @map("price")
-  status  String?          @map("status")
-
-  startedAt DateTime  @default(now()) @map("started_at")
-  expiredAt DateTime? @map("expired_at")
-
-  renewal Boolean @default(false) @map("renewal")
-  refId   String? @unique @map("ref_id")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Material {
@@ -215,13 +194,6 @@ enum Complexity {
 enum PaymentType {
   credits
   subscription
-}
-
-enum SubscriptionType {
-  scholar
-  prodigy
-  student
-  visionary
 }
 
 enum Status {
