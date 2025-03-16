@@ -27,7 +27,7 @@ const Footer = () => {
       </ul>
       <ul className="z-40 flex w-full flex-wrap items-center justify-end gap-4 px-4 text-xs">
         <span>Other links:</span>
-        <Link href={`${INSTAGRAM}`}>
+        <Link href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
           <li>
             <Image
               src={"/footer/insta.svg"}
@@ -37,7 +37,7 @@ const Footer = () => {
             />
           </li>
         </Link>
-        <Link href={`${TWITTER}`}>
+        <Link href={TWITTER} target="_blank" rel="noopener noreferrer">
           <li>
             <Image
               src={"/footer/twitter.svg"}
