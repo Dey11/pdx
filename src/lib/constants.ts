@@ -3,6 +3,7 @@ export const INSTAGRAM = "https://www.instagram.com/use.pdx/";
 export const TWITTER = "https://x.com/usepdx_";
 export const TOTAL_GOAL = 50;
 export const YOUTUBE_LINK = "https://youtu.be/4v5jtOGYQuU";
+export const DISCORD_LINK = "https://discord.gg/8SxEwduF";
 
 export const testProducts = [
   {
