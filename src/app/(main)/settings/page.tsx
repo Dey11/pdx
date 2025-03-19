@@ -7,8 +7,9 @@ import RedeemSection from "@/components/settings/redeem-section";
 import SettingsTabs from "@/components/settings/settings-tab";
 import { TransactionList } from "@/components/settings/transactions";
 import { H2 } from "@/components/typography/h2";
+import ProfilePage from "@/components/settings/profile";
 
-export type TabType = "Billing" | "Redeem" | "Transactions";
+export type TabType = "Billing" | "Redeem" | "Transactions" | "Profile";
 
 const page = () => {
   const [activeTab, setActiveTab] = useState<TabType>("Billing");
@@ -22,6 +23,7 @@ const page = () => {
       {activeTab === "Billing" && <BillingSection />}
       {activeTab === "Redeem" && <RedeemSection />}
       {activeTab === "Transactions" && <TransactionList />}
+      {activeTab === "Profile" && <ProfilePage />}
     </div>
   );
 };
