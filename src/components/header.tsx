@@ -28,13 +28,15 @@ const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 const Header = () => {
   return (
     <nav className="z-10 mt-4 flex items-center justify-between px-4 sm:px-10">
-      <Image
-        src="/logo.png"
-        alt="PDX Study Material Generator Logo"
-        width={50}
-        height={50}
-        className="mb-1 hidden md:block"
-      />
+      <Link href={"/"}>
+        <Image
+          src="/logo.png"
+          alt="PDX Study Material Generator Logo"
+          width={50}
+          height={50}
+          className="mb-1 hidden md:block"
+        />
+      </Link>
       <div className="mx-auto flex items-center justify-center gap-4 sm:gap-16">
         {headerContents.map((item) => (
           <Link

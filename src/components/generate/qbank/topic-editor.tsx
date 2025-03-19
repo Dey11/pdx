@@ -432,7 +432,7 @@ export function TopicEditor({
           variant={"glowy"}
           className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
         >
-          Generate Study Material
+          Generate Question Bank
         </Button>
       ) : (
         <Button
@@ -442,7 +442,7 @@ export function TopicEditor({
           disabled
         >
           <Loader2 className="animate-spin" />
-          Generating Study Material...
+          Generating Question Bank...
         </Button>
       )}
 
