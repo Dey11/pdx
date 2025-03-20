@@ -103,11 +103,36 @@ export async function enqueue(
   }
 }
 
+type ArrOfKeysType = {
+  Key: string;
+  Bucket: string;
+};
+
 export async function mergePdf(jobs: { materialId: string; type: string }) {
   try {
+    const materials = await prisma.materialTask.findMany({
+      where: {
+        materialId: jobs.materialId,
+        status: "completed",
+      },
+      orderBy: {
+        currIndex: "asc",
+      },
+    });
+
+    let arrOfKeys: ArrOfKeysType[] = [];
+
+    materials.forEach((element) => {
+      arrOfKeys.push({
+        Key: element.partialResultUrl!,
+        Bucket: process.env.BUCKET_NAME!,
+      });
+    });
+
     await mergePdfQueue.add("mergePdf", {
       materialId: jobs.materialId,
       type: jobs.type,
+      arrOfKeys,
     });
     return true;
   } catch (err) {
