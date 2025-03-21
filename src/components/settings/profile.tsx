@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { H3 } from '../typography/h3'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
+import Image from 'next/image';
 
 interface FormData {
   firstName: string;
@@ -32,14 +33,54 @@ const ProfilePage = () => {
   const handleSubmit = () => {
     console.log("Submitting form data for  : ",formData)
   }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB");
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert("Only image files are allowed");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // try {
+    //   const response = await fetch('/api/uploads/pfp', {
+    //     method: 'POST',
+    //     body: formData,
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error('Upload failed');
+    //   }
+
+    // } catch (error) {
+    //   console.error('Error uploading avatar:', error);
+    //   alert('Failed to upload avatar');
+    // }
+  };
+
   return (
     <div className="my-10 w-full rounded-lg bg-brand-bg flex flex-col sm:flex-row h-auto">
       <div className='flex justify-center w-full sm:w-[25%] py-5 sm:py-16 border-b sm:border-b-0 sm:border-r border-dotted'>
         <div className='flex flex-col items-center gap-3'>
-            <div className='w-24 h-24 bg-white rounded-full'></div>
-            <button className='bg-black px-3 py-1 rounded-md hover:bg-black/80 transition-colors'>
+            <Image className='w-24 h-24 bg-gray-700 rounded-full' src={""} alt='Profile Image'/> 
+            <label className='bg-black px-3 py-1 rounded-md hover:bg-black/80 transition-colors cursor-pointer'>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
               <H3 className='text-sm sm:text-xl'>Change avatar</H3>
-            </button>
+            </label>
         </div>
       </div>
       <div className='flex flex-col gap-8 px-4 sm:px-12 w-full py-10'>
