@@ -4,6 +4,13 @@
 
 PDX is a Next.js application with TypeScript, Prisma, and various integrations for authentication, payments, storage, and more. This README provides detailed setup instructions for developers and collaborators.
 
+## Features
+
+- Generate 100+ paged study material pdfs (theory and question banks)
+- Payment integration with Dodo payments
+- Coupon code based discounts
+- Generate concurrent study materials with message queues (from bullmq)
+
 ## Tech Stack
 
 - **Framework**: Next.js 15 with App Router
@@ -24,6 +31,7 @@ PDX is a Next.js application with TypeScript, Prisma, and various integrations f
 - Docker and Docker Compose (for Docker setup)
 - Node.js (v18+) and pnpm (for local development without Docker)
 - Git
+- [Worker repository](https://github.com/Dey11/worker-ai)
 
 ### Local Development Setup
 
