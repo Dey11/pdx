@@ -1,5 +1,6 @@
-import { GenerativeModel, GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import { NextRequest, NextResponse } from "next/server";
+import { generateText } from 'ai';
+import { NextRequest, NextResponse } from "next/server.js";
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 const geminiApiKey = process.env.GOOGLE_API_KEY || "";
 
@@ -7,47 +8,47 @@ if (!geminiApiKey) {
   throw new Error("Missing GOOGLE_API_KEY environment variable");
 }
 
-const generationConfig = {
-  temperature: 0.4,
-  topP: 1,
-  topK: 32,
-  maxOutputTokens: 4096,
-};
+const google = createGoogleGenerativeAI({
+  apiKey: geminiApiKey
+});
 
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-];
+const readonlySafetySettings = [
+  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+] as const;
+
+const safetySettings = [...readonlySafetySettings];
+
 
 async function extractSyllabusTopics(base64Image: string): Promise<string[]> {
   try {
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model: GenerativeModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
+    const model = google('gemini-1.5-flash', {safetySettings: safetySettings});
 
-    const prompt = "Extract the syllabus topics from this image. Return a list of topics. If there is no syllabus topics, return empty list at all costs.";
+    const result = await generateText({
+      model: model,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: 'Extract the syllabus topics from this image. Return a list of topics. Do not say anything else. If there is no syllabus topics, return empty list at all costs.',
+            },
+            {
+              type: 'image',
+              image: base64Image,
+            },
+          ],
+        },
+      ],
+    });
 
-    const result = await model.generateContent([prompt, { inlineData: { mimeType: "image/png", data: base64Image } }]);
-    const response = result.response;
-    const text = response.text();
+    const topics: string[] = result.text.split("\n")
+    .map((topic) => topic.replace(/^\d+\.\s*/, "").trim())
+    .filter((topic) => topic !== "");
 
-    // Split the text into topics, removing any extra whitespace or numbering
-    const topics = text.split("\\n")
-      .map(topic => topic.replace(/^\\d+\\.\\s*/, "").trim())
-      .filter(topic => topic !== "");
 
     return topics;
   } catch (error: any) {
