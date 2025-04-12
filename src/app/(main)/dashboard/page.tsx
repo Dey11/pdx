@@ -69,8 +69,13 @@ const tools = [
 
 const page = async () => {
   const session = await auth();
-  const response = await fetch("https://quotes.usepdx.tech/quote");
-  const data = await response.json();
+  // const response = await fetch("https://quotes.usepdx.tech/quote");
+  // const data = await response.json();
+  const data = {
+    quote:
+      "The only limit to our realization of tomorrow is our doubts of today.",
+    quoteAuthor: "Franklin D. Roosevelt",
+  };
   const { quote, quoteAuthor } = data;
 
   return (
