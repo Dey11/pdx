@@ -9,7 +9,7 @@ const theoryQueue = new Queue("theoryQueue", {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,
     password: process.env.REDIS_PASSWORD,
-    tls: {},
+    // tls: {},
   },
   defaultJobOptions: {
     attempts: 1,
@@ -22,7 +22,7 @@ const qbankQueue = new Queue("qbankQueue", {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,
     password: process.env.REDIS_PASSWORD,
-    tls: {},
+    // tls: {},
   },
   defaultJobOptions: {
     attempts: 1,
@@ -35,7 +35,7 @@ const mergePdfQueue = new Queue("mergePdfQueue", {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT as unknown as number,
     password: process.env.REDIS_PASSWORD,
-    tls: {},
+    // tls: {},
   },
   defaultJobOptions: {
     attempts: 2,

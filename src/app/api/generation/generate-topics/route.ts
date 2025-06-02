@@ -8,7 +8,7 @@ import { MAX_TOKENS } from "@/lib/ai/model";
 import { systemPrompt } from "@/lib/ai/prompts/system";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { ratelimit } from "@/lib/rate-limit";
+// import { ratelimit } from "@/lib/rate-limit";
 import { generateTopicsSchema } from "@/lib/zod";
 
 export async function POST(req: NextRequest) {
@@ -19,11 +19,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { success } = await ratelimit.limit(session.user.id!);
+    // const { success } = await ratelimit.limit(session.user.id!);
 
-    if (!success) {
-      return NextResponse.json({ error: "Rate Limited", status: 429 });
-    }
+    // if (!success) {
+    //   return NextResponse.json({ error: "Rate Limited", status: 429 });
+    // }
 
     const materialInDb = await prisma.material.findMany({
       where: {

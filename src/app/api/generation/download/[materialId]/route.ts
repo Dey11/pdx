@@ -6,7 +6,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { S3 } from "@/lib/object-storage/r2";
-import { ratelimit } from "@/lib/rate-limit";
+
+// import { ratelimit } from "@/lib/rate-limit";
 
 export async function GET(
   request: Request,
@@ -18,11 +19,11 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { success } = await ratelimit.limit(session.user.id!);
+    // const { success } = await ratelimit.limit(session.user.id!);
 
-    if (!success) {
-      return NextResponse.json({ error: "Rate Limited", status: 429 });
-    }
+    // if (!success) {
+    //   return NextResponse.json({ error: "Rate Limited", status: 429 });
+    // }
 
     const { materialId } = await params;
 
