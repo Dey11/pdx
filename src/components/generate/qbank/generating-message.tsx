@@ -61,7 +61,9 @@ export function GeneratingMessage({
       window.open(url, "_blank");
     } catch (error) {
       console.error("Download failed:", error);
-      setDownloadError("Failed to download material");
+      setDownloadError(
+        "Failed to download material. Please retry in a few seconds."
+      );
     } finally {
       setIsDownloading(false);
     }
