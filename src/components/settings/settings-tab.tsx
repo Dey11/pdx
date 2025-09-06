@@ -1,4 +1,4 @@
-import { ArrowLeftRight, CreditCard, Gift } from "lucide-react";
+import { ArrowLeftRight, CreditCard, Gift, User } from "lucide-react";
 
 import { TabType } from "@/app/(main)/settings/page";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,11 @@ const tabs = [
     name: "Transactions",
     icon: ArrowLeftRight,
   },
+  {
+    id: 4,
+    name : "Profile",
+    icon : User,
+  }
 ];
 
 export default SettingsTabs;
