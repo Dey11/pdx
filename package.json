@@ -34,7 +34,7 @@
     "dodopayments": "^0.20.1",
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.469.0",
-    "next": "15.2.0",
+    "next": "15.2.8",
     "next-auth": "5.0.0-beta.25",
     "nextjs-toploader": "^3.8.16",
     "posthog-js": "^1.257.0",
