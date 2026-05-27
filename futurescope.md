@@ -420,6 +420,7 @@ Revamp requirement:
 - always use shadcn components before creating custom primitives
 - customize shadcn tokens, radii, colors, shadows, and motion so the app does not look like untouched default shadcn
 - keep all feature UI built from shared primitives and compositions
+- treat shadcn as the primary UI implementation layer for the authenticated app, generation workflows, workspace panels, quality inspectors, settings, tables, dialogs, forms, and command/search surfaces
 
 Component policy:
 
@@ -429,6 +430,31 @@ Component policy:
 - do not nest cards inside cards
 - use Tailwind for styling
 - use lucide icons consistently unless a shadcn component already supplies an icon pattern
+
+### Client Data And Performance
+
+Use TanStack Query for client-side server state in the authenticated application.
+
+TanStack Query should own:
+
+- upload and extraction status polling
+- generation progress polling
+- material/workspace detail reads
+- history and dashboard list reads
+- quality finding refreshes
+- quiz attempt state that round-trips to the server
+- settings and account mutations where optimistic updates are safe
+
+Performance rules:
+
+- keep route handlers and server components responsible for secure initial reads where appropriate
+- use TanStack Query for cache reuse, background refresh, mutation retries, invalidation, and optimistic UI only when the rollback path is clear
+- avoid duplicated `useEffect` fetch logic in feature components
+- keep query keys centralized and typed
+- keep payloads small and paginated for history, PYQ, source chunks, and activity lists
+- avoid refetching large generated content when a section-level query or mutation is enough
+- use skeletons, progressive loading, and streaming-friendly UI where it improves perceived speed
+- measure slow surfaces before adding client complexity
 
 ### Typography
 
@@ -564,6 +590,8 @@ Check desktop and mobile.
 
 The revamp backend must be built as a reliable pipeline, not a pile of request handlers.
 
+The goal is a highly scalable and performant application from v1. The first implementation should not rely on temporary shortcuts that will collapse when uploads, OCR, generation, PYQ ingestion, or practice activity volume grows.
+
 ### Core Architecture
 
 Recommended services/modules:
@@ -581,6 +609,20 @@ Recommended services/modules:
 - observability/logging
 
 Long-running work must stay out of the request lifecycle. The web app should enqueue jobs and display progress.
+
+### Performance And Scalability Rules
+
+- design every heavy workflow as async jobs, not synchronous API calls
+- keep APIs cursor-paginated for lists, source chunks, PYQs, generated sections, activity events, and transactions
+- index all high-cardinality lookup paths, especially user/material, workspace/source, topic/PYQ, status/stage, and created-at queries
+- avoid `SELECT *` style overfetching in data access helpers and route handlers
+- keep large source text, extracted chunks, and generated content out of queue payloads
+- cache stable exam metadata, template definitions, and source-derived analytics
+- support incremental loading for large workspaces
+- support section-level regeneration without invalidating or refetching the entire material
+- keep provider/model usage, token cost, job duration, and queue latency observable from day one
+- make background jobs horizontally scalable by queue type and concurrency setting
+- design file ingestion, OCR, generation, quality checks, and exports so each can scale independently
 
 ### Pipeline Design
 
@@ -689,9 +731,11 @@ Admin/debug views should show:
 - upgrade shadcn/ui
 - install all shadcn components
 - standardize component primitives
+- add TanStack Query and standardize typed query keys, mutations, invalidation, polling, and optimistic-update rules
 - define model/provider registry
 - define source/provenance schema
 - define shared contracts for generation and quality checks
+- define performance budgets, pagination conventions, caching boundaries, and queue observability requirements
 
 ### Phase 2: Uploaded Content Mode
 
@@ -792,6 +836,8 @@ UX:
 - Make quality and uncertainty visible.
 - Keep the UI calm and action-first.
 - Use shadcn primitives and Tailwind consistently.
+- Use TanStack Query for client server-state performance, cache correctness, polling, and mutation orchestration.
 - Keep backend jobs durable, observable, and idempotent.
+- Build for scale from v1: async pipelines, pagination, indexed queries, small payloads, independent worker queues, and measurable performance.
 - Make regeneration small, local, and reversible.
 - Optimize for exam outcomes, not AI novelty.
