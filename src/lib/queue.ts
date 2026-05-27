@@ -4,44 +4,40 @@ import { z } from "zod";
 import { prisma } from "./db";
 import { topicsSchema } from "./zod";
 
-const theoryQueue = new Queue("theoryQueue", {
-  connection: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT as unknown as number,
-    password: process.env.REDIS_PASSWORD,
-    // tls: {},
-  },
-  defaultJobOptions: {
-    attempts: 1,
-    removeOnComplete: true,
-  },
-});
+const redisConnection = () => {
+  return {
+    host: process.env.REDIS_HOST || "localhost",
+    password: process.env.REDIS_PASSWORD || undefined,
+    port: Number.parseInt(process.env.REDIS_PORT || "6379", 10),
+  };
+};
 
-const qbankQueue = new Queue("qbankQueue", {
-  connection: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT as unknown as number,
-    password: process.env.REDIS_PASSWORD,
-    // tls: {},
-  },
-  defaultJobOptions: {
-    attempts: 1,
-    removeOnComplete: true,
-  },
-});
+const getTheoryQueue = () =>
+  new Queue("theoryQueue", {
+    connection: redisConnection(),
+    defaultJobOptions: {
+      attempts: 1,
+      removeOnComplete: true,
+    },
+  });
 
-const mergePdfQueue = new Queue("mergePdfQueue", {
-  connection: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT as unknown as number,
-    password: process.env.REDIS_PASSWORD,
-    // tls: {},
-  },
-  defaultJobOptions: {
-    attempts: 2,
-    removeOnComplete: true,
-  },
-});
+const getQbankQueue = () =>
+  new Queue("qbankQueue", {
+    connection: redisConnection(),
+    defaultJobOptions: {
+      attempts: 1,
+      removeOnComplete: true,
+    },
+  });
+
+const getMergePdfQueue = () =>
+  new Queue("mergePdfQueue", {
+    connection: redisConnection(),
+    defaultJobOptions: {
+      attempts: 2,
+      removeOnComplete: true,
+    },
+  });
 
 type MaterialTask = {
   materialId: string;
@@ -72,7 +68,7 @@ export async function enqueue(
 
     if (jobs.type === "theory") {
       res.forEach(async (element) => {
-        await theoryQueue.add("theory", {
+        await getTheoryQueue().add("theory", {
           instruction: jobs.instruction,
           complexity: jobs.complexity,
           language: jobs.language,
@@ -84,7 +80,7 @@ export async function enqueue(
         });
       });
     } else if (jobs.type === "qbank") {
-      await qbankQueue.add("qbank", {
+      await getQbankQueue().add("qbank", {
         instruction: jobs.instruction,
         complexity: jobs.complexity,
         language: jobs.language,
@@ -120,16 +116,14 @@ export async function mergePdf(jobs: { materialId: string; type: string }) {
       },
     });
 
-    let arrOfKeys: ArrOfKeysType[] = [];
-
-    materials.forEach((element) => {
-      arrOfKeys.push({
+    const arrOfKeys: ArrOfKeysType[] = materials.map((element) => {
+      return {
         Key: element.partialResultUrl!,
         Bucket: process.env.BUCKET_NAME!,
-      });
+      };
     });
 
-    await mergePdfQueue.add("mergePdf", {
+    await getMergePdfQueue().add("mergePdf", {
       materialId: jobs.materialId,
       type: jobs.type,
       arrOfKeys,

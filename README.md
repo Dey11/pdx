@@ -1,8 +1,8 @@
 # PDX Web App
 
-Last audited: 2026-05-27
+Last audited: 2026-05-28
 
-This folder is the current Next.js app for PDX. It is one of two nested repositories in the project root. The worker currently lives in `../worker`, but the planned architecture is to move both apps into one Bun workspace with a root Docker Compose setup.
+This folder is the current Next.js app for PDX. It now also contains a colocated worker under `worker/`; the old standalone `../worker` folder remains as migration source history until full consolidation is approved.
 
 Read the root `Docs/` folder before changing application behavior.
 
@@ -10,7 +10,7 @@ Read the root `Docs/` folder before changing application behavior.
 
 - public marketing pages
 - authenticated dashboard
-- Auth.js/NextAuth configuration
+- Better Auth configuration
 - Prisma schema and database access
 - generation route handlers
 - BullMQ queue producers
@@ -37,7 +37,7 @@ Pages:
 
 APIs:
 
-- `/api/auth/[...nextauth]`
+- `/api/auth/[...all]`
 - `/api/credits`
 - `/api/payment-link/[productId]`
 - `/api/transactions`
@@ -53,24 +53,31 @@ APIs:
 
 ## Current Stack
 
-- Next.js 15
-- React 19
-- TypeScript
-- Tailwind CSS
-- Prisma
-- Auth.js/NextAuth beta
-- BullMQ
-- Cloudflare R2 via S3 SDK
+- Next.js 16.2
+- React 19.2
+- TypeScript 6
+- Tailwind CSS 4
+- Prisma 7 with `@prisma/adapter-pg`
+- Better Auth 1.6
+- BullMQ 5.77
+- Cloudflare R2 via AWS S3 SDK
 - Google Gemini through Vercel AI SDK
 - Dodo Payments webhook verification
 - PostHog, Umami, Vercel Analytics, Vercel Speed Insights
 
 ## Environment
 
-Copy `example.env` to `.env` and fill in values.
+Use the env template that matches how you are running the app:
+
+- `.env.local.example`: local web and worker without Docker
+- `.env.production.example`: production web and worker without Docker
+- `.env.production.docker.example`: combined Docker/Coolify env list for `docker-compose.yml`
+- `example.env`: legacy compatibility template kept for now
 
 Required for core local web boot:
 
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
 - `AUTH_SECRET`
 - `AUTH_GOOGLE_ID`
 - `AUTH_GOOGLE_SECRET`
@@ -88,6 +95,12 @@ Required for core local web boot:
 Required for email login:
 
 - `AUTH_RESEND_KEY`
+- `AUTH_EMAIL_FROM`
+
+Required for GitHub login:
+
+- `AUTH_GITHUB_ID`
+- `AUTH_GITHUB_SECRET`
 
 Required for billing:
 
@@ -104,27 +117,48 @@ Optional/current analytics:
 
 Project policy is to use Bun for new work.
 
-Current package scripts still contain pnpm assumptions, especially the build script. This is documented as technical debt and should be fixed during the Docker/Compose pass.
+This package uses Bun.
+
+`prisma.config.ts` owns the Prisma datasource URL for Prisma 7. `bunx prisma generate` and `bun run build` can run without a live database; do not run `bunx prisma db push`, migrations, or deploy commands until the target `DATABASE_URL` is confirmed.
+
+ESLint is pinned to `9.39.4` because ESLint 10 currently crashes through the React plugin used by `eslint-config-next@16.2.6`.
 
 Typical local commands after dependencies are installed:
 
 ```bash
 bun run dev
 bunx prisma generate
-bunx prisma db push
 ```
+
+Only run `bunx prisma db push` or migration commands after confirming the target `DATABASE_URL`.
 
 Current script caveat:
 
 ```json
-"build": "pnpm dlx prisma generate && next build"
+"build": "bunx prisma generate && next build"
 ```
 
-This should become Bun-compatible before deployment work is considered complete.
+Worker scripts:
+
+```bash
+bun run worker:dev
+bun run worker:build
+bun run worker:start
+```
+
+Docker/Coolify scripts:
+
+```bash
+bun run docker:config
+bun run docker:up
+bun run docker:down
+```
+
+For Coolify, use `docker-compose.yml` from this `web/` folder and paste the contents of `.env.production.docker.example` into Coolify after replacing placeholders. The Compose stack starts `postgres`, `redis`, `web`, and `worker`. It does not run Prisma migrations automatically.
 
 ## Worker Dependency
 
-The generation pipeline is not complete with this app alone. The worker must also run and connect to the same Redis instance.
+The generation pipeline is not complete with the Next.js server alone. The colocated worker must also run and connect to the same Redis instance.
 
 Current queue names:
 
@@ -141,12 +175,9 @@ The worker posts callbacks to:
 
 ## Known Drift
 
-- login UI shows GitHub sign-in, but GitHub provider is not configured
 - rate limiting code is commented out
 - worker callback routes are unauthenticated
 - web and worker do not share schemas
-- bucket config is inconsistent with the worker
-- there is no root Docker Compose yet
-- this app still has a `pnpm-lock.yaml`
+- schema migration is still a manual deployment step
 
 See `../Docs/` for the full architecture and modernization plan.

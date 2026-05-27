@@ -1,0 +1,407 @@
+import MarkdownIt from "markdown-it";
+import puppeteer from "puppeteer";
+
+type PdfRenderOptions = {
+  subtitle?: string;
+  title?: string;
+};
+
+const escapeHtml = (value: string) => {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+const getTitleFromMarkdown = (markdown: string) => {
+  const firstHeading = markdown
+    .split("\n")
+    .map((line) => line.trim())
+    .find((line) => line.startsWith("# "));
+
+  if (firstHeading) {
+    return firstHeading.replace(/^#\s+/, "").trim();
+  }
+
+  return (
+    markdown
+      .split("\n")
+      .map((line) => line.trim())
+      .find(Boolean)
+      ?.replace(/^#+\s+/, "")
+      .slice(0, 90) || "PDX Study Material"
+  );
+};
+
+const createMarkdownRenderer = () => {
+  const md = new MarkdownIt({
+    breaks: true,
+    html: true,
+    linkify: true,
+    typographer: true,
+  });
+
+  const defaultFence = md.renderer.rules.fence?.bind(md.renderer.rules);
+  let chartIndex = 0;
+
+  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+    const token = tokens[idx];
+    const language = token.info.trim().split(/\s+/)[0]?.toLowerCase();
+    const content = token.content.trim();
+
+    if (language === "mermaid") {
+      return `<figure class="diagram"><div class="mermaid">${escapeHtml(content)}</div></figure>`;
+    }
+
+    if (language === "chart") {
+      const chartId = `chart-${chartIndex}`;
+      chartIndex += 1;
+
+      return [
+        "<figure class=\"chart-block\">",
+        `<canvas id="${chartId}" aria-label="Generated chart"></canvas>`,
+        `<script type="application/json" data-chart-for="${chartId}">${escapeHtml(content)}</script>`,
+        "</figure>",
+      ].join("");
+    }
+
+    return defaultFence
+      ? defaultFence(tokens, idx, options, env, self)
+      : self.renderToken(tokens, idx, options);
+  };
+
+  return md;
+};
+
+const markdownToHtml = (markdown: string): string => {
+  return createMarkdownRenderer().render(markdown);
+};
+
+const generatePdf = async (html: string, outputPath: string): Promise<void> => {
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  const browser = await puppeteer.launch({
+    ...(executablePath ? { executablePath } : {}),
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+    ],
+  });
+
+  try {
+    const page = await browser.newPage();
+
+    await page.setBypassCSP(true);
+    await page.setContent(html, {
+      waitUntil: ["load", "domcontentloaded"],
+      timeout: 45000,
+    });
+
+    await page.evaluate(async () => {
+      const win = window as typeof window & {
+        Chart?: new (
+          canvas: HTMLCanvasElement,
+          config: Record<string, unknown>
+        ) => unknown;
+        MathJax?: {
+          typesetPromise?: () => Promise<void>;
+        };
+        mermaid?: {
+          initialize: (config: Record<string, unknown>) => void;
+          run: () => Promise<void>;
+        };
+      };
+
+      if (win.MathJax?.typesetPromise) {
+        await win.MathJax.typesetPromise();
+      }
+
+      if (win.mermaid) {
+        win.mermaid.initialize({
+          securityLevel: "strict",
+          startOnLoad: false,
+          theme: "neutral",
+        });
+        await win.mermaid.run();
+      }
+
+      if (win.Chart) {
+        document
+          .querySelectorAll<HTMLScriptElement>("script[data-chart-for]")
+          .forEach((script) => {
+            const chartId = script.dataset.chartFor;
+            const canvas = chartId
+              ? document.getElementById(chartId)
+              : undefined;
+
+            if (!(canvas instanceof HTMLCanvasElement)) {
+              return;
+            }
+
+            try {
+              const config = JSON.parse(script.textContent || "{}");
+              new win.Chart!(canvas, config);
+            } catch (error) {
+              canvas.replaceWith(document.createTextNode("Invalid chart data"));
+              console.error(error);
+            }
+          });
+      }
+    });
+
+    await page.pdf({
+      displayHeaderFooter: true,
+      footerTemplate: `
+        <div style="width:100%;font-size:9px;color:#6b7280;padding:0 32px;display:flex;justify-content:space-between;">
+          <span>PDX Study Material</span>
+          <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+        </div>
+      `,
+      format: "A4",
+      headerTemplate: "<div></div>",
+      margin: {
+        bottom: "64px",
+        left: "48px",
+        right: "48px",
+        top: "48px",
+      },
+      path: outputPath,
+      preferCSSPageSize: true,
+      printBackground: true,
+    });
+  } finally {
+    await browser.close();
+  }
+};
+
+const buildHtml = (markdown: string, options: PdfRenderOptions) => {
+  const title = options.title || getTitleFromMarkdown(markdown);
+  const subtitle = options.subtitle || "Generated by PDX";
+  const generatedAt = new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date());
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script>
+    window.MathJax = {
+      tex: {
+        displayMath: [["$$", "$$"], ["\\\\[", "\\\\]"]],
+        inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]]
+      },
+      svg: { fontCache: "global", scale: 1 }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <style>
+    @page {
+      size: A4;
+      margin: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      color: #202124;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.62;
+      margin: 0;
+    }
+
+    .cover-page {
+      align-content: center;
+      break-after: page;
+      display: grid;
+      min-height: 920px;
+      padding: 48px 8px;
+    }
+
+    .cover-eyebrow {
+      color: #927207;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .cover-title {
+      color: #151515;
+      font-size: 48px;
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 24px 0;
+      max-width: 720px;
+    }
+
+    .cover-subtitle {
+      color: #4b5563;
+      font-size: 18px;
+      margin: 0;
+      max-width: 560px;
+    }
+
+    .cover-meta {
+      border-top: 1px solid #d8d6ce;
+      color: #6b7280;
+      display: flex;
+      font-size: 12px;
+      justify-content: space-between;
+      margin-top: 96px;
+      padding-top: 18px;
+    }
+
+    main {
+      max-width: 780px;
+    }
+
+    h1, h2, h3 {
+      color: #151515;
+      line-height: 1.18;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      border-bottom: 1px solid #d8d6ce;
+      font-size: 34px;
+      margin: 0 0 28px;
+      padding-bottom: 14px;
+    }
+
+    h2 {
+      font-size: 25px;
+      margin: 34px 0 12px;
+    }
+
+    h3 {
+      font-size: 19px;
+      margin: 26px 0 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    mjx-container[jax="SVG"][display="true"] {
+      margin: 18px 0 !important;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    code {
+      background: #f4f4f2;
+      border-radius: 4px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 85%;
+      padding: 2px 5px;
+    }
+
+    pre {
+      background: #f7f7f4;
+      border: 1px solid #dedbd2;
+      border-radius: 8px;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+
+    blockquote {
+      border-left: 4px solid #ffc947;
+      color: #4b5563;
+      margin: 18px 0;
+      padding-left: 16px;
+    }
+
+    ul, ol {
+      margin: 10px 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 18px 0;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #d8d6ce;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f6f0db;
+      color: #151515;
+      font-weight: 700;
+    }
+
+    img, svg, canvas {
+      max-width: 100%;
+    }
+
+    .diagram, .chart-block {
+      break-inside: avoid;
+      border: 1px solid #d8d6ce;
+      border-radius: 10px;
+      margin: 22px 0;
+      padding: 16px;
+    }
+
+    .chart-block {
+      min-height: 280px;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover-page">
+    <div>
+      <div class="cover-eyebrow">PDX Study Material</div>
+      <h1 class="cover-title">${escapeHtml(title)}</h1>
+      <p class="cover-subtitle">${escapeHtml(subtitle)}</p>
+      <div class="cover-meta">
+        <span>Generated ${escapeHtml(generatedAt)}</span>
+        <span>usepdx.tech</span>
+      </div>
+    </div>
+  </section>
+  <main>
+    ${markdownToHtml(markdown)}
+  </main>
+</body>
+</html>
+`;
+};
+
+export async function generatePdfFromMarkdown(
+  markdown: string,
+  outputPath: string,
+  options: PdfRenderOptions = {}
+): Promise<string> {
+  try {
+    await generatePdf(buildHtml(markdown, options), outputPath);
+    return outputPath;
+  } catch (error) {
+    console.error("Failed to generate PDF:", error);
+    throw new Error("PDF generation failed");
+  }
+}

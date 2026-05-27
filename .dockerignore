@@ -1,0 +1,12 @@
+.next
+node_modules
+worker/dist
+worker/temp
+coverage
+.git
+.vercel
+.DS_Store
+*.log
+.env
+.env.*
+!.env*.example

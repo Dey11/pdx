@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { useSession } from "next-auth/react";
-
 import { H3 } from "../typography/h3";
 import { H4 } from "../typography/h4";
 import { Muted } from "../typography/muted";

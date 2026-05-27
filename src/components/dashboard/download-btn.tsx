@@ -27,9 +27,14 @@ const DownloadBtn = ({ materialId }: { materialId: string }) => {
   };
 
   return (
-    <Button className="" variant={"outline"} onClick={handleDownload}>
-      Download
-    </Button>
+    <div className="space-y-2">
+      <Button variant="outline" onClick={handleDownload} disabled={isDownloading}>
+        {isDownloading ? "Downloading..." : "Download"}
+      </Button>
+      {downloadError && (
+        <p className="text-sm text-red-500">{downloadError}</p>
+      )}
+    </div>
   );
 };
 

@@ -2,7 +2,12 @@
 
 import { useState, useTransition } from "react";
 
-import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 import { Edit2, GripVertical, Loader2, Plus, Save, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -45,17 +50,8 @@ export function TopicEditor({
   setSteps,
   setGeneratingMaterialId,
 }: TopicEditorProps) {
-  if (!topics.submodules) {
-    return (
-      <H3 className="flex h-[40dvh] items-center justify-center px-5 text-center text-red-500">
-        Please reload the page and fill in the form again - some error occurred
-        on our half.
-      </H3>
-    );
-  }
-
   const [topicsArr, setTopicsArr] = useState<SubmodulesType[]>(() => {
-    return topics.submodules.map((submodule, idx) => ({
+    return (topics.submodules ?? []).map((submodule, idx) => ({
       id: `topic-${idx}-${crypto.randomUUID()}`,
       name: submodule.name,
       weightage: submodule.weightage,
@@ -77,6 +73,15 @@ export function TopicEditor({
   const [editingSubtopic, setEditingSubtopic] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  if (!topics.submodules) {
+    return (
+      <H3 className="flex h-[40dvh] items-center justify-center px-5 text-center text-red-500">
+        Please reload the page and fill in the form again - some error occurred
+        on our half.
+      </H3>
+    );
+  }
 
   const addSubtopic = (topicId: string) => {
     setTopicsArr(
@@ -148,7 +153,7 @@ export function TopicEditor({
     );
   };
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }

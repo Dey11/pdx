@@ -10,7 +10,7 @@ import { H2 } from "@/components/typography/h2";
 
 export type TabType = "Billing" | "Redeem" | "Transactions";
 
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState<TabType>("Billing");
 
   return (
@@ -26,4 +26,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

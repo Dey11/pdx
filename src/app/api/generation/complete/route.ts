@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       where: { id: updateMaterial.userId },
       data: {
         reservedCredits: 0,
-        credits: userInDb?.credits! - credits,
+        credits: (userInDb?.credits ?? 0) - credits,
       },
     });
 

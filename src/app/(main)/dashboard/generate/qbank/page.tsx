@@ -9,7 +9,7 @@ import { TopicEditor } from "@/components/generate/qbank/topic-editor";
 import StepUI from "@/components/generate/step-ui";
 import { TopicsType } from "@/lib/types/topics";
 
-const page = () => {
+const Page = () => {
   const [steps, setSteps] = useState(1);
   const [topics, setTopics] = useState<TopicsType>();
   const [generatingMaterialId, setGeneratingMaterialId] = useState<string>();
@@ -74,4 +74,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

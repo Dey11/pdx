@@ -2,9 +2,8 @@
 
 import { Merriweather } from "next/font/google";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-import { useScroll, useTransform } from "framer-motion";
 import { MousePointerClick } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -16,15 +15,10 @@ import { Para } from "../typography/para";
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 
 const FeaturesSection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
   const [currFeat, setCurrFeat] = useState<number>(1);
 
   return (
-    <div ref={containerRef}>
+    <div>
       <div className="flex w-full flex-col items-center justify-center">
         <div className="pb-12">
           <H2

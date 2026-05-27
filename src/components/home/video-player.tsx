@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import ReactPlayer from "react-player/youtube";
+import ReactPlayer from "react-player";
 
 import { YOUTUBE_LINK } from "@/lib/constants";
 
@@ -25,7 +25,7 @@ export default function VideoPlayer() {
             maxWidth: "600px",
             maxHeight: "350px",
           }}
-          url={YOUTUBE_LINK}
+          src={YOUTUBE_LINK}
         />
       </div>
     )

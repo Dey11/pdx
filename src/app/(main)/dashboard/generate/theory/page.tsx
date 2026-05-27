@@ -8,7 +8,7 @@ import { SyllabusEditor } from "@/components/generate/theory/syllabus-editor";
 import { TopicEditor } from "@/components/generate/theory/topic-editor";
 import { TopicsType } from "@/lib/types/topics";
 
-const page = () => {
+const Page = () => {
   const [steps, setSteps] = useState(1);
   const [topics, setTopics] = useState<TopicsType>();
   const [generatingMaterialId, setGeneratingMaterialId] = useState<string>();
@@ -71,4 +71,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

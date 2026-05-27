@@ -15,8 +15,6 @@ export function GeneratingMessage({
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
     const pollProgress = async () => {
       try {
         const response = await fetch(
@@ -34,7 +32,7 @@ export function GeneratingMessage({
       }
     };
 
-    interval = setInterval(pollProgress, 5000);
+    const interval = setInterval(pollProgress, 5000);
     // Initial poll
     pollProgress();
 

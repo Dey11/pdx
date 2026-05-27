@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { LogOut, Menu } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 
 import {
   Dialog,
@@ -22,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth-client";
 
 import { Button } from "../ui/button";
 
@@ -35,7 +35,7 @@ const navbarLinks = [
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 const Navbar = () => {
   const pathname = usePathname();
-  const session = useSession();
+  const session = authClient.useSession();
 
   return (
     <div
@@ -79,7 +79,7 @@ const Navbar = () => {
                 </Link>
               </DropdownMenuItem>
             ))}
-            {session.status === "authenticated" && (
+            {session.data?.user && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-sm font-medium">
@@ -87,7 +87,7 @@ const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer text-red-500"
-                  onClick={() => signOut()}
+                  onClick={() => authClient.signOut()}
                 >
                   <LogOut className="mr-2 size-4" />
                   LOGOUT
@@ -100,10 +100,10 @@ const Navbar = () => {
 
       {/* Desktop User Section */}
       <div className="hidden items-center justify-center gap-x-4 sm:flex">
-        {session.status === "loading" && (
+        {session.isPending && (
           <div className="size-7 animate-pulse rounded-full bg-white" />
         )}
-        {session.status === "authenticated" && session.data.user?.image && (
+        {session.data?.user?.image && (
           <Image
             src={session.data.user?.image}
             alt="User profile picture"
@@ -135,7 +135,7 @@ const LogOutBtn = () => {
             variant={"outline"}
             className="w-full"
             onClick={() => {
-              signOut();
+              authClient.signOut();
             }}
           >
             Yes

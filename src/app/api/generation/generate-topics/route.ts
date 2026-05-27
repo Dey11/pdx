@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     const { object, usage } = await generateObject({
       model,
       maxRetries: 0,
-      maxTokens: MAX_TOKENS,
+      maxOutputTokens: MAX_TOKENS,
       system: `${systemPrompt}. The language should be in ${body.language}. Subject: ${body.subject}.
         The difficulty is set to ${body.complexity}. It will be a ${body.type} material.
         The exam is ${body.exam}. The course is ${body.course}.
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       easyTopics.length * 4 +
       mediumTopics.length * 7 +
       hardTopics.length * 10 +
-      usage.totalTokens / 1000;
+      (usage.totalTokens ?? 0) / 1000;
 
     return new NextResponse(
       JSON.stringify({ data: object, credits: Math.round(credits) }),

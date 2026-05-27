@@ -51,7 +51,7 @@ export const SyllabusEditor = ({
         setError("");
         const res = generateTopicsSchema.safeParse(formData);
         if (!res.success) {
-          setError(res.error.errors[0].message);
+          setError(res.error.issues[0]?.message ?? "Please check the form.");
           console.error(res.error);
           return;
         }
@@ -80,7 +80,7 @@ export const SyllabusEditor = ({
         setTopics(stateData);
         setCredits(topics.credits);
         setSteps(2);
-      } catch (err) {
+      } catch {
         setError("Something went wrong. Please try again.");
       }
     });

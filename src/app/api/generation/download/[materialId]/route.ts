@@ -33,14 +33,14 @@ export async function GET(
       },
     });
 
-    if (materialInDb?.userId !== session.user.id) {
+    if (!materialInDb || materialInDb.userId !== session.user.id || !materialInDb.pdfUrl) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Generate signed URL
     const command = new GetObjectCommand({
       Bucket: process.env.BUCKET_NAME,
-      Key: materialInDb?.pdfUrl!,
+      Key: materialInDb.pdfUrl,
     });
 
     const url = await getSignedUrl(S3, command, { expiresIn: 3600 }); // 1 hour expiration

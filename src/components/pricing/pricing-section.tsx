@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useSession } from "next-auth/react";
 
 import { cn } from "@/lib/utils";
 

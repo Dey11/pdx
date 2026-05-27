@@ -7,7 +7,13 @@ import { products } from "@/lib/constants";
 import { prisma } from "@/lib/db";
 import { WebhookPayload } from "@/lib/types/payment";
 
-const webhook = new Webhook(process.env.WEBHOOK_SECRET!);
+const getWebhook = () => {
+  if (!process.env.WEBHOOK_SECRET) {
+    throw new Error("WEBHOOK_SECRET is required");
+  }
+
+  return new Webhook(process.env.WEBHOOK_SECRET);
+};
 
 export async function POST(request: NextRequest) {
   const headersList = await headers();
@@ -21,7 +27,7 @@ export async function POST(request: NextRequest) {
       "webhook-timestamp": headersList.get("webhook-timestamp") || "",
     };
 
-    await webhook.verify(rawBody, webhookHeaders);
+    await getWebhook().verify(rawBody, webhookHeaders);
 
     const payload = JSON.parse(rawBody) as WebhookPayload;
 
