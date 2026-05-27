@@ -61,7 +61,7 @@ APIs:
 - Better Auth 1.6
 - BullMQ 5.77
 - Cloudflare R2 via AWS S3 SDK
-- Google Gemini through Vercel AI SDK
+- DeepSeek V4 Flash through Vercel AI SDK with Gemini fallback support
 - Dodo Payments webhook verification
 - PostHog, Umami, Vercel Analytics, Vercel Speed Insights
 
@@ -84,6 +84,9 @@ Required for core local web boot:
 - `AUTH_TRUST_HOST`
 - `DATABASE_URL`
 - `GOOGLE_API_KEY`
+- `DEEPSEEK_API_KEY`
+- `AI_GENERATION_MODELS`
+- `AI_GENERATION_MAX_OUTPUT_TOKENS`
 - `REDIS_HOST`
 - `REDIS_PORT`
 - `REDIS_PASSWORD`
@@ -159,6 +162,14 @@ For Coolify, use `docker-compose.yml` from this `web/` folder and paste the cont
 ## Worker Dependency
 
 The generation pipeline is not complete with the Next.js server alone. The colocated worker must also run and connect to the same Redis instance.
+
+AI generation uses an ordered model list from `AI_GENERATION_MODELS`. The default is:
+
+```text
+deepseek:deepseek-v4-flash,deepseek:deepseek-chat,google:gemini-2.5-flash
+```
+
+Entries use `provider:model-id`; bare `gemini-*` IDs are inferred as Google and other bare IDs are inferred as DeepSeek. Reorder or replace this list to change the primary model or fallback chain without editing generator code.
 
 Current queue names:
 

@@ -1,69 +1,52 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateText } from "ai";
 import { theoryGeneratorSystemPrompt } from "../prompts/generator";
 import { jobSchema } from "../zod/schema";
 import { z } from "zod";
 import dotenv from "dotenv";
+import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "./models";
 
 dotenv.config();
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-});
-const deepseek = createDeepSeek({
-  apiKey: process.env.DEEPSEEK_API_KEY ?? "",
-});
-const model1 = google("gemini-2.5-flash");
-const model2 = deepseek("deepseek-chat");
-
-const MAX_TOKENS = 8000;
 
 export const generateTheoryAction = async (
   state: z.infer<typeof jobSchema>
 ) => {
+  const modelCandidates = getGenerationModelCandidates();
+  let generationError: unknown;
+
   try {
-    const { text, usage } = await generateText({
-      model: model1,
-      maxOutputTokens: MAX_TOKENS,
-      system: theoryGeneratorSystemPrompt,
-      maxRetries: 2,
-      messages: [
-        {
-          role: "system",
-          content: `Instruction: ${state.instruction}. Course: ${state.course}.
+    for (const candidate of modelCandidates) {
+      try {
+        const { text, usage } = await generateText({
+          model: candidate.model,
+          providerOptions: candidate.providerOptions,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
+          system: theoryGeneratorSystemPrompt,
+          maxRetries: 2,
+          messages: [
+            {
+              role: "system",
+              content: `Instruction: ${state.instruction}. Course: ${state.course}.
           Exam: ${state.exam}. Language: ${state.language}. Subject: ${state.subject}`,
-        },
-        {
-          role: "user",
-          content: JSON.stringify(state.topic.data),
-        },
-      ],
-    });
+            },
+            {
+              role: "user",
+              content: JSON.stringify(state.topic.data),
+            },
+          ],
+        });
 
-    if (!usage?.totalTokens) {
-      const { text, usage } = await generateText({
-        model: model2,
-        maxOutputTokens: MAX_TOKENS,
-        system: theoryGeneratorSystemPrompt,
-        maxRetries: 2,
-        messages: [
-          {
-            role: "system",
-            content: `Instruction: ${state.instruction}. Course: ${state.course}.
-          Exam: ${state.exam}. Language: ${state.language}. Subject: ${state.subject}`,
-          },
-          {
-            role: "user",
-            content: JSON.stringify(state.topic.data),
-          },
-        ],
-      });
+        if (text.trim()) {
+          return [text, usage.totalTokens ?? 0];
+        }
 
-      return [text, usage.totalTokens ?? 0];
-    } else {
-      return [text, usage.totalTokens ?? 0];
+        throw new Error(`Empty generation response from ${candidate.label}`);
+      } catch (err) {
+        generationError = err;
+        console.error(`Theory generation failed with ${candidate.label}`, err);
+      }
     }
+
+    throw generationError ?? new Error("Theory generation failed");
   } catch (err) {
     console.error(err);
     return ["", 0];

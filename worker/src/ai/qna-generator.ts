@@ -1,4 +1,3 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { qnaGeneratorSystemPrompt } from "../prompts/generator";
 import { qbankSchema } from "../zod/schema";
@@ -11,15 +10,9 @@ import { uploadPdfToR2 } from "../object-storage";
 import { BUCKET_NAME } from "../constants";
 import axios from "axios";
 import { completionQueue } from "..";
+import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "./models";
 
 dotenv.config();
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-});
-const model1 = google("gemini-2.5-flash");
-
-const MAX_TOKENS = 8000;
 
 export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
   const materialId = state.topics[0].materialId;
@@ -33,29 +26,55 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
   let numbering = 1;
 
   for (const topic of allTopics) {
+    const modelCandidates = getGenerationModelCandidates();
+    let generationError: unknown;
+
     try {
-      const { text, usage } = await generateText({
-        model: model1,
-        maxOutputTokens: MAX_TOKENS,
-        system: qnaGeneratorSystemPrompt,
-        maxRetries: 2,
-        messages: [
-          {
-            role: "system",
-            content: `Instruction: ${state.instruction}. Course: ${state.course}.
+      let generatedText = "";
+      let totalTokens = 0;
+
+      for (const candidate of modelCandidates) {
+        try {
+          const { text, usage } = await generateText({
+            model: candidate.model,
+            providerOptions: candidate.providerOptions,
+            maxOutputTokens: MAX_OUTPUT_TOKENS,
+            system: qnaGeneratorSystemPrompt,
+            maxRetries: 2,
+            messages: [
+              {
+                role: "system",
+                content: `Instruction: ${state.instruction}. Course: ${state.course}.
           Exam: ${state.exam}. Language: ${state.language}. Subject: ${state.subject}.
           Start the current numbering from ${numbering}. Weightage in general should be more on ${state.weightage} type questions.
           If it is auto, feel free to choose yourself. If it is long, try to keep long type questions but keep them minimal. 
           Complexity should be ${state.complexity}.`,
-          },
-          {
-            role: "user",
-            content: JSON.stringify(topic.data),
-          },
-        ],
-      });
+              },
+              {
+                role: "user",
+                content: JSON.stringify(topic.data),
+              },
+            ],
+          });
 
-      const formatDoc = text.split("QNAEND");
+          if (!text.trim()) {
+            throw new Error(`Empty generation response from ${candidate.label}`);
+          }
+
+          generatedText = text;
+          totalTokens = usage.totalTokens ?? 0;
+          break;
+        } catch (err) {
+          generationError = err;
+          console.error(`Qbank generation failed with ${candidate.label}`, err);
+        }
+      }
+
+      if (!generatedText) {
+        throw generationError ?? new Error("Qbank generation failed");
+      }
+
+      const formatDoc = generatedText.split("QNAEND");
       numbering = 1 + parseInt(formatDoc[1]);
 
       const newTime = Date.now().toString();
@@ -81,7 +100,7 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
           currIndex: topic.currIndex,
           totalIndex: topic.totalIndex,
           key: `qbank/topics/${materialId}/${newTime}.pdf`,
-          usage: usage.totalTokens ?? 0,
+          usage: totalTokens,
           success: true,
         }
       );
