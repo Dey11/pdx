@@ -1,204 +1,152 @@
-# PDX Project
+# PDX Web App
+
+Last audited: 2026-05-27
+
+This folder is the current Next.js app for PDX. It is one of two nested repositories in the project root. The worker currently lives in `../worker`, but the planned architecture is to move both apps into one Bun workspace with a root Docker Compose setup.
+
+Read the root `Docs/` folder before changing application behavior.
+
+## What This App Owns
+
+- public marketing pages
+- authenticated dashboard
+- Auth.js/NextAuth configuration
+- Prisma schema and database access
+- generation route handlers
+- BullMQ queue producers
+- Dodo payment webhook handling
+- coupon redemption
+- transaction history
+- Cloudflare R2 signed download URLs
+
+## Important Routes
+
+Pages:
 
-## Overview
+- `/`
+- `/pricing`
+- `/about`
+- `/policy`
+- `/terms`
+- `/login`
+- `/dashboard`
+- `/dashboard/generate/theory`
+- `/dashboard/generate/qbank`
+- `/history`
+- `/settings`
 
-PDX is a Next.js application with TypeScript, Prisma, and various integrations for authentication, payments, storage, and more. This README provides detailed setup instructions for developers and collaborators.
+APIs:
 
-## Features
+- `/api/auth/[...nextauth]`
+- `/api/credits`
+- `/api/payment-link/[productId]`
+- `/api/transactions`
+- `/api/webhook`
+- `/api/admin/create-coupon`
+- `/api/generation/generate-topics`
+- `/api/generation/enqueue-generation`
+- `/api/generation/update-task`
+- `/api/generation/progress`
+- `/api/generation/progress/[materialId]`
+- `/api/generation/complete`
+- `/api/generation/download/[materialId]`
 
-- Generate 100+ paged study material pdfs (theory and question banks)
-- Payment integration with Dodo payments
-- Coupon code based discounts
-- Generate concurrent study materials with message queues (from bullmq)
+## Current Stack
 
-## Tech Stack
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Prisma
+- Auth.js/NextAuth beta
+- BullMQ
+- Cloudflare R2 via S3 SDK
+- Google Gemini through Vercel AI SDK
+- Dodo Payments webhook verification
+- PostHog, Umami, Vercel Analytics, Vercel Speed Insights
 
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Database ORM**: Prisma Accelerate with NeonDB PostgreSQL
-- **Authentication**: AuthJS with Google OAuth and magic links with Resend
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **Payment Processing**: Dodo Payments
-- **Storage**: Cloudflare R2
-- **Queue & Rate Limiting**: Upstash Redis
-- **AI Integration**: Google Gemini API
-- **Analytics**: PostHog
+## Environment
 
-## Getting Started
+Copy `example.env` to `.env` and fill in values.
 
-### Prerequisites
+Required for core local web boot:
 
-- Docker and Docker Compose (for Docker setup)
-- Node.js (v18+) and pnpm (for local development without Docker)
-- Git
-- [Worker repository](https://github.com/Dey11/worker-ai)
+- `AUTH_SECRET`
+- `AUTH_GOOGLE_ID`
+- `AUTH_GOOGLE_SECRET`
+- `AUTH_TRUST_HOST`
+- `DATABASE_URL`
+- `GOOGLE_API_KEY`
+- `REDIS_HOST`
+- `REDIS_PORT`
+- `REDIS_PASSWORD`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_ACCESS_KEY_ID`
+- `CLOUDFLARE_SECRET_ACCESS_KEY`
+- `BUCKET_NAME`
 
-### Local Development Setup
+Required for email login:
 
-1. Clone the repository:
+- `AUTH_RESEND_KEY`
 
-   ```bash
-   git clone <repository-url>
-   cd pdx
-   ```
+Required for billing:
 
-2. Install dependencies:
+- `WEBHOOK_SECRET`
+- `STATIC_PAYMENT_LINK`
+- `ADMIN_KEY`
 
-   ```bash
-   pnpm install
-   ```
+Optional/current analytics:
 
-3. Set up environment variables:
+- `NEXT_PUBLIC_POSTHOG_HOST`
+- `NEXT_PUBLIC_POSTHOG_KEY`
 
-   - Copy `example.env` to `.env`
-   - Fill in the required values
-   - Update `DATABASE_URL` if not using the Docker PostgreSQL
+## Commands
 
-4. Set up the database:
+Project policy is to use Bun for new work.
 
-   ```bash
-   pnpm prisma db push
-   ```
+Current package scripts still contain pnpm assumptions, especially the build script. This is documented as technical debt and should be fixed during the Docker/Compose pass.
 
-5. Run the development server:
-   ```bash
-   pnpm dev
-   ```
+Typical local commands after dependencies are installed:
 
-## Environment Variables
+```bash
+bun run dev
+bunx prisma generate
+bunx prisma db push
+```
 
-Copy `example.env` to `.env` and fill in the following values:
+Current script caveat:
 
-### Required Variables
+```json
+"build": "pnpm dlx prisma generate && next build"
+```
 
-- `AUTH_SECRET`: Required - Secret key for AuthJS encryption
-- `AUTH_GOOGLE_ID`: Required - Google OAuth client ID
-- `AUTH_GOOGLE_SECRET`: Required - Google OAuth client secret
-- `GOOGLE_API_KEY`: Required - API key for Google Gemini
+This should become Bun-compatible before deployment work is considered complete.
 
-### Database
+## Worker Dependency
 
-- `DATABASE_URL`: Connection URL to PostgreSQL database
-  - Default for Docker: `postgres://user:password@db/mydb`
-  - For external database, update this URL
+The generation pipeline is not complete with this app alone. The worker must also run and connect to the same Redis instance.
 
-### Authentication (AuthJS)
+Current queue names:
 
-- `AUTH_TRUST_HOST`: Set to `true` for proper callback URL construction
+- `theoryQueue`
+- `qbankQueue`
+- `mergePdfQueue`
+- `completionQueue`
 
-### Email
+The worker posts callbacks to:
 
-- `AUTH_RESEND_KEY`: API key for Resend email service
+- `/api/generation/update-task`
+- `/api/generation/progress`
+- `/api/generation/complete`
 
-### Redis Queue
+## Known Drift
 
-- `REDIS_HOST`: Upstash Redis host
-- `REDIS_PORT`: Redis port (default: 6379)
-- `REDIS_PASSWORD`: Redis password
+- login UI shows GitHub sign-in, but GitHub provider is not configured
+- rate limiting code is commented out
+- worker callback routes are unauthenticated
+- web and worker do not share schemas
+- bucket config is inconsistent with the worker
+- there is no root Docker Compose yet
+- this app still has a `pnpm-lock.yaml`
 
-### Rate Limiting
-
-- `UPSTASH_REDIS_REST_URL`: Upstash Redis REST API URL
-- `UPSTASH_REDIS_REST_TOKEN`: Upstash Redis REST API token
-
-### Storage
-
-- `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID
-- `CLOUDFLARE_ACCESS_KEY_ID`: Cloudflare R2 access key ID
-- `CLOUDFLARE_SECRET_ACCESS_KEY`: Cloudflare R2 secret access key
-- `CLOUDFLARE_TOKEN_VALUE`: Cloudflare API token
-- `BUCKET_NAME`: R2 bucket name (default: "test")
-
-### Payments
-
-- `DODO_PAYMENTS_API_KEY`: Dodo Payments API key
-- `WEBHOOK_SECRET`: Webhook secret for payment notifications
-- `STATIC_PAYMENT_LINK`: Default payment checkout URL template
-
-### Administration
-
-- `ADMIN_KEY`: Secret key for admin access
-
-### Analytics
-
-- `NEXT_PUBLIC_POSTHOG_HOST`: PostHog instance URL
-- `NEXT_PUBLIC_POSTHOG_KEY`: PostHog API key
-
-## Project Structure
-
-- `src/`
-  - `app/`: Next.js App Router pages and API routes
-  - `components/`: Reusable React components
-  - `lib/`: Utility functions and configuration
-- `prisma/`: Database schema
-- `public/`: Static assets and files
-- `.next/`: Next.js build output (gitignored)
-
-## Development Workflow
-
-1. Create a new branch for your feature/fix:
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-2. Make your changes and commit:
-
-   ```bash
-   git commit -m "Description of changes"
-   ```
-
-3. Push your branch and create a pull request:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-## Database Operations
-
-- Update schema:
-
-  ```bash
-  pnpm prisma db push
-  ```
-
-- Generate Prisma client:
-  ```bash
-  pnpm prisma generate
-  ```
-
-## Useful Commands
-
-- Run development server:
-
-  ```bash
-  pnpm dev
-  ```
-
-- Build for production:
-
-  ```bash
-  pnpm build
-  ```
-
-- Start production server:
-
-  ```bash
-  pnpm start
-  ```
-
-- Lint code:
-  ```bash
-  pnpm lint
-  ```
-
-## Troubleshooting
-
-- For authentication problems, verify your OAuth credentials and callback URLs.
-
-- Redis connection issues may require checking firewall settings or environment variables.
-
-## Contributing
-
-1. Follow the project's code style using ESLint and Prettier
-2. Write meaningful commit messages
-3. Test thoroughly before submitting PRs
+See `../Docs/` for the full architecture and modernization plan.
