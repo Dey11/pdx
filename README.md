@@ -63,7 +63,7 @@ APIs:
 - Cloudflare R2 via AWS S3 SDK
 - DeepSeek V4 Flash through Vercel AI SDK with Gemini fallback support
 - Dodo Payments webhook verification
-- PostHog, Umami, Vercel Analytics, Vercel Speed Insights
+- Umami, Vercel Analytics, Vercel Speed Insights
 
 ## Environment
 
@@ -72,6 +72,7 @@ Use the env template that matches how you are running the app:
 - `.env.local.example`: local web and worker without Docker
 - `.env.production.example`: production web and worker without Docker
 - `.env.production.docker.example`: combined Docker/Coolify env list for `docker-compose.yml`
+- `coolify.env`: paste-ready combined env list for Coolify
 - `example.env`: legacy compatibility template kept for now
 
 Required for core local web boot:
@@ -110,11 +111,6 @@ Required for billing:
 - `WEBHOOK_SECRET`
 - `STATIC_PAYMENT_LINK`
 - `ADMIN_KEY`
-
-Optional/current analytics:
-
-- `NEXT_PUBLIC_POSTHOG_HOST`
-- `NEXT_PUBLIC_POSTHOG_KEY`
 
 ## Commands
 
@@ -157,7 +153,7 @@ bun run docker:up
 bun run docker:down
 ```
 
-For Coolify, use `docker-compose.yml` from this `web/` folder and paste the contents of `.env.production.docker.example` into Coolify after replacing placeholders. The Compose stack starts `postgres`, `redis`, `web`, and `worker`. It does not run Prisma migrations automatically.
+For Coolify, use `docker-compose.yml` from this `web/` folder and paste the contents of `coolify.env` into Coolify after replacing placeholders. The Compose stack starts `postgres`, `redis`, `web`, and `worker`. It does not run Prisma migrations automatically.
 
 ## Worker Dependency
 

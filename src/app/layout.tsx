@@ -6,8 +6,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 
-import Providers from "@/components/providers";
-
 import "./globals.css";
 
 const poppins = Poppins({
@@ -83,27 +81,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Providers>
-      <html lang="en">
-        <head>
-          <script
-            defer
-            src="https://cloud.umami.is/script.js"
-            data-website-id="fb33721b-90b2-4217-952c-b071a05d1d5e"
-          ></script>
-        </head>
-        <body
-          className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
-        >
-          <NextTopLoader showSpinner={false} color="#FFC947" />
-          {/* max-w-screen-xl */}
-          <Analytics />
-          <SpeedInsights />
-          <div className="mx-auto">
-            <Suspense>{children}</Suspense>
-          </div>
-        </body>
-      </html>
-    </Providers>
+    <html lang="en">
+      <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="fb33721b-90b2-4217-952c-b071a05d1d5e"
+        ></script>
+      </head>
+      <body
+        className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
+      >
+        <NextTopLoader showSpinner={false} color="#FFC947" />
+        {/* max-w-screen-xl */}
+        <Analytics />
+        <SpeedInsights />
+        <div className="mx-auto">
+          <Suspense>{children}</Suspense>
+        </div>
+      </body>
+    </html>
   );
 }

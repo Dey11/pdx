@@ -53,7 +53,6 @@
     "nextjs-toploader": "^3.9.17",
     "pdf-lib": "^1.17.1",
     "pg": "^8.21.0",
-    "posthog-js": "^1.376.3",
     "puppeteer": "^25.1.0",
     "react": "19.2.6",
     "react-confetti": "^6.4.0",
