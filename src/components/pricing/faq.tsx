@@ -41,7 +41,7 @@ export function FAQ() {
     {
       question: "I paid for credits but I don't see them in my account?",
       answer:
-        "We update the transactions as soon as we receive confirmation from the payment gateway. If you have an email from Dodo Payments confirming your purchase and yet do not see the benefits in your account in 30 minutes to 1 hour, please contact us at support@usepdx.tech. We will make it our priority to help you asap.",
+        "We update the transactions as soon as we receive confirmation from the payment gateway. If you have an email from Dodo Payments confirming your purchase and yet do not see the benefits in your account in 30 minutes to 1 hour, please contact us at support@noteformula.com. We will make it our priority to help you asap.",
     },
     // {
     //   question: "What does unlimited credits mean?",

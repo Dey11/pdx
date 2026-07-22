@@ -1,12 +1,13 @@
 import { Resend } from "resend";
 
-const fromEmail = process.env.AUTH_EMAIL_FROM ?? "PDX <support@usepdx.tech>";
+const fromEmail =
+  process.env.AUTH_EMAIL_FROM ?? "NoteFormula <support@noteformula.com>";
 
 const getResend = () => {
-  const apiKey = process.env.AUTH_RESEND_KEY ?? process.env.RESEND_API_KEY;
+  const apiKey = process.env.AUTH_RESEND_KEY;
 
   if (!apiKey) {
-    throw new Error("AUTH_RESEND_KEY or RESEND_API_KEY is required to send auth email");
+    throw new Error("AUTH_RESEND_KEY is required to send auth email");
   }
 
   return new Resend(apiKey);
@@ -26,11 +27,11 @@ export const sendPasswordResetEmail = async ({
   await getResend().emails.send({
     from: fromEmail,
     to,
-    subject: "Reset your PDX password",
+    subject: "Reset your NoteFormula password",
     text: [
       `Hi ${name || "there"},`,
       "",
-      "Use this link to reset your PDX password. It expires in 30 minutes.",
+      "Use this link to reset your NoteFormula password. It expires in 30 minutes.",
       resetUrl,
       "",
       "If you did not request this, you can ignore this email.",

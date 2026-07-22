@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://usepdx.tech/sitemap.xml 
+Sitemap: https://noteformula.com/sitemap.xml 

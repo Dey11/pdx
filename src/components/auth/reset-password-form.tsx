@@ -62,7 +62,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
       <section className="w-full max-w-md rounded-lg border border-border bg-brand-bg p-5 shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
         <div className="mb-6">
           <H3 className="text-brand-heading">Choose a new password</H3>
-          <Muted>Use at least 8 characters for your PDX account.</Muted>
+          <Muted>Use at least 8 characters for your NoteFormula account.</Muted>
         </div>
 
         <form className="grid gap-4" onSubmit={handleSubmit}>

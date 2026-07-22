@@ -25,7 +25,7 @@ const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 export const metadata = {
   title: "Dashboard",
   description:
-    "Transform your syllabus into perfectly designed PDFs with PDX—your personal AI-powered learning solution",
+    "Transform your syllabus into perfectly designed PDFs with NoteFormula—your personal AI-powered learning solution",
 };
 
 type Tool = {

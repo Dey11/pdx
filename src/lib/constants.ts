@@ -8,7 +8,7 @@ export const QBANK_QUEUE_NAME = "qbankQueue";
 export const MERGE_PDF_QUEUE_NAME = "mergePdfQueue";
 export const COMPLETION_QUEUE_NAME = "completionQueue";
 
-export const EMAIL = "support@usepdx.tech";
+export const EMAIL = "support@noteformula.com";
 export const INSTAGRAM = "https://www.instagram.com/use.pdx/";
 export const TWITTER = "https://x.com/usepdx_";
 export const TOTAL_GOAL = 50;

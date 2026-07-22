@@ -17,10 +17,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://usepdx.tech"),
+  metadataBase: new URL("https://noteformula.com"),
   title: {
-    default: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
-    template: "%s | PDX",
+    default: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
+    template: "%s | NoteFormula",
   },
   description:
     "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     "AI notes",
     "AI study guides",
   ],
-  authors: [{ name: "PDX Team" }],
-  creator: "PDX Team",
-  publisher: "PDX",
+  authors: [{ name: "NoteFormula Team" }],
+  creator: "NoteFormula Team",
+  publisher: "NoteFormula",
   robots: {
     index: true,
     follow: true,
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://usepdx.tech",
-    siteName: "PDX",
-    title: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
+    url: "https://noteformula.com",
+    siteName: "NoteFormula",
+    title: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
     description:
       "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
     images: [
@@ -58,13 +58,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PDX - Transform Your Study Experience",
+        alt: "NoteFormula - Transform Your Study Experience",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PDX - AI Study Material Generator | Custom Syllabus to PDF",
+    title: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
     description:
       "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
     images: ["/og-image.png"],

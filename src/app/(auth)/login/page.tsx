@@ -27,7 +27,7 @@ const getMessage = (mode: AuthMode) => {
   }
 
   if (mode === "forgot-password") {
-    return "Send a reset link to the email on your PDX account.";
+    return "Send a reset link to the email on your NoteFormula account.";
   }
 
   return "Use the same account for dashboard, credits, and downloads.";
@@ -56,14 +56,14 @@ const SignIn = () => {
 
   const title = useMemo(() => {
     if (mode === "sign-up") {
-      return "Create your PDX account";
+      return "Create your NoteFormula account";
     }
 
     if (mode === "forgot-password") {
       return "Reset your password";
     }
 
-    return "Welcome back to PDX";
+    return "Welcome back to NoteFormula";
   }, [mode]);
 
   const handleSocialSignIn = async (provider: "google" | "github") => {
@@ -164,7 +164,7 @@ const SignIn = () => {
               Generate, review, and download from one account.
             </h1>
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              PDX keeps credits, generation history, and downloads tied to the
+              NoteFormula keeps credits, generation history, and downloads tied to the
               same sign-in identity across every study-material workflow.
             </p>
           </div>

@@ -11,9 +11,9 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://usepdx.tech",
-    siteName: "PDX",
-    title: "PDX - AI Study Material Generator | Pricing",
+    url: "https://noteformula.com",
+    siteName: "NoteFormula",
+    title: "NoteFormula - AI Study Material Generator | Pricing",
     description:
       "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success. Pricing plans made for your convenience and affordability.",
     images: [
@@ -21,7 +21,7 @@ export const metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PDX - Transform Your Study Experience",
+        alt: "NoteFormula - Transform Your Study Experience",
       },
     ],
   },

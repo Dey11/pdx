@@ -7,7 +7,7 @@ import { Para } from "@/components/typography/para";
 import { EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Terms of use | Pdx",
+  title: "Terms of use | NoteFormula",
   description: "Under our terms of use",
 };
 
@@ -20,7 +20,7 @@ const page = () => {
         Terms of Use
       </H1>
       <Para className="text-center text-xs">
-        Learn more about how PDX collects and uses data and your rights as a PDX
+        Learn more about how NoteFormula collects and uses data and your rights as a NoteFormula
         user
       </Para>
 
@@ -30,11 +30,11 @@ const page = () => {
         </Para>
 
         <Para className="mt-6">
-          Welcome to PDX ("we," "our," or "us"). By accessing or using our
+          Welcome to NoteFormula ("we," "our," or "us"). By accessing or using our
           platform, services, or products (collectively, the "Services"), you
           ("User," "you," or "your") agree to comply with and be bound by these
           Terms of Use ("Terms"). Please read these Terms carefully before using
-          PDX. If you do not agree with these Terms, you must not use our
+          NoteFormula. If you do not agree with these Terms, you must not use our
           Services.
         </Para>
 
@@ -52,7 +52,7 @@ const page = () => {
 
           <section>
             <h2 className="mb-3 text-xl font-semibold">2. Services Provided</h2>
-            <Para className="mb-3">PDX offers tools to:</Para>
+            <Para className="mb-3">NoteFormula offers tools to:</Para>
             <ul className="mb-3 list-disc space-y-2 pl-6">
               <li>Parse syllabi and generate study materials</li>
               <li>Create downloadable PDFs</li>
@@ -63,7 +63,7 @@ const page = () => {
               <li>Enable cost-sharing features for collaborative purchases</li>
             </ul>
             <Para>
-              While PDX strives to provide accurate and high-quality tools, we
+              While NoteFormula strives to provide accurate and high-quality tools, we
               do not guarantee the accuracy, reliability, or completeness of
               syllabus parsing and study material generation. Users acknowledge
               that the generated content is intended for supplementary use and
@@ -79,7 +79,7 @@ const page = () => {
           <section>
             <h2 className="mb-3 text-xl font-semibold">3. Eligibility</h2>
             <Para>
-              You must be at least 13 years old to use PDX. By accessing our
+              You must be at least 13 years old to use NoteFormula. By accessing our
               Services, you represent that you are of legal age and have the
               capacity to enter into a binding agreement.
             </Para>
@@ -93,7 +93,7 @@ const page = () => {
               <p>
                 You must provide accurate and complete information when creating
                 an account. Providing false or misleading information may result
-                in the suspension or termination of your account, and PDX
+                in the suspension or termination of your account, and NoteFormula
                 reserves the right to pursue legal action if deemed necessary.
               </p>
               <p>
@@ -140,14 +140,14 @@ const page = () => {
             </h2>
             <div className="space-y-3">
               <p>
-                When uploading modules to the PDX community marketplace, you
-                retain ownership of your content but grant PDX a non-exclusive,
+                When uploading modules to the NoteFormula community marketplace, you
+                retain ownership of your content but grant NoteFormula a non-exclusive,
                 royalty-free, worldwide license to distribute, display, and sell
                 the content. This license remains in effect for as long as the
                 content is available on the marketplace or until you remove it.
               </p>
               <p>
-                PDX reserves the right to review, modify, or remove content that
+                NoteFormula reserves the right to review, modify, or remove content that
                 violates our guidelines. Earnings from module sales will be
                 shared according to the pricing plan under which the user
                 operates.
@@ -171,7 +171,7 @@ const page = () => {
                 Refunds: Payments are non-refundable unless otherwise required
                 by law or explicitly stated in a promotional offer. Refunds may
                 only be considered in exceptional scenarios such as duplicate
-                payments or billing errors, at the sole discretion of PDX. Users
+                payments or billing errors, at the sole discretion of NoteFormula. Users
                 must provide documented evidence to support their claim within
                 14 days of the transaction.
               </p>
@@ -184,12 +184,12 @@ const page = () => {
             </h2>
             <div className="space-y-3">
               <p>
-                All materials generated by PDX, including study guides and PDFs,
+                All materials generated by NoteFormula, including study guides and PDFs,
                 are provided for personal use only. Redistribution or resale of
                 generated content is prohibited.
               </p>
               <p>
-                PDX retains all rights to its software, branding, and
+                NoteFormula retains all rights to its software, branding, and
                 proprietary algorithms.
               </p>
             </div>
@@ -201,18 +201,18 @@ const page = () => {
             </h2>
             <div className="space-y-3">
               <p>
-                PDX provides study materials and resources as-is. While we
+                NoteFormula provides study materials and resources as-is. While we
                 strive to ensure accuracy and quality, we make no guarantees
                 regarding the completeness, reliability, or suitability of the
                 generated content.
               </p>
               <p>
-                To the maximum extent permitted by law, PDX's liability for any
+                To the maximum extent permitted by law, NoteFormula's liability for any
                 claims, damages, or losses arising from your use of our Services
-                is limited to the amount you have paid to PDX, if any, in the 12
+                is limited to the amount you have paid to NoteFormula, if any, in the 12
                 months preceding the claim.
               </p>
-              <p>PDX is not liable for:</p>
+              <p>NoteFormula is not liable for:</p>
               <ul className="mb-3 list-disc space-y-2 pl-6">
                 <li>Errors or inaccuracies in study materials.</li>
                 <li>Any damages resulting from the use of our Services.</li>
@@ -273,7 +273,7 @@ const page = () => {
           </section>
 
           <Para className="mt-8 font-medium">
-            By using PDX, you acknowledge that you have read, understood, and
+            By using NoteFormula, you acknowledge that you have read, understood, and
             agreed to these Terms of Use.
           </Para>
         </div>

@@ -65,7 +65,7 @@ export default function Home() {
         <Para className={"max-w-lg animate-fade-in text-center"}>
           <span className="italic">Drowning in prompts?</span> Upload your
           syllabus, and let
-          <span className="text-brand-blue"> PDX</span> do the heavy
+          <span className="text-brand-blue"> NoteFormula</span> do the heavy
           lifting—custom study notes & exam papers in sleek PDFs, stress-free!
         </Para>
 
@@ -111,7 +111,7 @@ export default function Home() {
 
       <section className="flex flex-col flex-wrap items-center justify-center py-16">
         <H2 className="text-center text-brand-heading">
-          Why students choose PDX and
+          Why students choose NoteFormula and
         </H2>
         <H2 className="text-brand-heading underline sm:pt-2">
           never look back
@@ -162,7 +162,7 @@ export default function Home() {
 
 const faqs = [
   {
-    question: "How does PDX generate study materials from my syllabus?",
+    question: "How does NoteFormula generate study materials from my syllabus?",
     answer:
       "Our advanced AI analyzes your syllabus and generates comprehensive study materials including detailed explanations, examples, and key concepts. Each study guide is tailored to your specific course content and learning requirements.",
   },

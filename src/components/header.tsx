@@ -31,7 +31,7 @@ const Header = () => {
       <Link href={"/"}>
         <Image
           src="/logo.png"
-          alt="PDX Study Material Generator Logo"
+          alt="NoteFormula Study Material Generator Logo"
           width={50}
           height={50}
           className="mb-1 hidden md:block"

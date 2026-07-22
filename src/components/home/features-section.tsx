@@ -107,28 +107,28 @@ const Features: FeatureType[] = [
     id: 1,
     title: "Start with your course syllabus",
     description:
-      "Paste or upload your syllabus—detailed syllabi ensure precise, high-quality study materials. PDX efficiently structures content for complete subject coverage.",
+      "Paste or upload your syllabus—detailed syllabi ensure precise, high-quality study materials. NoteFormula efficiently structures content for complete subject coverage.",
     image: "/home/feature_1.png",
   },
   {
     id: 2,
     title: "Customize your study material",
     description:
-      "Customize your study material according to your needs. Beginner or advanced, PDX has you covered. Preparing for a specific exam? Enter the exam name and PDX will generate study materials tailored to your exam needs.",
+      "Customize your study material according to your needs. Beginner or advanced, NoteFormula has you covered. Preparing for a specific exam? Enter the exam name and NoteFormula will generate study materials tailored to your exam needs.",
     image: "/home/feature_2.png",
   },
   {
     id: 3,
     title: "Preview generated content",
     description:
-      "Add or remove content as needed. PDX generates content in a structured format, making it easy to navigate and understand. Preview the generated content and make changes as needed.",
+      "Add or remove content as needed. NoteFormula generates content in a structured format, making it easy to navigate and understand. Preview the generated content and make changes as needed.",
     image: "/home/feature_3.png",
   },
   {
     id: 4,
     title: "Your PDF is ready in minutes",
     description:
-      "PDF is ready in minutes. Download your study material in PDF format and start studying. PDX makes it easy to generate, customize, and download study materials.",
+      "PDF is ready in minutes. Download your study material in PDF format and start studying. NoteFormula makes it easy to generate, customize, and download study materials.",
     image: "/home/feature_4.png",
   },
 ];

@@ -2,19 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core Pages -->
   <url>
-    <loc>https://usepdx.tech</loc>
+    <loc>https://noteformula.com</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://usepdx.tech/pricing</loc>
+    <loc>https://noteformula.com/pricing</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://usepdx.tech/dashboard</loc>
+    <loc>https://noteformula.com/dashboard</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -22,7 +22,7 @@
   
   <!-- Authentication -->
   <url>
-    <loc>https://usepdx.tech/login</loc>
+    <loc>https://noteformula.com/login</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -30,7 +30,7 @@
   
   <!-- Study Material Generation -->
   <url>
-    <loc>https://usepdx.tech/generate</loc>
+    <loc>https://noteformula.com/generate</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -38,13 +38,13 @@
   
   <!-- Legal -->
   <url>
-    <loc>https://usepdx.tech/terms</loc>
+    <loc>https://noteformula.com/terms</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://usepdx.tech/policy</loc>
+    <loc>https://noteformula.com/policy</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -52,7 +52,7 @@
   
   <!-- Settings -->
   <url>
-    <loc>https://usepdx.tech/settings</loc>
+    <loc>https://noteformula.com/settings</loc>
     <lastmod>2025-02-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
