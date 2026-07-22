@@ -4,6 +4,10 @@ FROM oven/bun:1.3.4-debian AS base
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
+# Skip puppeteer's browser download during `bun install`: the base image has no
+# unzip and the worker uses the apt-installed chromium at runtime. Puppeteer v25
+# honors PUPPETEER_SKIP_DOWNLOAD; PUPPETEER_SKIP_CHROMIUM_DOWNLOAD is deprecated.
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 FROM base AS deps
