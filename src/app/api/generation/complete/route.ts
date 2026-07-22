@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/db";
+import { verifyWorkerRequest } from "@/lib/worker-auth";
 
 const bodySchema = z.object({
   materialId: z.string(),
@@ -11,6 +12,11 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const unauthorized = verifyWorkerRequest(req);
+    if (unauthorized) {
+      return unauthorized;
+    }
+
     const body = await req.json();
     const res = bodySchema.safeParse(body);
 
@@ -22,6 +28,10 @@ export async function POST(req: NextRequest) {
       where: { materialId: res.data.materialId },
     });
 
+    // Credit accounting: charge 1 credit per 1000 tokens used, rounded per
+    // task, summed across every MaterialTask of this material. On completion the
+    // user's reservedCredits (held while generation was in flight) is reset to 0
+    // and the actual cost is deducted from their credit balance.
     let credits = 0;
     materialsInDb.map((material) => {
       credits += Math.round(material.tokensUsed / 1000);

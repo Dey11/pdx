@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/db";
+import { verifyWorkerRequest } from "@/lib/worker-auth";
 
 const bodySchema = z.object({
   materialId: z.string(),
@@ -16,6 +17,11 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const unauthorized = verifyWorkerRequest(req);
+    if (unauthorized) {
+      return unauthorized;
+    }
+
     const body = await req.json();
     const res = bodySchema.safeParse(body);
     if (!res.success) {

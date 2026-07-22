@@ -7,8 +7,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { S3 } from "@/lib/object-storage/r2";
 
-// import { ratelimit } from "@/lib/rate-limit";
-
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ materialId: string }> }
@@ -18,12 +16,6 @@ export async function GET(
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // const { success } = await ratelimit.limit(session.user.id!);
-
-    // if (!success) {
-    //   return NextResponse.json({ error: "Rate Limited", status: 429 });
-    // }
 
     const { materialId } = await params;
 

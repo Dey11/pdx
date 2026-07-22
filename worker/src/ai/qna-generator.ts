@@ -9,6 +9,7 @@ import { generatePdfFromMarkdown } from "../lib/generate-pdf";
 import { uploadPdfToR2 } from "../object-storage";
 import { BUCKET_NAME } from "../constants";
 import axios from "axios";
+import { workerCallbackHeaders } from "../callback";
 import { completionQueue } from "..";
 import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "./models";
 
@@ -102,7 +103,8 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
           key: `qbank/topics/${materialId}/${newTime}.pdf`,
           usage: totalTokens,
           success: true,
-        }
+        },
+        { headers: workerCallbackHeaders() }
       );
     } catch (error) {
       console.error(error);
@@ -116,7 +118,8 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
           key: "",
           usage: 0,
           success: false,
-        }
+        },
+        { headers: workerCallbackHeaders() }
       );
     }
     await completionQueue.add("completion", {

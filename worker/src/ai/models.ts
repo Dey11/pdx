@@ -1,3 +1,7 @@
+// Keep in sync with src/lib/ai/model.ts — the web app and the worker have
+// separate tsconfig roots, so this factory is intentionally duplicated. Any
+// change to the fallback-chain parsing, provider inference, provider options,
+// or MAX_OUTPUT_TOKENS must be mirrored there.
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import type { SharedV3ProviderOptions } from "@ai-sdk/provider";
@@ -25,9 +29,14 @@ const google = createGoogleGenerativeAI({
 });
 
 export const MAX_OUTPUT_TOKENS = Number(
-  process.env.AI_GENERATION_MAX_OUTPUT_TOKENS ?? 8000
+  process.env.AI_GENERATION_MAX_OUTPUT_TOKENS ?? 8192
 );
 
+// The fallback chain is priority-ordered: candidates are tried left-to-right
+// and the first one that succeeds wins. Each entry is either "provider:modelId"
+// or a bare "modelId" whose provider is inferred (gemini-* => google, otherwise
+// deepseek). DeepSeek models disable reasoning ("thinking") to keep generation
+// fast and cheap.
 function inferProvider(modelId: string): SupportedProvider {
   if (modelId.startsWith("gemini-")) {
     return "google";

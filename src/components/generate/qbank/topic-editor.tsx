@@ -20,7 +20,7 @@ import { H3 } from "../../typography/h3";
 interface SubmodulesType {
   id: string;
   name: string;
-  weightage: "easy" | "medium" | "hard";
+  weightage: "high" | "medium" | "low";
   subtopics: {
     id: string;
     title: string;

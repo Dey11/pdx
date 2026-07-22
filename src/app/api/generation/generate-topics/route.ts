@@ -3,12 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateObject } from "ai";
 import { z } from "zod";
 
-import { getGenerationModelCandidates } from "@/lib/ai/model";
-import { MAX_TOKENS } from "@/lib/ai/model";
+import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "@/lib/ai/model";
 import { systemPrompt } from "@/lib/ai/prompts/system";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-// import { ratelimit } from "@/lib/rate-limit";
 import { generateTopicsSchema } from "@/lib/zod";
 
 export async function POST(req: NextRequest) {
@@ -18,12 +16,6 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // const { success } = await ratelimit.limit(session.user.id!);
-
-    // if (!success) {
-    //   return NextResponse.json({ error: "Rate Limited", status: 429 });
-    // }
 
     const materialInDb = await prisma.material.findMany({
       where: {
@@ -94,7 +86,7 @@ export async function POST(req: NextRequest) {
           model: candidate.model,
           providerOptions: candidate.providerOptions,
           maxRetries: 0,
-          maxOutputTokens: MAX_TOKENS,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
           system: `${systemPrompt}. The language should be in ${body.language}. Subject: ${body.subject}.
         The difficulty is set to ${body.complexity}. It will be a ${body.type} material.
         The exam is ${body.exam}. The course is ${body.course}.

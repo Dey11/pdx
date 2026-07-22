@@ -15,10 +15,30 @@ import {
 import axios from "axios";
 import { Queue } from "bullmq";
 import { generateQnaAction } from "./ai/qna-generator";
+import { workerCallbackHeaders } from "./callback";
 import { validateWorkerEnv } from "./env";
 
 dotenv.config();
 validateWorkerEnv();
+
+// Four BullMQ workers wire up the generation pipeline:
+//   1. theoryQueue   -> generate one topic's PDF, upload to R2, then POST
+//                       /api/generation/update-task (success or failure).
+//   2. qbankQueue    -> generateQnaAction handles all topics of one material
+//                       and posts update-task per topic itself.
+//   3. completionQueue -> POST /api/generation/progress to bump completedParts.
+//   4. mergePdfQueue -> merge all part PDFs and POST /api/generation/complete.
+//
+// Completion protocol: the theory worker's finally block ALWAYS enqueues a
+// completionQueue job regardless of success or failure, so every finished part
+// (even a failed one) advances material progress and the material can never
+// stall. (The qbank worker enqueues completion per topic inside
+// generateQnaAction for the same reason.)
+//
+// Callback state machine per material:
+//   update-task (per part) -> progress (per part, increments completedParts)
+//   -> when completedParts === totalParts the web app enqueues mergePdf
+//   -> mergePdf -> complete (finalizes material + settles credits).
 
 const connection = {
   host: process.env.REDIS_HOST || "localhost",
@@ -83,7 +103,8 @@ new Worker(
           key: `theory/topics/${res.data.topic.materialId}/${timestamp}.pdf`,
           usage: usage,
           success: true,
-        }
+        },
+        { headers: workerCallbackHeaders() }
       );
     } catch (err) {
       console.error(err);
@@ -97,7 +118,8 @@ new Worker(
           key: "",
           usage: 0,
           success: false,
-        }
+        },
+        { headers: workerCallbackHeaders() }
       );
     } finally {
       await completionQueue.add("completion", {
@@ -145,10 +167,14 @@ new Worker(
   "completionQueue",
   async (job: Job) => {
     try {
-      await axios.post(`${process.env.BACKEND_URL}/api/generation/progress`, {
-        materialId: job.data.materialId,
-        type: job.data.type,
-      });
+      await axios.post(
+        `${process.env.BACKEND_URL}/api/generation/progress`,
+        {
+          materialId: job.data.materialId,
+          type: job.data.type,
+        },
+        { headers: workerCallbackHeaders() }
+      );
     } catch (err) {
       console.error(err);
     }
@@ -167,10 +193,14 @@ new Worker(
         BUCKET_NAME,
         job.data.type
       );
-      await axios.post(`${process.env.BACKEND_URL}/api/generation/complete`, {
-        materialId: materialId,
-        key: outputKey,
-      });
+      await axios.post(
+        `${process.env.BACKEND_URL}/api/generation/complete`,
+        {
+          materialId: materialId,
+          key: outputKey,
+        },
+        { headers: workerCallbackHeaders() }
+      );
     } catch (err) {
       console.error("Error in mergePdfWorker:", err);
     }

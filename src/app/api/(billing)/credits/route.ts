@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
-// import { ratelimit } from "@/lib/rate-limit";
-
 export async function GET() {
   try {
     const session = await auth();
@@ -36,12 +34,6 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // const { success } = await ratelimit.limit(session.user.id!);
-
-    // if (!success) {
-    //   return NextResponse.json({ error: "Rate Limited", status: 429 });
-    // }
 
     const body = await req.json();
     const code = body.code.toUpperCase();

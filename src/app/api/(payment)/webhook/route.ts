@@ -7,6 +7,13 @@ import { products } from "@/lib/constants";
 import { prisma } from "@/lib/db";
 import { WebhookPayload } from "@/lib/types/payment";
 
+// Dodo Payments webhook receiver. Uses the standardwebhooks spec: the signature
+// is computed over the raw request body plus the "webhook-id",
+// "webhook-signature" and "webhook-timestamp" headers, and verify() throws
+// (=> 400) on any mismatch, so the body must be read as raw text BEFORE JSON
+// parsing. Only non-subscription one-time "Payment" events are handled here
+// (subscription_id must be absent); everything else is acknowledged and
+// ignored.
 const getWebhook = () => {
   if (!process.env.WEBHOOK_SECRET) {
     throw new Error("WEBHOOK_SECRET is required");
@@ -62,6 +69,10 @@ export async function POST(request: NextRequest) {
 const handleOneTimePayment = async (email: string, payload: WebhookPayload) => {
   const userInDb = await prisma.user.findUnique({ where: { email } });
 
+  // Idempotency: webhooks can be redelivered, so we key on payment_id.
+  // Find-then-update-or-create — if a transaction already exists we only update
+  // its status (crediting the user once it reaches "succeeded"); otherwise we
+  // create the transaction record. Credits are incremented only on "succeeded".
   const findTransaction = await prisma.transaction.findFirst({
     where: { paymentId: payload.data.payment_id },
   });

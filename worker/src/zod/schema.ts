@@ -42,20 +42,6 @@ export const qbankSchema = z.object({
   subject: z.string(),
   weightage: z.enum(["auto", "short", "long", "medium"]),
   type: z.enum(["qbank"]),
-  // topics: z.array(
-  //   z.object({
-  //     id: z.string(), // {id: 'topic-0-12dd8be1-9002-4cb2-b075-ad0adb8aada4',
-  //     materialId: z.string(), // {id: 'topic-0-12dd8be1-9002-4cb2-b075-ad0adb8aada4',
-  //     name: z.string(), // name: 'History and Overview of C++',
-  //     weightage: z.enum(["low", "medium", "high"]), // weightage: 'low',
-  //     subtopics: z.array(z.object({ id: z.string(), title: z.string() })), // subtopics: [ [Object], [Object], [Object], [Object], [Object] ],
-  //     numericals: z.array(z.object({ id: z.string(), title: z.string() })), // numericals: [ [Object] ],
-  //     formulas: z.boolean(), // formulas: false,
-  //     examples: z.boolean(), // examples: true,
-  //     completed: z.boolean(), // completed: false,
-  //     tryCount: z.number(), // tryCount: 0
-  //   })
-  // ),
   topics: z.array(
     z.object({
       id: z.string(),

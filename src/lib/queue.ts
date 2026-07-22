@@ -1,8 +1,31 @@
 import { Queue } from "bullmq";
 import { z } from "zod";
 
+import {
+  MERGE_PDF_QUEUE_NAME,
+  QBANK_QUEUE_NAME,
+  THEORY_QUEUE_NAME,
+} from "./constants";
 import { prisma } from "./db";
 import { topicsSchema } from "./zod";
+
+// Producer side of the generation pipeline. The colocated worker (worker/src/*)
+// is the consumer.
+//
+// Producer -> worker contract:
+//   - "theory" materials fan out: one MaterialTask row and one theoryQueue job
+//     per topic, generated and merged independently.
+//   - "qbank" materials enqueue a SINGLE qbankQueue job carrying every topic;
+//     the worker iterates topics itself.
+//   - Every MaterialTask carries currIndex/totalIndex (1-based). The worker
+//     echoes these back through /api/generation/update-task so the web app can
+//     track per-part progress; /api/generation/progress increments
+//     completedParts until it reaches totalParts and triggers mergePdf().
+//
+// Queues are created lazily per call (getXxxQueue()) rather than as module-level
+// singletons: this module is imported by Next.js route handlers, and deferring
+// construction avoids opening Redis connections at build/import time (and keeps
+// each serverless invocation from leaking a long-lived connection).
 
 const redisConnection = () => {
   return {
@@ -13,7 +36,7 @@ const redisConnection = () => {
 };
 
 const getTheoryQueue = () =>
-  new Queue("theoryQueue", {
+  new Queue(THEORY_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
       attempts: 1,
@@ -22,7 +45,7 @@ const getTheoryQueue = () =>
   });
 
 const getQbankQueue = () =>
-  new Queue("qbankQueue", {
+  new Queue(QBANK_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
       attempts: 1,
@@ -31,7 +54,7 @@ const getQbankQueue = () =>
   });
 
 const getMergePdfQueue = () =>
-  new Queue("mergePdfQueue", {
+  new Queue(MERGE_PDF_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
       attempts: 2,
