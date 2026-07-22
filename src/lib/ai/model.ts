@@ -91,6 +91,22 @@ function createModelCandidate(entry: string): GenerationModelCandidate {
   throw new Error(`Unsupported AI provider: ${provider}`);
 }
 
+// Providers actually referenced by the configured model list. The worker's env
+// validation uses this to require only the API keys that will be used, so
+// switching providers is a pure env change (AI_GENERATION_MODELS + its key).
+export function getReferencedProviders(): Set<SupportedProvider> {
+  const configuredModels =
+    process.env.AI_GENERATION_MODELS ?? DEFAULT_GENERATION_MODELS;
+
+  return new Set(
+    configuredModels
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => parseModelEntry(entry).provider)
+  );
+}
+
 export function getGenerationModelCandidates(): GenerationModelCandidate[] {
   const configuredModels =
     process.env.AI_GENERATION_MODELS ?? DEFAULT_GENERATION_MODELS;

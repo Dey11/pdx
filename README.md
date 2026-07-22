@@ -12,8 +12,8 @@ This repository is a single deployable unit:
 - a **colocated BullMQ worker** under `worker/` (AI generation, PDF rendering,
   PDF merging) that connects to the same Redis instance
 - one **`Dockerfile`** with separate `web` and `worker` build targets
-- one **`docker-compose.yml`** that runs `postgres`, `redis`, `web`, and
-  `worker`
+- one **`docker-compose.yml`** that runs `redis`, `web`, and `worker`
+  (Postgres is an external managed database — Neon)
 
 ## Stack
 
@@ -154,12 +154,15 @@ Variables by concern:
   `AUTH_TRUST_HOST`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_GITHUB_ID`,
   `AUTH_GITHUB_SECRET`
 - **Email** — `AUTH_RESEND_KEY` (the single Resend key), `AUTH_EMAIL_FROM`
-- **Database** — `DATABASE_URL` (plus `POSTGRES_DB` / `POSTGRES_USER` /
-  `POSTGRES_PASSWORD` for the Compose-managed Postgres)
-- **Redis** — `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_TLS`
+- **Database** — `DATABASE_URL` (external managed Postgres — Neon; the compose
+  stack does not run its own Postgres)
+- **Redis** — `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_TLS` (always
+  the compose-managed Redis)
 - **Worker link** — `BACKEND_URL`, `WORKER_CALLBACK_SECRET`
-- **AI** — `GOOGLE_API_KEY`, `DEEPSEEK_API_KEY`, `AI_GENERATION_MODELS`,
-  `AI_GENERATION_MAX_OUTPUT_TOKENS` (read by both web and worker)
+- **AI** — `AI_GENERATION_MODELS`, `AI_GENERATION_MAX_OUTPUT_TOKENS` (read by
+  both web and worker), plus the API key for each referenced provider
+  (`DEEPSEEK_API_KEY`, `GOOGLE_API_KEY`); a key is only required when its
+  provider appears in the model list
 - **Storage (Cloudflare R2)** — `CLOUDFLARE_ACCOUNT_ID`,
   `CLOUDFLARE_ACCESS_KEY_ID`, `CLOUDFLARE_SECRET_ACCESS_KEY`, `BUCKET_NAME`
 - **PDF rendering** — `PUPPETEER_EXECUTABLE_PATH`
@@ -170,10 +173,10 @@ Variables by concern:
 ## Deployment
 
 `docker-compose.yml` builds `web` and `worker` from the same `Dockerfile`
-(targets `web` and `worker`) and starts the `postgres` and `redis` services
-alongside them. For Coolify, paste `.env.production.docker.example` (with
-placeholders replaced) and let the connected GitHub App source auto-deploy on
-push.
+(targets `web` and `worker`) and starts the `redis` service alongside them.
+Postgres is external (Neon) via `DATABASE_URL`. For Coolify, paste
+`.env.production.docker.example` (with placeholders replaced) and let the
+connected GitHub App source auto-deploy on push.
 
 The Compose stack does **not** run Prisma migrations automatically; applying the
 schema is a manual step against a confirmed `DATABASE_URL`.
