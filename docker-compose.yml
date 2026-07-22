@@ -99,7 +99,7 @@ services:
       CLOUDFLARE_ACCESS_KEY_ID: ${CLOUDFLARE_ACCESS_KEY_ID}
       CLOUDFLARE_SECRET_ACCESS_KEY: ${CLOUDFLARE_SECRET_ACCESS_KEY}
       BUCKET_NAME: ${BUCKET_NAME}
-      PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
       PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
     volumes:
       - worker-temp:/app/worker/temp

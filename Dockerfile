@@ -37,19 +37,16 @@ CMD ["bun", "run", "start"]
 
 FROM base AS worker
 ENV NODE_ENV=production
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+# Debian's chromium ships for both amd64 and arm64; Google's chrome-stable deb
+# is amd64-only and cannot run on the arm64 host this stack deploys to.
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
+    chromium \
     fonts-liberation \
-    gnupg \
-    wget \
-  && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg \
-  && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends google-chrome-stable \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=deps /app/node_modules ./node_modules
