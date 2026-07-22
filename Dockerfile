@@ -36,6 +36,10 @@ COPY --from=builder /app/next.config.ts ./next.config.ts
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
+# node_modules came from the deps stage (install only); the Prisma client is
+# generated in the builder stage, so regenerate it here for the runtime image.
+RUN bunx prisma generate
+
 EXPOSE 3000
 CMD ["bun", "run", "start"]
 
