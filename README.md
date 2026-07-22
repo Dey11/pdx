@@ -59,7 +59,7 @@ APIs:
 - Tailwind CSS 4
 - Prisma 7 with `@prisma/adapter-pg`
 - Better Auth 1.6
-- BullMQ 5.77
+- BullMQ 5.80
 - Cloudflare R2 via AWS S3 SDK
 - DeepSeek V4 Flash through Vercel AI SDK with Gemini fallback support
 - Dodo Payments webhook verification
@@ -124,7 +124,7 @@ This package uses Bun.
 
 `prisma.config.ts` owns the Prisma datasource URL for Prisma 7. `bunx prisma generate` and `bun run build` can run without a live database; do not run `bunx prisma db push`, migrations, or deploy commands until the target `DATABASE_URL` is confirmed.
 
-ESLint is pinned to `9.39.4` because ESLint 10 currently crashes through the React plugin used by `eslint-config-next@16.2.6`.
+ESLint is pinned to `9.39.4` because ESLint 10 currently crashes through the React plugin used by `eslint-config-next@16.2.11`.
 
 Typical local commands after dependencies are installed:
 
