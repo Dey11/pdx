@@ -28,6 +28,9 @@ services:
       redis:
         condition: service_healthy
     environment:
+      # Coolify magic var: routes the domain to this service's port 3000 through
+      # the Coolify proxy. Overridden per-deployment via the app's compose domains.
+      SERVICE_FQDN_WEB_3000: ${SERVICE_FQDN_WEB_3000:-http://localhost:3000}
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
@@ -60,8 +63,10 @@ services:
       ADMIN_KEY: ${ADMIN_KEY}
       NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
       NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
-    ports:
-      - "${WEB_PORT:-3000}:3000"
+    # No host port publish: the Coolify proxy routes the domain to this exposed
+    # port. For local host access use docker-compose.override.yml.
+    expose:
+      - "3000"
     healthcheck:
       test: ["CMD-SHELL", "bun -e \"fetch('http://127.0.0.1:3000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
       interval: 30s
