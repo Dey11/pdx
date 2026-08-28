@@ -5,6 +5,8 @@
 AI study material generator. Paste a syllabus and NoteFormula generates
 comprehensive, exam-ready PDF study notes and question banks.
 
+Operational and architectural documentation lives in [`docs/`](docs/README.md).
+
 This repository is a single deployable unit:
 
 - a **Next.js web app** at the repo root (marketing pages, dashboard, auth, API
