@@ -6,7 +6,7 @@ Target URL: `https://pdx.sdey.me`
 
 ## Goal
 
-Relaunch NoteFormula as a free, bring-your-own-key product. Every account supplies an API key for an OpenAI-compatible provider. The release removes the pricing surface and active billing and credit system, preserves historical billing rows without using them, upgrades the supported dependency set, and deploys a clean Docker Compose application to Coolify.
+Relaunch NoteFormula as a free, bring-your-own-key product. Every account supplies an API key for an OpenAI-compatible provider. The release keeps `/pricing` as a free-BYOK explanation while removing paid plans and the active billing and credit system, preserves historical billing rows without using them, upgrades the supported dependency set, and deploys a clean Docker Compose application to Coolify.
 
 ## Settled product decisions
 
@@ -17,7 +17,7 @@ Relaunch NoteFormula as a free, bring-your-own-key product. Every account suppli
 - Each preset supplies a base URL and editable default model ID. Custom requires an HTTPS base URL, model ID, and API key.
 - Saving a configuration runs a small real structured-output request. Only a successful configuration is stored.
 - API keys are encrypted in PostgreSQL. They are not hashed, because the worker must recover the original key to call the provider.
-- Remove `/pricing` and every active pricing, purchase, credit, and billing surface.
+- Keep `/pricing` as a clear $0 BYOK explanation. Remove plan purchasing, credits, checkout, and every active billing surface.
 - Transaction, coupon, subscription, credit, and reserved-credit columns and tables remain dormant in the database. Application code stops reading and writing them.
 - Initial launch uses email/password registration and sign-in without email verification. Google, GitHub, and Resend-backed password reset remain supported but disabled until their complete credentials are configured.
 - Dependency upgrades stay within compatible majors. Breaking upgrades such as AI SDK 7, BullMQ 6, ESLint 10, Prisma 8, and Recharts 3 are outside this release.
@@ -152,7 +152,7 @@ Saving a credential runs a minimal structured-output request through `@ai-sdk/op
 - Remove Dodo Payments and `standardwebhooks` after no imports remain.
 - Remove product IDs, checkout URLs, webhook secrets, admin coupon secrets, and payment environment variables.
 - Remove Billing, Redeem, and Transactions settings tabs. Replace them with the provider configuration.
-- Remove the pricing route and its purchase UI.
+- Replace the pricing plans and purchase UI with a $0 BYOK explanation. Keep the route in navigation and the sitemap.
 - Remove credit balances, estimated-credit copy, reservation checks, insufficient-credit errors, settlement, and deductions from both generation flows.
 - Remove billing and credit wording from login, marketing metadata, navigation, settings, legal pages, and email copy.
 
@@ -270,8 +270,8 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 ### Phase 4: product and auth UI, implementation completed
 
 - Build the reusable provider form, first-run dialog, server-side generation gate, and Settings view.
-- Remove the pricing route and all purchase behavior.
-- Remove billing settings and primary pricing navigation.
+- Replace pricing plans with the free BYOK page and remove all purchase behavior.
+- Remove billing settings while keeping pricing navigation as product explanation.
 - Update copy, legal pages, metadata, and privacy disclosure.
 - Verify email signup/sign-in with optional providers hidden when credentials are absent.
 - Include Better Auth 1.7's required account `issuer` identity field and compound uniqueness in the Prisma schema and migration history.
@@ -319,7 +319,7 @@ The release passes focused Bun tests, lint, type checking, Worker compilation, t
 - Settings can save, replace, revalidate, and delete a credential without ever returning the key.
 - Invalid key, model, endpoint, rate limit, and structured-output failures have safe, distinct messages.
 - Provider credentials never appear in browser responses, Redis jobs, logs, traces, analytics, or generated PDFs.
-- The pricing route and billing endpoints return 404 because they no longer exist.
+- The pricing route explains the free BYOK model; billing and payment endpoints return 404 because they no longer exist.
 - Credit balances and estimated-credit copy are absent from active product flows.
 
 ### Production

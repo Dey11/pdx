@@ -32,11 +32,11 @@ Every account must configure a provider before generation. Presets cover OpenAI,
 
 Provider API keys are encrypted in PostgreSQL with AES-256-GCM and `BYOK_ENCRYPTION_KEY`. APIs return only safe metadata and a short key hint. Redis jobs contain material IDs and generation inputs, never credentials. Worker resolves the material owner’s credential from Web immediately before inference over an endpoint protected by `WORKER_CALLBACK_SECRET`.
 
-The product has no pricing route, plans, credits, checkout, coupons, transactions, or payment webhooks. Historical billing columns and tables remain dormant for a future deliberate data migration.
+The product has no paid plans, credits, checkout, coupons, transactions, or payment webhooks. `/pricing` explains that PDX is free, users bring their own provider key, and any model usage is billed directly by that provider. Historical billing columns and tables remain dormant for a future deliberate data migration.
 
 ## Routes
 
-Pages include `/`, `/about`, `/policy`, `/terms`, `/login`, `/dashboard`, both generation routes, `/history`, and `/settings`.
+Pages include `/`, `/about`, `/pricing`, `/policy`, `/terms`, `/login`, `/dashboard`, both generation routes, `/history`, and `/settings`.
 
 Important APIs:
 

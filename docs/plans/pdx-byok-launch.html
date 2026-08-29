@@ -187,7 +187,7 @@ User-selected OpenAI-compatible provider</code></pre>
             <li>Remove Dodo Payments, <code>standardwebhooks</code>, product IDs, checkout links, and billing environment variables.</li>
             <li>Remove credit gates, reservations, deductions, and estimated-credit UI.</li>
             <li>Replace Billing, Redeem, and Transactions settings with provider configuration.</li>
-            <li>Remove <code>/pricing</code>, its purchase UI, and all primary navigation to pricing.</li>
+            <li>Keep <code>/pricing</code> as a $0 BYOK explanation in navigation and the sitemap. Remove its plans, checkout, and purchase UI.</li>
             <li>Keep historical billing tables and columns dormant. No release-time destructive migration.</li>
           </ul>
         </section>
@@ -240,7 +240,7 @@ User-selected OpenAI-compatible provider</code></pre>
           <div class="phase"><b>Phase 1 ✓</b><div><h3>Dependency checkpoint</h3><p>Compatible packages and the Bun lockfile are updated. Lint, type checking, Worker compilation, and the production build pass.</p></div></div>
           <div class="phase"><b>Phase 2</b><div><h3>Credential module</h3><p>Baseline migrations, add credential data, encryption, URL policy, provider presets, validation, and focused module tests.</p></div></div>
           <div class="phase"><b>Phase 3</b><div><h3>Generation migration</h3><p>Resolve each user’s provider for Web and Worker, remove server fallback and every credit gate, and keep credentials out of Redis.</p></div></div>
-          <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, pricing removal, copy and legal updates, and all three authentication flows.</p></div></div>
+          <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, free BYOK pricing explanation, removal of purchase behavior, copy and legal updates, and all three authentication flows.</p></div></div>
           <div class="phase"><b>Phase 5</b><div><h3>Production Compose</h3><p>Add migration orchestration, tighten health checks, render configuration, and build ARM64 images.</p></div></div>
           <div class="phase"><b>Phase 6</b><div><h3>Parallel Coolify cutover completed</h3><p>The replacement is healthy at <code>pdx.sdey.me</code>. The old unhealthy app remains untouched pending an explicit stop instruction.</p></div></div>
         </section>

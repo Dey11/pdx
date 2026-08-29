@@ -17,6 +17,10 @@ const headerContents = [
     name: "ABOUT",
     url: "/about",
   },
+  {
+    name: "PRICING",
+    url: "/pricing",
+  },
 ];
 
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
@@ -33,7 +37,7 @@ const Header = () => {
           className="mb-1 hidden md:block"
         />
       </Link>
-      <div className="mx-auto flex items-center justify-center gap-4 sm:gap-16">
+      <div className="mx-auto flex items-center justify-center gap-3 sm:gap-10 lg:gap-16">
         {headerContents.map((item) => (
           <Link
             key={item.name}
