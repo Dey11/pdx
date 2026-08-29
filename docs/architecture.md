@@ -20,7 +20,7 @@ Next.js Web ---------------- PostgreSQL / Neon
                               `--- Chromium --- Cloudflare R2
 ```
 
-Compose runs `migrate`, `redis`, `web`, and `worker`. Only Web is public.
+Compose runs `migrate`, `redis`, `web`, and `worker`. Only Web is public. Web and Worker images contain production dependencies only; the one-shot migrate target owns Prisma CLI tooling.
 
 ## Credential boundary
 

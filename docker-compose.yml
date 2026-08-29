@@ -24,14 +24,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: web
-      args:
-        NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
-        NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
+      target: migrate
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL}
-    command: ["bunx", "prisma", "migrate", "deploy"]
 
   web:
     build:

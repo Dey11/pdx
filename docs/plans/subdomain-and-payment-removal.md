@@ -210,6 +210,8 @@ The dependency checkpoint is complete and verified:
 
 Take other patch/minor updates only when they are touched or required by the selected versions. Keep React `19.2.x`, TypeScript `6.x`, ESLint `9.x`, and all unrelated major versions unchanged.
 
+A final compatible-only refresh also updated the Radix primitives, Framer Motion 12, Input OTP, Lucide, Markdown It 14, PostHog, Puppeteer 25, and Sonner. Remaining audit findings have no compatible direct update in this release and originate in upstream/transitive tool or optional-adapter packages. Long-running images install production dependencies only and explicitly exclude the Prisma migration CLI; the one-shot migrate image owns that tooling.
+
 After each dependency group, run lint, type checking, Worker compilation, and the production build before feature changes continue.
 
 ## Database migration plan

@@ -14,6 +14,13 @@ FROM base AS deps
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
+FROM base AS prod-deps
+COPY package.json bun.lock ./
+# Prisma is an optional peer pulled into Bun's production install; the running
+# services need @prisma/client, not the migration CLI owned by the migrate stage.
+RUN bun install --frozen-lockfile --production \
+  && rm -rf /app/node_modules/prisma
+
 FROM deps AS web-builder
 ARG NEXT_PUBLIC_POSTHOG_HOST
 ARG NEXT_PUBLIC_POSTHOG_KEY
@@ -26,22 +33,23 @@ FROM deps AS worker-builder
 COPY . .
 RUN bun run worker:build
 
+FROM deps AS migrate
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
+CMD ["bunx", "prisma", "migrate", "deploy"]
+
 FROM base AS web
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=web-builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=web-builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=web-builder /app/.next ./.next
 COPY --from=web-builder /app/public ./public
 COPY --from=web-builder /app/package.json ./package.json
 COPY --from=web-builder /app/next.config.ts ./next.config.ts
-COPY --from=web-builder /app/prisma ./prisma
-COPY --from=web-builder /app/prisma.config.ts ./prisma.config.ts
-
-# node_modules came from the deps stage (install only); the Prisma client is
-# generated in the builder stage, so regenerate it here for the runtime image.
-RUN bunx prisma generate
 
 EXPOSE 3000
 CMD ["bun", "run", "start"]
@@ -60,7 +68,7 @@ RUN apt-get update \
     fonts-liberation \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=worker-builder /app/package.json ./package.json
 COPY --from=worker-builder /app/worker/dist ./worker/dist
 
