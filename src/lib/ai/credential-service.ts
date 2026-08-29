@@ -68,7 +68,7 @@ const resolveInput = async (
   };
 };
 
-/** Makes a tiny structured request so invalid keys, URLs, and model IDs fail before save. */
+/** Makes a small structured request so invalid keys, URLs, and model IDs fail before save. */
 const verifyCredential = async (
   credential: ResolvedAiCredential
 ): Promise<void> => {
@@ -77,7 +77,9 @@ const verifyCredential = async (
     schema: z.object({ ok: z.literal(true) }),
     prompt: `Return only this JSON object: ${JSON.stringify({ ok: true })}`,
     maxRetries: 0,
-    maxOutputTokens: 32,
+    // Reasoning models count hidden reasoning against this limit before they
+    // emit the visible JSON response. A 32-token cap was intermittently empty.
+    maxOutputTokens: 256,
     abortSignal: AbortSignal.timeout(65_000),
   });
 };
