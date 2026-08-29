@@ -1,7 +1,6 @@
+import type { OpenAICompatibleProviderSettings } from "@ai-sdk/openai-compatible";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
-
-import type { OpenAICompatibleProviderSettings } from "@ai-sdk/openai-compatible";
 
 export type AddressResolver = (hostname: string) => Promise<string[]>;
 type ProviderFetch = NonNullable<OpenAICompatibleProviderSettings["fetch"]>;
@@ -51,7 +50,7 @@ const isForbiddenIpv6 = (address: string): boolean => {
     normalized.startsWith("::") ||
     normalized.startsWith("fc") ||
     normalized.startsWith("fd") ||
-    /^fe[89ab]/.test(normalized) ||
+    normalized.startsWith("fe") ||
     normalized.startsWith("ff")
   );
 };

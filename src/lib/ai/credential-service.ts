@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/db";
 
+import type { AiCredentialStatus } from "./credential-contract";
 import {
   decryptApiKey,
   encryptApiKey,
@@ -20,18 +21,6 @@ export const aiCredentialInputSchema = z.object({
 });
 
 export type AiCredentialInput = z.infer<typeof aiCredentialInputSchema>;
-
-export type AiCredentialStatus = {
-  configured: boolean;
-  dismissed: boolean;
-  credential: {
-    provider: string;
-    baseUrl: string;
-    modelId: string;
-    keyHint: string;
-    verifiedAt: string;
-  } | null;
-};
 
 export class AiCredentialRequiredError extends Error {
   readonly code = "AI_CREDENTIAL_REQUIRED";
@@ -86,7 +75,7 @@ const verifyCredential = async (
   await generateObject({
     model: createGenerationModel(credential),
     schema: z.object({ ok: z.literal(true) }),
-    prompt: "Return only this JSON object: {\"ok\":true}",
+    prompt: `Return only this JSON object: ${JSON.stringify({ ok: true })}`,
     maxRetries: 0,
     maxOutputTokens: 32,
     abortSignal: AbortSignal.timeout(65_000),
@@ -153,51 +142,57 @@ export const saveAiCredential = async (
   const encryptedKey = encryptApiKey(input.apiKey, getEncryptionKey());
   const verifiedAt = new Date();
 
-  await prisma.$transaction(async (transaction) => {
-    const activeMaterial = await transaction.material.findFirst({
-      where: { userId, status: { in: ["pending", "inprogress"] } },
-      select: { id: true },
-    });
-    if (activeMaterial) throw new CredentialChangeBlockedError();
+  await prisma.$transaction(
+    async (transaction) => {
+      const activeMaterial = await transaction.material.findFirst({
+        where: { userId, status: { in: ["pending", "inprogress"] } },
+        select: { id: true },
+      });
+      if (activeMaterial) throw new CredentialChangeBlockedError();
 
-    await transaction.aiCredential.upsert({
-      where: { userId },
-      create: {
-        userId,
-        provider: credential.provider,
-        baseUrl: credential.baseUrl,
-        modelId: credential.modelId,
-        encryptedKey,
-        keyHint: getApiKeyHint(input.apiKey),
-        verifiedAt,
-      },
-      update: {
-        provider: credential.provider,
-        baseUrl: credential.baseUrl,
-        modelId: credential.modelId,
-        encryptedKey,
-        keyHint: getApiKeyHint(input.apiKey),
-        verifiedAt,
-      },
-    });
-    await transaction.user.update({
-      where: { id: userId },
-      data: { aiSetupPromptDismissedAt: null },
-    });
-  });
+      await transaction.aiCredential.upsert({
+        where: { userId },
+        create: {
+          userId,
+          provider: credential.provider,
+          baseUrl: credential.baseUrl,
+          modelId: credential.modelId,
+          encryptedKey,
+          keyHint: getApiKeyHint(input.apiKey),
+          verifiedAt,
+        },
+        update: {
+          provider: credential.provider,
+          baseUrl: credential.baseUrl,
+          modelId: credential.modelId,
+          encryptedKey,
+          keyHint: getApiKeyHint(input.apiKey),
+          verifiedAt,
+        },
+      });
+      await transaction.user.update({
+        where: { id: userId },
+        data: { aiSetupPromptDismissedAt: null },
+      });
+    },
+    { isolationLevel: "Serializable" }
+  );
 
   return getAiCredentialStatus(userId);
 };
 
 export const deleteAiCredential = async (userId: string): Promise<void> => {
-  await prisma.$transaction(async (transaction) => {
-    const activeMaterial = await transaction.material.findFirst({
-      where: { userId, status: { in: ["pending", "inprogress"] } },
-      select: { id: true },
-    });
-    if (activeMaterial) throw new CredentialChangeBlockedError();
-    await transaction.aiCredential.deleteMany({ where: { userId } });
-  });
+  await prisma.$transaction(
+    async (transaction) => {
+      const activeMaterial = await transaction.material.findFirst({
+        where: { userId, status: { in: ["pending", "inprogress"] } },
+        select: { id: true },
+      });
+      if (activeMaterial) throw new CredentialChangeBlockedError();
+      await transaction.aiCredential.deleteMany({ where: { userId } });
+    },
+    { isolationLevel: "Serializable" }
+  );
 };
 
 export const dismissAiSetupPrompt = async (userId: string): Promise<void> => {

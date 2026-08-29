@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { completionQueue } from "..";
 import { workerCallbackHeaders } from "../callback";
-import { BUCKET_NAME } from "../constants";
+import { BUCKET_NAME, WORKER_TEMP_DIR } from "../constants";
 import { generatePdfFromMarkdown } from "../lib/generate-pdf";
 import { uploadPdfToR2 } from "../object-storage";
 import { qnaGeneratorSystemPrompt } from "../prompts/generator";
@@ -18,7 +18,7 @@ dotenv.config();
 
 export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
   const materialId = state.topics[0].materialId;
-  const tempDir = path.join(__dirname, `../../${materialId}`);
+  const tempDir = path.join(WORKER_TEMP_DIR, materialId);
 
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir);
@@ -77,8 +77,8 @@ If it is auto, choose the mix. Keep long questions limited. Complexity: ${state.
         },
         { headers: workerCallbackHeaders() }
       );
-    } catch (error) {
-      console.error(error);
+    } catch {
+      console.error(`Question generation failed for task ${topic.id}`);
       await axios.post(
         `${process.env.BACKEND_URL}/api/generation/update-task`,
         {

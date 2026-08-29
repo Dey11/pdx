@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: implementation and local verification complete; production credentials, database adoption, and parallel Coolify deployment pending.
+Status: implementation and local verification complete; deployment blocked by the Neon compute quota, missing OAuth/Resend credentials, and unavailable authoritative DNS credentials.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -47,6 +47,8 @@ Three consecutive checks on 2026-08-29 produced the same response.
 - The deployed Web and Worker images use commit `ae7c64b`; `origin/master` is one code commit newer, and the local branch also contains the documentation checkpoint.
 - Live Google OAuth, GitHub OAuth, and Resend variables are empty. Those sign-in/reset paths cannot be considered production-ready.
 - `pdx.sdey.me` currently has no DNS record.
+- The confirmed Neon target currently rejects connections because its account or project has exceeded the compute-time quota. Schema inspection, baseline adoption, migration, and application health cannot proceed until that quota is restored.
+- `sdey.me` uses Namecheap BasicDNS nameservers. The available Cloudflare token does not own that zone, and no Namecheap credential is present, so the A record requires direct Namecheap access or a manual DNS change.
 
 ### Secondary checks required during replacement deployment
 
@@ -124,7 +126,7 @@ Do not describe the key as hashed.
 
 ### Provider registry and URL safety
 
-The preset registry owns public metadata only: label, base URL, default model ID, and help URL. Confirm every default model against the provider's current official model list during implementation.
+The preset registry owns public metadata only: label, base URL, and default model ID. Every default model is confirmed against the provider's current official model list during implementation.
 
 Custom endpoints introduce an SSRF path. The server must:
 
@@ -163,9 +165,9 @@ The generation pipeline continues to record token usage for diagnostics, but tok
 Implement one provider-setup form used by both the first-run dialog and Settings. It contains:
 
 - provider preset selector;
-- Custom provider name and base URL fields when Custom is selected;
+- Custom HTTPS base URL field when Custom is selected;
 - editable model ID;
-- password-style API-key input with reveal control;
+- password-style API-key input that is cleared after save;
 - concise encryption/provider-disclosure note;
 - Validate and save action with specific, safe errors;
 - masked saved-key hint, last verification time, replace, and delete actions in Settings.
@@ -250,7 +252,7 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 
 - Establish Prisma migration history and add the credential schema.
 - Implement authenticated encryption, preset registry, URL policy, validation probe, status/save/delete operations, and internal Worker resolution.
-- Add focused tests at the module interface, including encryption tamper detection, redaction, URL rejection, ownership, and pending-generation rules.
+- Add focused tests at the pure module and response boundaries, including encryption tamper detection, redaction, URL rejection, and credential/queue leak prevention. Database ownership and pending-generation behavior remains an integration gate against the adopted schema.
 
 ### Phase 3: generation migration, completed
 
@@ -258,7 +260,7 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Remove server model fallback and provider environment validation.
 - Keep keys out of job payloads and logs.
 - Remove all credit gates, reservation, settlement, and credit response fields.
-- Add focused route and Worker contract tests.
+- Add focused credential-response and Worker queue-contract tests.
 
 ### Phase 4: product and auth UI, implementation completed
 
@@ -283,7 +285,7 @@ Google/GitHub OAuth and Resend remain unverified until production credentials ar
 2. Create a new Docker Compose application from `Dey11/pdx.git`, branch `master`, without modifying the current application.
 3. Add only the required runtime variables and secrets.
 4. Configure the Web domain as `https://pdx.sdey.me:3000`.
-5. Create a DNS-only A record for `pdx.sdey.me` pointing to the confirmed Coolify server IP.
+5. Create an A record for `pdx.sdey.me` in the authoritative Namecheap DNS zone, pointing to the re-confirmed Coolify server IP.
 6. Deploy and wait for migrate, Redis, Web, and Worker to reach their expected states.
 7. Verify public health, TLS, authentication, credential setup, one controlled theory generation, one controlled question-bank generation, R2 download, logs, and restart recovery.
 8. Stop the old broken application only after the replacement passes. Do not delete the old resource or volumes in this release.

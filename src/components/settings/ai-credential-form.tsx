@@ -6,6 +6,16 @@ import { useState } from "react";
 import { KeyRound, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,10 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { AiCredentialStatus } from "@/lib/ai/credential-service";
+import {
+  type AiCredentialStatus,
+  aiCredentialStatusSchema,
+} from "@/lib/ai/credential-contract";
 import {
   type AiProviderId,
   getProviderConfig,
+  isAiProviderId,
   providerConfigs,
   providerIds,
 } from "@/lib/ai/providers";
@@ -56,6 +70,7 @@ export const AiCredentialForm = ({
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
 
   const changeProvider = (nextProvider: AiProviderId) => {
     const config = getProviderConfig(nextProvider);
@@ -82,8 +97,14 @@ export const AiCredentialForm = ({
         return;
       }
 
+      const status = aiCredentialStatusSchema.safeParse(body);
+      if (!status.success) {
+        setError("The server returned an invalid credential status.");
+        return;
+      }
+
       setApiKey("");
-      onSaved?.(body as AiCredentialStatus);
+      onSaved?.(status.data);
       router.refresh();
     } catch {
       setError("Could not reach the server. Try again.");
@@ -93,7 +114,6 @@ export const AiCredentialForm = ({
   };
 
   const remove = async () => {
-    if (!window.confirm("Remove this AI provider from your account?")) return;
     setError("");
     setIsDeleting(true);
 
@@ -105,6 +125,7 @@ export const AiCredentialForm = ({
         return;
       }
       router.refresh();
+      setShowRemoveConfirmation(false);
     } catch {
       setError("Could not reach the server. Try again.");
     } finally {
@@ -134,7 +155,9 @@ export const AiCredentialForm = ({
         <Label htmlFor="ai-provider">Provider</Label>
         <Select
           value={provider}
-          onValueChange={(value) => changeProvider(value as AiProviderId)}
+          onValueChange={(value) => {
+            if (isAiProviderId(value)) changeProvider(value);
+          }}
         >
           <SelectTrigger id="ai-provider" className="h-10 w-full">
             <SelectValue />
@@ -218,13 +241,40 @@ export const AiCredentialForm = ({
             variant="outline"
             className="text-destructive hover:text-destructive h-10"
             disabled={isSaving || isDeleting}
-            onClick={remove}
+            onClick={() => setShowRemoveConfirmation(true)}
           >
             {isDeleting ? <Loader2 className="animate-spin" /> : <Trash2 />}
             Remove provider
           </Button>
         )}
       </div>
+
+      <AlertDialog
+        open={showRemoveConfirmation}
+        onOpenChange={setShowRemoveConfirmation}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove this AI provider?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Generation will stay unavailable until you verify another
+              provider.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isDeleting}
+              onClick={(event) => {
+                event.preventDefault();
+                void remove();
+              }}
+            >
+              {isDeleting ? "Removing…" : "Remove provider"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   );
 };

@@ -42,6 +42,8 @@ services:
         NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
         NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
     restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -102,6 +104,8 @@ services:
         NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
         NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
     restart: unless-stopped
+    init: true
+    stop_grace_period: 2m
     depends_on:
       redis:
         condition: service_healthy
@@ -122,6 +126,7 @@ services:
       BUCKET_NAME: ${BUCKET_NAME}
       PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
       PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+      WORKER_TEMP_DIR: /app/worker/temp
     volumes:
       - worker-temp:/app/worker/temp
     healthcheck:

@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "node:path";
 
 // BullMQ queue names. These mirror src/lib/constants.ts on the web side
 // (THEORY_QUEUE_NAME / QBANK_QUEUE_NAME / MERGE_PDF_QUEUE_NAME /
@@ -8,6 +9,8 @@ export const QUEUE_NAME = "theoryQueue";
 export const QNA_QUEUE_NAME = "qbankQueue";
 export const BUCKET_NAME = process.env.BUCKET_NAME ?? "test";
 export const MERGE_PDF_QUEUE_NAME = "mergePdfQueue";
+export const WORKER_TEMP_DIR =
+  process.env.WORKER_TEMP_DIR ?? path.resolve(process.cwd(), "worker/temp");
 
 // Shared secret sent as the `x-worker-secret` header on every callback POST to
 // the web app. Verified there by src/lib/worker-auth.ts. Kept in sync via the

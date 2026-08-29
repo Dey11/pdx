@@ -18,6 +18,8 @@ On 2026-08-29, Coolify reported the old application as `running:unhealthy`, whil
 
 The deployed image was also behind the repository. Google, GitHub, and Resend variables were empty, and `pdx.sdey.me` had no DNS record. Those are independent release blockers even after routing is fixed.
 
+The confirmed Neon target currently returns PostgreSQL error `53000` because its compute-time quota is exhausted. `sdey.me` is authoritative on Namecheap BasicDNS, not the available Cloudflare account. No Namecheap DNS credential is in the host inventory.
+
 ## Required variables
 
 Start from `.env.production.docker.example`.
@@ -70,7 +72,7 @@ Verify the Resend sender used by `AUTH_EMAIL_FROM`. Email/password login works w
 
 1. Create the parallel Compose application from the GitHub App source.
 2. Set its Web domain to `https://pdx.sdey.me:3000`.
-3. Set required variables, then create a DNS-only A record for `pdx.sdey.me` pointing to the confirmed Coolify server IP.
+3. Set required variables, then create an A record for `pdx.sdey.me` in Namecheap DNS pointing to the re-confirmed Coolify server IP.
 4. Deploy and wait for `migrate` to complete, Redis and Web to become healthy, and Worker to start.
 5. Require `https://pdx.sdey.me/api/health` to return HTTP 200 with app/database `ok`.
 6. Verify `/`, `/login`, authentication redirects, provider setup, Settings, and existing downloads.

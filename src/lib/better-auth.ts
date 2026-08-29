@@ -46,12 +46,15 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     resetPasswordTokenExpiresIn: 60 * 30,
-    async sendResetPassword({ user, url }) {
-      await sendPasswordResetEmail({
+    sendResetPassword({ user, url }) {
+      void sendPasswordResetEmail({
         to: user.email,
         name: user.name,
         resetUrl: url,
+      }).catch(() => {
+        console.error("Password-reset email delivery failed");
       });
+      return Promise.resolve();
     },
   },
   socialProviders,

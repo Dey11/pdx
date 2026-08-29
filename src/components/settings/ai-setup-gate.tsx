@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { AiCredentialStatus } from "@/lib/ai/credential-service";
+import type { AiCredentialStatus } from "@/lib/ai/credential-contract";
 import { AI_SETUP_EVENT } from "@/lib/ai/setup-events";
 
 import { AiCredentialForm } from "./ai-credential-form";
@@ -27,6 +27,11 @@ export const AiSetupGate = ({
     !initialStatus.configured && !initialStatus.dismissed
   );
   const savedRef = useRef(false);
+
+  useEffect(() => {
+    setStatus(initialStatus);
+    if (!initialStatus.configured) savedRef.current = false;
+  }, [initialStatus]);
 
   useEffect(() => {
     const showSetup = () => setOpen(true);

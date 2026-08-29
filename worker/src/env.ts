@@ -10,12 +10,15 @@ const requiredInProduction = [
   "CLOUDFLARE_SECRET_ACCESS_KEY",
   "REDIS_HOST",
   "REDIS_PORT",
-  // Shared secret for authenticating callbacks to the web app's
-  // /api/generation/* routes. Required in production so callbacks are signed.
-  "WORKER_CALLBACK_SECRET",
 ];
 
 export function validateWorkerEnv() {
+  if (!process.env.WORKER_CALLBACK_SECRET) {
+    throw new Error(
+      "Missing required worker environment variable: WORKER_CALLBACK_SECRET"
+    );
+  }
+
   if (process.env.NODE_ENV !== "production") {
     return;
   }

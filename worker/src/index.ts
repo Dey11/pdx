@@ -13,6 +13,7 @@ import {
   MERGE_PDF_QUEUE_NAME,
   QNA_QUEUE_NAME,
   QUEUE_NAME,
+  WORKER_TEMP_DIR,
 } from "./constants";
 import { validateWorkerEnv } from "./env";
 import { generatePdfFromMarkdown } from "./lib/generate-pdf";
@@ -57,7 +58,7 @@ export const completionQueue = new Queue("completionQueue", {
   },
 });
 
-new Worker(
+const theoryWorker = new Worker(
   QUEUE_NAME,
   async (job: Job) => {
     try {
@@ -71,7 +72,7 @@ new Worker(
       const [theoryMarkdown, usage] = await generateTheoryAction(res.data);
 
       // Generate temporary PDF file path
-      const tempDir = path.join(__dirname, "../temp");
+      const tempDir = WORKER_TEMP_DIR;
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir);
       }
@@ -139,7 +140,7 @@ new Worker(
   }
 );
 
-new Worker(
+const qbankWorker = new Worker(
   QNA_QUEUE_NAME,
   async (job: Job) => {
     try {
@@ -164,7 +165,7 @@ new Worker(
   }
 );
 
-new Worker(
+const progressWorker = new Worker(
   "completionQueue",
   async (job: Job) => {
     try {
@@ -176,14 +177,14 @@ new Worker(
         },
         { headers: workerCallbackHeaders() }
       );
-    } catch (err) {
-      console.error(err);
+    } catch {
+      console.error("Progress callback failed");
     }
   },
   { connection }
 );
 
-new Worker(
+const mergeWorker = new Worker(
   MERGE_PDF_QUEUE_NAME,
   async (job: Job) => {
     try {
@@ -202,8 +203,8 @@ new Worker(
         },
         { headers: workerCallbackHeaders() }
       );
-    } catch (err) {
-      console.error("Error in mergePdfWorker:", err);
+    } catch {
+      console.error("PDF merge or completion callback failed");
     }
   },
   {
@@ -215,3 +216,22 @@ new Worker(
     },
   }
 );
+
+let isShuttingDown = false;
+const shutdown = async (signal: string) => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.info(`Received ${signal}; waiting for generation workers to close`);
+
+  await Promise.all([
+    theoryWorker.close(),
+    qbankWorker.close(),
+    progressWorker.close(),
+    mergeWorker.close(),
+  ]);
+  await completionQueue.close();
+  process.exit(0);
+};
+
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));

@@ -90,32 +90,43 @@ export async function enqueue(
     });
 
     if (jobs.type === "theory") {
-      await Promise.all(
-        res.map((element) =>
-          getTheoryQueue().add("theory", {
-            instruction: jobs.instruction,
-            complexity: jobs.complexity,
-            language: jobs.language,
-            course: jobs.course,
-            exam: jobs.exam,
-            subject: jobs.subject,
-            topic: element,
-            type: jobs.type,
-          })
-        )
-      );
+      const queue = getTheoryQueue();
+      try {
+        await queue.addBulk(
+          res.map((element) => ({
+            name: "theory",
+            data: {
+              instruction: jobs.instruction,
+              complexity: jobs.complexity,
+              language: jobs.language,
+              course: jobs.course,
+              exam: jobs.exam,
+              subject: jobs.subject,
+              topic: element,
+              type: jobs.type,
+            },
+          }))
+        );
+      } finally {
+        await queue.close();
+      }
     } else if (jobs.type === "qbank") {
-      await getQbankQueue().add("qbank", {
-        instruction: jobs.instruction,
-        complexity: jobs.complexity,
-        language: jobs.language,
-        course: jobs.course,
-        exam: jobs.exam,
-        subject: jobs.subject,
-        topics: res,
-        type: jobs.type,
-        weightage: jobs.weightage,
-      });
+      const queue = getQbankQueue();
+      try {
+        await queue.add("qbank", {
+          instruction: jobs.instruction,
+          complexity: jobs.complexity,
+          language: jobs.language,
+          course: jobs.course,
+          exam: jobs.exam,
+          subject: jobs.subject,
+          topics: res,
+          type: jobs.type,
+          weightage: jobs.weightage,
+        });
+      } finally {
+        await queue.close();
+      }
     }
     return true;
   } catch (err) {

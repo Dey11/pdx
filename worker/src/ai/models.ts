@@ -1,6 +1,6 @@
 import {
-  createOpenAICompatible,
   type OpenAICompatibleProviderSettings,
+  createOpenAICompatible,
 } from "@ai-sdk/openai-compatible";
 import axios from "axios";
 import { lookup } from "node:dns/promises";
@@ -47,9 +47,7 @@ const isPrivateAddress = (address: string): boolean => {
   if (normalized.startsWith("::ffff:")) {
     const mapped = normalized.slice("::ffff:".length);
     if (isIP(mapped) === 4) return isPrivateAddress(mapped);
-    const [high, low] = mapped
-      .split(":")
-      .map((part) => parseInt(part, 16));
+    const [high, low] = mapped.split(":").map((part) => parseInt(part, 16));
     if (Number.isFinite(high) && Number.isFinite(low)) {
       return isPrivateAddress(
         `${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`
@@ -64,7 +62,7 @@ const isPrivateAddress = (address: string): boolean => {
     normalized.startsWith("::") ||
     normalized.startsWith("fc") ||
     normalized.startsWith("fd") ||
-    /^fe[89ab]/.test(normalized) ||
+    normalized.startsWith("fe") ||
     normalized.startsWith("ff")
   );
 };
@@ -92,6 +90,41 @@ const assertSafeUrl = async (value: string): Promise<void> => {
   }
 };
 
+const limitResponseBody = (response: Response): Response => {
+  const maximumBytes = 10 * 1024 * 1024;
+  const contentLength = Number(response.headers.get("content-length"));
+  if (Number.isFinite(contentLength) && contentLength > maximumBytes) {
+    throw new Error("Provider response exceeded the size limit");
+  }
+  if (!response.body) return response;
+
+  let receivedBytes = 0;
+  const reader = response.body.getReader();
+  const body = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      const chunk = await reader.read();
+      if (chunk.done) {
+        controller.close();
+        return;
+      }
+      receivedBytes += chunk.value.byteLength;
+      if (receivedBytes > maximumBytes) {
+        await reader.cancel();
+        controller.error(
+          new Error("Provider response exceeded the size limit")
+        );
+        return;
+      }
+      controller.enqueue(chunk.value);
+    },
+    cancel(reason) {
+      return reader.cancel(reason);
+    },
+  });
+
+  return new Response(body, response);
+};
+
 type ProviderFetch = NonNullable<OpenAICompatibleProviderSettings["fetch"]>;
 
 const safeProviderFetch = (baseUrl: string): ProviderFetch => {
@@ -113,11 +146,7 @@ const safeProviderFetch = (baseUrl: string): ProviderFetch => {
       redirect: "error",
       signal,
     });
-    const contentLength = Number(response.headers.get("content-length"));
-    if (Number.isFinite(contentLength) && contentLength > 10 * 1024 * 1024) {
-      throw new Error("Provider response exceeded the size limit");
-    }
-    return response;
+    return limitResponseBody(response);
   };
 
   return Object.assign(safeFetch, { preconnect: () => undefined });

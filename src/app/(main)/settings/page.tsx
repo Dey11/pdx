@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { AiCredentialForm } from "@/components/settings/ai-credential-form";
 import { H2 } from "@/components/typography/h2";
 import { getAiCredentialStatus } from "@/lib/ai/credential-service";
@@ -5,7 +7,8 @@ import { auth } from "@/lib/auth";
 
 const Page = async () => {
   const session = await auth();
-  const status = await getAiCredentialStatus(session!.user.id);
+  if (!session?.user) redirect("/login");
+  const status = await getAiCredentialStatus(session.user.id);
 
   return (
     <main className="mx-auto min-h-[70dvh] max-w-[1200px] px-4 py-8">
