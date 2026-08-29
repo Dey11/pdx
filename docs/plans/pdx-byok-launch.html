@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDX BYOK launch plan</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0b0d;
+        --panel: #111318;
+        --panel-2: #171a20;
+        --text: #f5f7fa;
+        --muted: #a7afbd;
+        --line: #2b313b;
+        --accent: #f5d547;
+        --good: #61d095;
+        --bad: #ff7d7d;
+        --warn: #f5b95f;
+        --code: #d9e3f0;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      a { color: var(--accent); }
+      code { color: var(--code); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 100vh; }
+      nav {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        height: 100vh;
+        padding: 28px 20px;
+        border-right: 1px solid var(--line);
+        background: #0d0f12;
+        overflow: auto;
+      }
+      nav strong { display: block; margin-bottom: 16px; font-size: 14px; color: var(--accent); }
+      nav a { display: block; padding: 5px 0; color: var(--muted); text-decoration: none; }
+      nav a:hover { color: var(--text); }
+      main { width: min(1060px, 100%); padding: 52px clamp(24px, 5vw, 72px) 100px; }
+      h1 { margin: 0 0 8px; font-size: clamp(34px, 5vw, 56px); line-height: 1.05; letter-spacing: -0.04em; }
+      h2 { margin: 64px 0 18px; padding-top: 12px; font-size: 25px; letter-spacing: -0.02em; }
+      h3 { margin: 30px 0 10px; font-size: 18px; }
+      p, li { max-width: 78ch; }
+      .lede { margin: 0 0 28px; color: var(--muted); font-size: 18px; }
+      .meta { display: flex; flex-wrap: wrap; gap: 9px; margin: 22px 0 34px; }
+      .pill { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--muted); font-size: 13px; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .card { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+      .card h3 { margin-top: 0; }
+      .callout { margin: 18px 0; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--panel); }
+      .callout.bad { border-color: var(--bad); }
+      .callout.good { border-color: var(--good); }
+      .callout.warn { border-color: var(--warn); }
+      .status { font-weight: 700; color: var(--bad); }
+      .good-text { color: var(--good); }
+      .warn-text { color: var(--warn); }
+      pre { overflow: auto; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #08090b; color: var(--code); }
+      table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+      th, td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+      th { background: var(--panel-2); }
+      td { color: var(--muted); }
+      .phase { display: grid; grid-template-columns: 95px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); }
+      .phase b { color: var(--accent); }
+      .phase h3 { margin: 0 0 6px; }
+      .phase p { margin: 0; color: var(--muted); }
+      .checklist { padding-left: 0; list-style: none; }
+      .checklist li { position: relative; padding: 5px 0 5px 26px; }
+      .checklist li::before { content: "□"; position: absolute; left: 0; color: var(--accent); }
+      footer { margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+      @media (max-width: 780px) {
+        .shell { display: block; }
+        nav { position: static; width: auto; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+        nav a { display: inline-block; margin-right: 14px; }
+        main { padding-top: 34px; }
+        .grid { grid-template-columns: 1fr; }
+        .phase { grid-template-columns: 1fr; gap: 4px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <nav aria-label="Plan sections">
+        <strong>PDX launch plan</strong>
+        <a href="#outcome">Outcome</a>
+        <a href="#diagnosis">Live diagnosis</a>
+        <a href="#architecture">BYOK architecture</a>
+        <a href="#billing">Billing removal</a>
+        <a href="#auth">Authentication</a>
+        <a href="#dependencies">Dependencies</a>
+        <a href="#compose">Compose and data</a>
+        <a href="#sequence">Implementation</a>
+        <a href="#verification">Verification</a>
+        <a href="#blockers">Blockers</a>
+      </nav>
+
+      <main>
+        <section id="outcome">
+          <h1>PDX becomes a free BYOK product</h1>
+          <p class="lede">A staged implementation and cutover plan for mandatory per-account provider credentials, removal of active billing, a clean Coolify deployment, and launch at <code>pdx.sdey.me</code>.</p>
+          <div class="meta">
+            <span class="pill">Status: design settled</span>
+            <span class="pill">Target: https://pdx.sdey.me</span>
+            <span class="pill">Next.js target: 16.3.3</span>
+            <span class="pill">Deployment: parallel clean app</span>
+          </div>
+
+          <div class="grid">
+            <article class="card">
+              <h3>Product</h3>
+              <p>Every account supplies an OpenAI-compatible key. Users can browse without one, but all generation routes require a verified configuration.</p>
+            </article>
+            <article class="card">
+              <h3>Billing</h3>
+              <p>Checkout, credits, coupons, transactions, and payment webhooks leave the active product. Existing billing rows remain dormant.</p>
+            </article>
+            <article class="card">
+              <h3>Security</h3>
+              <p>Keys use authenticated encryption at rest. Plaintext never enters Redis, browser responses, analytics, or logs.</p>
+            </article>
+            <article class="card">
+              <h3>Hosting</h3>
+              <p>A new Coolify application is verified beside the broken one. Traffic moves only after health and end-to-end generation pass.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="diagnosis">
+          <h2>Why the current site is unusable</h2>
+          <div class="callout bad">
+            <span class="status">Confirmed failure:</span> three consecutive requests to <code>https://noteformula.cooldash.xyz/api/health</code> returned <code>503 no available server</code>.
+          </div>
+          <ul>
+            <li>Coolify reports the application as <code>running:unhealthy</code>.</li>
+            <li>Web listens on container port <code>3000</code>, but the stored domain omits the internal <code>:3000</code> routing suffix.</li>
+            <li>The generated host route has no explicit Web load-balancer port, and stale resource labels still target port <code>80</code>.</li>
+            <li>The deployed image is behind the repository, and the Google, GitHub, and Resend variables are empty.</li>
+            <li><code>pdx.sdey.me</code> has no DNS record yet.</li>
+          </ul>
+          <p>Coolify requires a domain such as <code>https://pdx.sdey.me:3000</code> when the Compose service listens on port 3000. The suffix selects the internal port. Public traffic still uses HTTPS port 443.</p>
+          <div class="callout warn">Routing is the first confirmed fault, not the only possible one. The replacement must still prove Neon, Redis, Worker callbacks, Chromium, and R2 from inside the clean stack.</div>
+        </section>
+
+        <section id="architecture">
+          <h2>BYOK architecture</h2>
+          <pre><code>Browser
+  |  authenticated setup and status
+  v
+Next.js Web -------- PostgreSQL / encrypted key envelope
+  |
+  |  queue jobs contain no credentials
+  v
+Redis / BullMQ
+  |
+  v
+Worker -- private authenticated request --> Web
+  |
+  v
+User-selected OpenAI-compatible provider</code></pre>
+
+          <h3>Credential record</h3>
+          <p>Store one credential per user: provider slug, normalized base URL, model ID, versioned encrypted envelope, masked key hint, and verification timestamps. Add an onboarding-dismissal timestamp to User.</p>
+
+          <h3>Encryption and retrieval</h3>
+          <p>Use AES-256-GCM with a dedicated Coolify secret. The Worker requests a credential by <code>materialId</code> through a private endpoint authenticated by the existing Worker secret. Web derives ownership, decrypts in memory, and returns a no-store response. Queue payloads never contain the key.</p>
+          <div class="callout good"><strong>Accurate user note:</strong> “Your API key is encrypted at rest, never shown again after saving, and used only for your generation requests. Your prompts and study content are sent directly to the provider you choose.”</div>
+          <p>Do not say &quot;hashed.&quot; Hashing is one-way, while provider calls require the original key.</p>
+
+          <h3>Provider setup</h3>
+          <p>Ship OpenAI, OpenRouter, DeepSeek, and Groq presets plus Custom. Presets supply an editable model default. Saving runs a tiny structured-output request through <code>@ai-sdk/openai-compatible</code>.</p>
+
+          <h3>Custom URL policy</h3>
+          <p>Custom endpoints accept HTTPS public hosts only. Reject credentials in URLs, private and metadata networks, forbidden DNS results, cross-origin redirects, arbitrary headers, oversized responses, and slow connections. Repeat DNS safety checks when generation starts.</p>
+        </section>
+
+        <section id="billing">
+          <h2>Remove active billing without deleting history</h2>
+          <ul>
+            <li>Delete payment-link, webhook, transaction, coupon, and credit endpoints.</li>
+            <li>Remove Dodo Payments, <code>standardwebhooks</code>, product IDs, checkout links, and billing environment variables.</li>
+            <li>Remove credit gates, reservations, deductions, and estimated-credit UI.</li>
+            <li>Replace Billing, Redeem, and Transactions settings with provider configuration.</li>
+            <li>Keep <code>/pricing</code> as a clearly archived page with no checkout action, and remove it from primary navigation.</li>
+            <li>Keep historical billing tables and columns dormant. No release-time destructive migration.</li>
+          </ul>
+        </section>
+
+        <section id="auth">
+          <h2>Authentication</h2>
+          <table>
+            <thead><tr><th>Method</th><th>Production requirement</th></tr></thead>
+            <tbody>
+              <tr><td>Google</td><td>Client ID and secret; callback <code>https://pdx.sdey.me/api/auth/callback/google</code></td></tr>
+              <tr><td>GitHub</td><td>Client ID and secret, email scope; callback <code>https://pdx.sdey.me/api/auth/callback/github</code></td></tr>
+              <tr><td>Email/password</td><td>No verification requirement; automatic sign-in remains enabled</td></tr>
+              <tr><td>Password reset</td><td>Resend API key and verified sender; production base URL set to <code>https://pdx.sdey.me</code></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="dependencies">
+          <h2>Dependency checkpoint</h2>
+          <table>
+            <thead><tr><th>Package</th><th>Move</th><th>Decision</th></tr></thead>
+            <tbody>
+              <tr><td><code>next</code></td><td>16.2.11 → 16.3.3</td><td>Upgrade</td></tr>
+              <tr><td><code>eslint-config-next</code></td><td>16.2.11 → 16.3.3</td><td>Keep aligned</td></tr>
+              <tr><td><code>ai</code></td><td>6.0.233 → latest 6.0.x</td><td>Compatible fixes</td></tr>
+              <tr><td><code>@ai-sdk/openai-compatible</code></td><td>absent → compatible 2.0.x</td><td>Add</td></tr>
+              <tr><td>DeepSeek and Google AI SDK adapters</td><td>installed → removed</td><td>Replace with BYOK adapter</td></tr>
+              <tr><td>Better Auth, Prisma, Zod, Resend, BullMQ</td><td>latest compatible majors</td><td>Update because touched</td></tr>
+              <tr><td>AI SDK 7, BullMQ 6, ESLint 10, Prisma 8</td><td>breaking majors</td><td>Defer</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="compose">
+          <h2>Compose and database</h2>
+          <p>The production stack has four roles: private Redis, a one-shot migration job, public Web on container port 3000, and private Worker. Web and Worker wait for Redis and migration completion. Worker also waits for healthy Web.</p>
+          <p>The repository currently has no Prisma migration history. First compare the live Neon schema, create and mark an existing-schema baseline, test it on an isolated database, then add the credential migration. Only after that should Compose run <code>prisma migrate deploy</code>.</p>
+          <ul>
+            <li>No public Redis, Worker, or migrate ports.</li>
+            <li>Named volumes for Redis and Worker scratch space.</li>
+            <li>Web health checks both process and database.</li>
+            <li>Worker health checks authenticated Redis connectivity.</li>
+            <li><code>BYOK_ENCRYPTION_KEY</code> exists only on Web.</li>
+            <li>No server-funded AI or payment secrets remain.</li>
+          </ul>
+        </section>
+
+        <section id="sequence">
+          <h2>Implementation sequence</h2>
+          <div class="phase"><b>Phase 1</b><div><h3>Dependency checkpoint</h3><p>Upgrade compatible packages, regenerate the Bun lockfile, verify, and commit separately.</p></div></div>
+          <div class="phase"><b>Phase 2</b><div><h3>Credential module</h3><p>Baseline migrations, add credential data, encryption, URL policy, provider presets, validation, and focused module tests.</p></div></div>
+          <div class="phase"><b>Phase 3</b><div><h3>Generation migration</h3><p>Resolve each user’s provider for Web and Worker, remove server fallback and every credit gate, and keep credentials out of Redis.</p></div></div>
+          <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, archived pricing, copy and legal updates, and all three authentication flows.</p></div></div>
+          <div class="phase"><b>Phase 5</b><div><h3>Production Compose</h3><p>Add migration orchestration, tighten health checks, render configuration, and build ARM64 images.</p></div></div>
+          <div class="phase"><b>Phase 6</b><div><h3>Parallel Coolify cutover</h3><p>Create a clean application, configure <code>https://pdx.sdey.me:3000</code>, add DNS, verify end to end, then stop the broken app without deleting it.</p></div></div>
+        </section>
+
+        <section id="verification">
+          <h2>Release gates</h2>
+          <ul class="checklist">
+            <li>Lint, type checking, focused tests, Worker build, and production build pass.</li>
+            <li>Credential save, replace, delete, redaction, tamper detection, and URL rejection pass.</li>
+            <li>Generation APIs reject missing credentials on the server.</li>
+            <li>No key appears in browser responses, logs, Redis, analytics, traces, or PDFs.</li>
+            <li>Public health returns 200 with database OK.</li>
+            <li>Google, GitHub, email signup/sign-in, and password reset work.</li>
+            <li>One theory and one question-bank job finish and download correctly.</li>
+            <li>Restarts preserve queued work and credential access.</li>
+          </ul>
+          <p class="good-text">Current baseline: lint and TypeScript checking pass before implementation.</p>
+        </section>
+
+        <section id="blockers">
+          <h2>Inputs required before deployment</h2>
+          <ul>
+            <li>Google OAuth client ID and secret with the production callback.</li>
+            <li>GitHub OAuth client ID and secret with the production callback and email scope.</li>
+            <li>Resend API key and verified sender.</li>
+            <li>Confirmation of the exact Neon production database before writes.</li>
+            <li>Execution-time authority for the Cloudflare DNS record and new Coolify application.</li>
+          </ul>
+          <div class="callout">No Coolify, DNS, database, or hosted application state changed while this plan was prepared.</div>
+        </section>
+
+        <footer>
+          Source of truth: <a href="subdomain-and-payment-removal.md">repository plan</a>. References: <a href="https://coolify.io/docs/knowledge-base/docker/compose">Coolify Docker Compose</a>, <a href="https://ai-sdk.dev/providers/openai-compatible-providers">AI SDK OpenAI-compatible provider</a>, <a href="https://www.npmjs.com/package/next">Next.js package</a>, and <a href="https://better-auth.com/docs/authentication/google">Better Auth Google setup</a>.
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
