@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: implementation and local verification complete; deployment awaits the exact new Neon target and a manual authoritative DNS change.
+Status: implementation and local verification complete; deployment awaits the new Neon's pooled/direct connection URLs and a manual authoritative DNS change.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -47,7 +47,7 @@ Three consecutive checks on 2026-08-29 produced the same response.
 - The deployed Web and Worker images use commit `ae7c64b`; `origin/master` is one code commit newer, and the local branch also contains the documentation checkpoint.
 - Live Google OAuth, GitHub OAuth, and Resend variables are empty. This matches the selected email-only launch; unavailable methods are hidden at runtime.
 - `pdx.sdey.me` currently has no DNS record.
-- The old Neon target rejects connections because its account or project has exceeded the compute-time quota. A new Neon database was selected for launch, but its exact connection target and data-adoption policy must be confirmed before migration writes.
+- The old Neon target rejects connections because its account or project has exceeded the compute-time quota. A clean, empty Neon launch database was selected, but its pooled and direct connection URLs must be supplied before migration writes.
 - `sdey.me` uses Namecheap BasicDNS nameservers. The available Cloudflare token does not own that zone, and no Namecheap credential is present, so the A record requires direct Namecheap access or a manual DNS change.
 
 ### Secondary checks required during replacement deployment
@@ -339,7 +339,7 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 
 ## External blockers before deployment
 
-- Exact connection URL for the selected new Neon database, supplied outside Git, plus a decision on a clean launch versus migration of old data.
+- Pooled and direct connection URLs for the selected new Neon database, supplied outside Git. No old accounts or materials will be imported.
 - A manual Namecheap A record for `pdx.sdey.me` after the replacement application's server IP is re-confirmed.
 
 No production provider, DNS, database, or deployment state was changed while preparing this plan.

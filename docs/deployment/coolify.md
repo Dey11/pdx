@@ -8,7 +8,7 @@
 - Build pack: Docker Compose at `/docker-compose.yml`
 - Public origin: `https://pdx.sdey.me`
 - Compose domain value: `https://pdx.sdey.me:3000`
-- External database: new Neon database selected; exact connection target pending
+- External database: new clean Neon database selected; exact pooled/direct connection targets pending
 
 Create a parallel application. Do not modify or stop the old application until the replacement passes all gates.
 
@@ -26,7 +26,7 @@ Start from `.env.production.docker.example`.
 
 - `SERVICE_FQDN_WEB_3000=https://pdx.sdey.me:3000`
 - `BETTER_AUTH_URL=https://pdx.sdey.me`
-- exact new Neon `DATABASE_URL`
+- exact new Neon pooled `DATABASE_URL` for Web/Worker and direct `DIRECT_URL` for migrations
 - unique Redis password
 - non-empty `WORKER_CALLBACK_SECRET`, shared by Web and Worker
 - 32 random bytes in base64 as `BYOK_ENCRYPTION_KEY`, Web only
@@ -37,6 +37,8 @@ Start from `.env.production.docker.example`.
 Generate secrets outside Git, for example `openssl rand -base64 32`. Never print or copy filled values into logs or documentation. There are no payment or server AI-provider variables.
 
 ## One-time database adoption
+
+The migration service connects through `DIRECT_URL`; Web and Worker use the pooled `DATABASE_URL`.
 
 The baseline describes the schema that existed before repository migration history. For an existing production database:
 
@@ -66,7 +68,7 @@ Verify the Resend sender used by `AUTH_EMAIL_FROM` before setting `AUTH_RESEND_K
 2. Confirm no other app owns `pdx.sdey.me`.
 3. Confirm the DNS target from the selected Coolify server.
 4. Compare variables against the template by presence, without printing values.
-5. Confirm whether the new Neon target is an empty launch database or will receive migrated data, then complete the matching database procedure above.
+5. Confirm both new Neon URLs point to the same empty launch database, then replay both migrations normally.
 6. Run tests, lint, type checking, Worker build, Next production build, frozen install, `docker compose config --quiet`, and both ARM64 image builds.
 7. Push the reviewed commits only after all checks pass.
 

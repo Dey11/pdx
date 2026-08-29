@@ -1,5 +1,5 @@
-# Postgres is not part of this stack: DATABASE_URL points at an external
-# managed database (Neon). Redis is always the compose-managed instance.
+# Postgres is not part of this stack: DATABASE_URL and DIRECT_URL point at an
+# external managed database (Neon). Redis is always compose-managed.
 services:
   redis:
     image: redis:7-alpine
@@ -27,6 +27,9 @@ services:
       target: migrate
     restart: "no"
     environment:
+      # Prisma migrations use Neon's direct connection; application services
+      # continue to use the pooled DATABASE_URL.
+      DIRECT_URL: ${DIRECT_URL}
       DATABASE_URL: ${DATABASE_URL}
 
   web:
