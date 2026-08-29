@@ -10,9 +10,9 @@
 - Compose domain value: `https://pdx.sdey.me:3000`
 - External database: clean Neon `pdx26` / `production` / `neondb`; all three migrations applied
 - Replacement application UUID: `uqk9mqok4z1njt3vwaiizgjq`
-- Deployed commit: `d64d9cf530b843ea7314abd179535fb320bbf7bf`
+- Deployed commit: `634e5a40ceb7cfbe5899f6d4c6d002c746bafd2b`
 
-Current production health is `running:healthy`; `https://pdx.sdey.me/api/health` returns HTTP 200 with app and database checks equal to `ok`.
+Current production health is `running:healthy`; `https://pdx.sdey.me/api/health` returns HTTP 200 with app and database checks equal to `ok`. `/pricing` explains the free BYOK model. A disposable Nebius account completed topic planning, Worker inference, PDF rendering, R2 upload, callback processing, and authenticated download with `deepseek-ai/DeepSeek-V4-Flash-0731`.
 
 Create a parallel application. Do not modify or stop the old application until the replacement passes all gates.
 
@@ -22,7 +22,7 @@ On 2026-08-29, Coolify reported the old application as `running:unhealthy`, whil
 
 The deployed image was also behind the repository, and `pdx.sdey.me` had no DNS record. Google, GitHub, and Resend variables were empty; the replacement now launches with email/password only, so those optional providers are intentionally deferred.
 
-The confirmed Neon target currently returns PostgreSQL error `53000` because its compute-time quota is exhausted. `sdey.me` is authoritative on Namecheap BasicDNS, not the available Cloudflare account. No Namecheap DNS credential is in the host inventory.
+The clean Neon target is healthy. The database password shown during setup and the Neon API key pasted into chat were both rotated before launch. `sdey.me` is authoritative on Namecheap BasicDNS, not the available Cloudflare account. No Namecheap DNS credential is in the host inventory.
 
 ## Required variables
 
@@ -86,7 +86,7 @@ Verify the Resend sender used by `AUTH_EMAIL_FROM` before setting `AUTH_RESEND_K
 4. Deploy and wait for `migrate` to complete, Redis and Web to become healthy, and Worker to start.
 5. Require `https://pdx.sdey.me/api/health` to return HTTP 200 with app/database `ok`.
 6. Verify `/`, `/login`, authentication redirects, provider setup, Settings, and existing downloads.
-7. Run one controlled theory generation and one question-bank generation through R2 download.
+7. Run controlled theory and question-bank generations through R2 download. Record each flow separately so one passing type does not imply the other passed.
 8. Inspect Web/Worker logs for missing variables, callback failures, leaked credentials, Redis/DB errors, and Chromium failures.
 9. Stop—but do not delete—the old broken application only after every gate passes.
 

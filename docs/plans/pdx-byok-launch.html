@@ -254,17 +254,16 @@ User-selected OpenAI-compatible provider</code></pre>
             <li>No key appears in browser responses, logs, Redis, analytics, traces, or PDFs.</li>
             <li>Public health returns 200 with database OK.</li>
             <li>Email signup/sign-in works; deferred providers and password reset are hidden.</li>
-            <li>One theory and one question-bank job finish and download correctly.</li>
+            <li>A Nebius theory job finishes and downloads correctly; question-bank generation remains a separate check.</li>
             <li>Restarts preserve queued work and credential access.</li>
           </ul>
-          <p class="good-text">Current production: health, TLS, email auth, BYOK onboarding state, and response redaction pass.</p>
+          <p class="good-text">Current production: health, TLS, email auth, BYOK onboarding, response redaction, and a complete Nebius theory-generation PDF pass.</p>
         </section>
 
         <section id="blockers">
           <h2>Remaining production acceptance</h2>
           <ul>
-            <li>Run controlled theory and question-bank jobs with a disposable user-supplied provider key.</li>
-            <li>Rotate the Neon API key disclosed during setup and update the VPS credential value.</li>
+            <li>Run a controlled question-bank job before claiming that generation type is production-verified.</li>
           </ul>
           <div class="callout">The clean Neon database, DNS record, and parallel Coolify application are live. No old accounts or materials were imported.</div>
         </section>

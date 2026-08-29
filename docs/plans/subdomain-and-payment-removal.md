@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: deployed at `https://pdx.sdey.me`; health, TLS, email authentication, BYOK onboarding state, and secret redaction verified. A controlled AI generation still requires a disposable user-supplied provider key.
+Status: deployed at `https://pdx.sdey.me`; health, TLS, email authentication, BYOK onboarding, secret redaction, and a complete Nebius theory-generation download are verified. Question-bank generation remains a separate acceptance check.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -310,7 +310,7 @@ The replacement application `uqk9mqok4z1njt3vwaiizgjq` is `running:healthy` on c
 - `docker compose --env-file <safe-test-env> config --quiet`
 - local container health checks for Redis, Web, and Worker
 
-The release passes focused Bun tests, lint, type checking, Worker compilation, the Next.js production build, Compose rendering, three production migrations, public health, TLS, signup, sign-in, sign-out, authenticated dashboard access, and BYOK status redaction.
+The release passes focused Bun tests, lint, type checking, Worker compilation, the Next.js production build, Compose rendering, three production migrations, public health, TLS, signup, sign-in, sign-out, authenticated dashboard access, BYOK status redaction, and one complete Nebius theory-generation download.
 
 ### Product
 
@@ -329,7 +329,8 @@ The release passes focused Bun tests, lint, type checking, Worker compilation, t
 - Email signup/sign-in works without email verification.
 - Google, GitHub, and password reset are absent from the initial login UI.
 - Redis and Worker have no public ports.
-- Controlled theory and question-bank jobs finish, upload to R2, and download through the authenticated route.
+- A controlled Nebius theory job finishes, uploads to R2, and downloads through the authenticated route. The acceptance PDF was 71,502 bytes and used 3,176 provider-reported tokens; the disposable user and both R2 objects were deleted afterward.
+- A controlled question-bank job remains a separate acceptance check.
 - A Web or Worker restart does not lose queued work or credential access.
 
 ## Rollback
@@ -342,7 +343,6 @@ The release passes focused Bun tests, lint, type checking, Worker compilation, t
 
 ## Remaining production acceptance
 
-- Run one controlled theory job and one question-bank job with a disposable user-supplied OpenAI-compatible key.
-- Rotate the Neon API key disclosed during setup and replace the stored `NEON_API_KEY` value.
+- Run one controlled question-bank job with a disposable user-supplied OpenAI-compatible key before claiming that generation type is production-verified.
 
 The clean `pdx26` Neon database, Namecheap DNS record, and parallel Coolify application are live. No old accounts or materials were imported.
