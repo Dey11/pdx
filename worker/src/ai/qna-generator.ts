@@ -1,17 +1,18 @@
 import { generateText } from "ai";
-import { qnaGeneratorSystemPrompt } from "../prompts/generator";
-import { qbankSchema } from "../zod/schema";
-import { z } from "zod";
+import axios from "axios";
 import dotenv from "dotenv";
-import path from "path";
 import fs from "fs";
+import path from "path";
+import { z } from "zod";
+
+import { completionQueue } from "..";
+import { workerCallbackHeaders } from "../callback";
+import { BUCKET_NAME } from "../constants";
 import { generatePdfFromMarkdown } from "../lib/generate-pdf";
 import { uploadPdfToR2 } from "../object-storage";
-import { BUCKET_NAME } from "../constants";
-import axios from "axios";
-import { workerCallbackHeaders } from "../callback";
-import { completionQueue } from "..";
-import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "./models";
+import { qnaGeneratorSystemPrompt } from "../prompts/generator";
+import { qbankSchema } from "../zod/schema";
+import { MAX_OUTPUT_TOKENS, getGenerationModel } from "./models";
 
 dotenv.config();
 
@@ -24,55 +25,25 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
   }
 
   const allTopics = state.topics;
+  const modelPromise = getGenerationModel(materialId);
   let numbering = 1;
 
   for (const topic of allTopics) {
-    const modelCandidates = getGenerationModelCandidates();
-    let generationError: unknown;
-
     try {
-      let generatedText = "";
-      let totalTokens = 0;
+      const model = await modelPromise;
+      const { text: generatedText, usage } = await generateText({
+        model,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        system: `${qnaGeneratorSystemPrompt}\nInstruction: ${state.instruction}. Course: ${state.course}.
+Exam: ${state.exam}. Language: ${state.language}. Subject: ${state.subject}.
+Start the current numbering from ${numbering}. Weightage should favor ${state.weightage} questions.
+If it is auto, choose the mix. Keep long questions limited. Complexity: ${state.complexity}.`,
+        maxRetries: 2,
+        prompt: JSON.stringify(topic.data),
+      });
 
-      for (const candidate of modelCandidates) {
-        try {
-          const { text, usage } = await generateText({
-            model: candidate.model,
-            providerOptions: candidate.providerOptions,
-            maxOutputTokens: MAX_OUTPUT_TOKENS,
-            system: qnaGeneratorSystemPrompt,
-            maxRetries: 2,
-            messages: [
-              {
-                role: "system",
-                content: `Instruction: ${state.instruction}. Course: ${state.course}.
-          Exam: ${state.exam}. Language: ${state.language}. Subject: ${state.subject}.
-          Start the current numbering from ${numbering}. Weightage in general should be more on ${state.weightage} type questions.
-          If it is auto, feel free to choose yourself. If it is long, try to keep long type questions but keep them minimal. 
-          Complexity should be ${state.complexity}.`,
-              },
-              {
-                role: "user",
-                content: JSON.stringify(topic.data),
-              },
-            ],
-          });
-
-          if (!text.trim()) {
-            throw new Error(`Empty generation response from ${candidate.label}`);
-          }
-
-          generatedText = text;
-          totalTokens = usage.totalTokens ?? 0;
-          break;
-        } catch (err) {
-          generationError = err;
-          console.error(`Qbank generation failed with ${candidate.label}`, err);
-        }
-      }
-
-      if (!generatedText) {
-        throw generationError ?? new Error("Qbank generation failed");
+      if (!generatedText.trim()) {
+        throw new Error("AI provider returned an empty response");
       }
 
       const formatDoc = generatedText.split("QNAEND");
@@ -101,7 +72,7 @@ export const generateQnaAction = async (state: z.infer<typeof qbankSchema>) => {
           currIndex: topic.currIndex,
           totalIndex: topic.totalIndex,
           key: `qbank/topics/${materialId}/${newTime}.pdf`,
-          usage: totalTokens,
+          usage: usage.totalTokens ?? 0,
           success: true,
         },
         { headers: workerCallbackHeaders() }

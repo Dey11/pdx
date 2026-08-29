@@ -1,52 +1,31 @@
-import React, { Suspense } from "react";
+import Link from "next/link";
 
-import { FAQ } from "@/components/pricing/faq";
-import PricingSection from "@/components/pricing/pricing-section";
-import { H1 } from "@/components/typography/h1";
-import { EMAIL } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Pricing",
-  description: "Pricing plans for ease of affordability",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://noteformula.com",
-    siteName: "NoteFormula",
-    title: "NoteFormula - AI Study Material Generator | Pricing",
-    description:
-      "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success. Pricing plans made for your convenience and affordability.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "NoteFormula - Transform Your Study Experience",
-      },
-    ],
-  },
+  title: "Pricing archived | PDX",
+  description: "PDX no longer sells plans or credits.",
 };
 
-const page = () => {
-  return (
-    <div className="mx-auto min-h-screen max-w-[1400px] pt-[20dvh] text-center">
-      <div className="container">
-        <H1 className="text-brand-heading">Plans made for</H1>
-        <H1 className="text-brand-blue">Your needs</H1>
+const PricingArchivePage = () => (
+  <main className="mx-auto flex min-h-[75dvh] max-w-2xl items-center px-5 py-20 text-center">
+    <section className="border-brand-yellow/20 bg-brand-bg w-full rounded-xl border p-7 sm:p-10">
+      <p className="text-brand-yellow text-sm font-medium tracking-[0.18em] uppercase">
+        Pricing archived
+      </p>
+      <h1 className="text-brand-heading mt-4 text-3xl font-semibold text-balance sm:text-4xl">
+        PDX is free to use
+      </h1>
+      <p className="text-muted-foreground mx-auto mt-4 max-w-lg leading-relaxed text-pretty">
+        There are no plans, credits, or checkout. Connect your own
+        OpenAI-compatible provider in settings and pay that provider directly
+        for your usage.
+      </p>
+      <Button asChild className="mt-7 h-10">
+        <Link href="/dashboard">Open PDX</Link>
+      </Button>
+    </section>
+  </main>
+);
 
-        <Suspense>
-          <PricingSection />
-        </Suspense>
-
-        <FAQ />
-
-        <p>
-          Still have queries? Mail us at{" "}
-          <span className="text-brand-yellow">{EMAIL}</span>
-        </p>
-      </div>
-    </div>
-  );
-};
-
-export default page;
+export default PricingArchivePage;

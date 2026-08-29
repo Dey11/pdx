@@ -30,7 +30,6 @@ const navbarLinks = [
   // { name: "GENERATE", link: "/dashboard/generate" },
   { name: "MATERIALS", link: "/history" },
   { name: "SETTINGS", link: "/settings" },
-  { name: "PRICING", link: "/pricing" },
 ];
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
 const Navbar = () => {
@@ -39,7 +38,9 @@ const Navbar = () => {
 
   return (
     <div
-      className={"z-10 flex items-center justify-between border-b border-b-brand-heading/30 p-4 text-white sm:px-10"}
+      className={
+        "border-b-brand-heading/30 z-10 flex items-center justify-between border-b p-4 text-white sm:px-10"
+      }
     >
       <Link href={"/"}>
         <Image src="/logo.png" alt="Logo" width={40} height={50} className="" />
@@ -47,14 +48,14 @@ const Navbar = () => {
 
       {/* Desktop Links */}
       <div
-        className={`${merriweather.className} sm:gap-x-10" hidden items-center justify-center gap-x-4 text-muted-foreground sm:flex`}
+        className={`${merriweather.className} sm:gap-x-10" text-muted-foreground hidden items-center justify-center gap-x-4 sm:flex`}
       >
         {navbarLinks.map((link) => {
           return (
             <Link
               href={link.link}
               key={link.name}
-              className={`p-1 text-xs text-brand-heading underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:text-brand-yellow hover:underline hover:underline-offset-4 sm:text-base ${pathname === link.link || pathname.split("/")[1] === link.link ? "text-brand-yellow" : ""}`}
+              className={`text-brand-heading hover:text-brand-yellow p-1 text-xs underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:underline hover:underline-offset-4 sm:text-base ${pathname === link.link || pathname.split("/")[1] === link.link ? "text-brand-yellow" : ""}`}
             >
               {link.name}
             </Link>
@@ -66,14 +67,14 @@ const Navbar = () => {
       <div className={`sm:hidden ${merriweather.className}`}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Menu className="size-5 cursor-pointer text-brand-heading hover:text-brand-yellow" />
+            <Menu className="text-brand-heading hover:text-brand-yellow size-5 cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-40">
             {navbarLinks.map((link) => (
               <DropdownMenuItem key={link.name} asChild>
                 <Link
                   href={link.link}
-                  className={`w-full text-brand-heading ${pathname === link.link ? "text-brand-yellow" : ""}`}
+                  className={`text-brand-heading w-full ${pathname === link.link ? "text-brand-yellow" : ""}`}
                 >
                   {link.name}
                 </Link>
@@ -124,7 +125,7 @@ const LogOutBtn = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="hidden rounded-none border border-b-[4px] border-brand-heading px-4 py-1 text-sm font-semibold transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
+        <div className="border-brand-heading hidden rounded-none border border-b-[4px] px-4 py-1 text-sm font-semibold transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
           LOGOUT
         </div>
       </DialogTrigger>

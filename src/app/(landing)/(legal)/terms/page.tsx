@@ -14,28 +14,28 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-28 rounded-md bg-brand-yellow" />
+      <div className="bg-brand-yellow mx-auto mt-[15dvh] h-[2px] w-28 rounded-md" />
 
-      <H1 className="pt-5 text-center text-brand-heading lg:text-5xl">
+      <H1 className="text-brand-heading pt-5 text-center lg:text-5xl">
         Terms of Use
       </H1>
       <Para className="text-center text-xs">
-        Learn more about how NoteFormula collects and uses data and your rights as a NoteFormula
-        user
+        Learn more about how NoteFormula collects and uses data and your rights
+        as a NoteFormula user
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium text-brand-blue underline underline-offset-2">
-          UPDATED DECEMBER 25, 2024
+        <Para className="text-brand-blue font-medium underline underline-offset-2">
+          UPDATED AUGUST 29, 2026
         </Para>
 
         <Para className="mt-6">
-          Welcome to NoteFormula ("we," "our," or "us"). By accessing or using our
-          platform, services, or products (collectively, the "Services"), you
-          ("User," "you," or "your") agree to comply with and be bound by these
-          Terms of Use ("Terms"). Please read these Terms carefully before using
-          NoteFormula. If you do not agree with these Terms, you must not use our
-          Services.
+          Welcome to NoteFormula ("we," "our," or "us"). By accessing or using
+          our platform, services, or products (collectively, the "Services"),
+          you ("User," "you," or "your") agree to comply with and be bound by
+          these Terms of Use ("Terms"). Please read these Terms carefully before
+          using NoteFormula. If you do not agree with these Terms, you must not
+          use our Services.
         </Para>
 
         <div className="mt-8 space-y-8">
@@ -56,18 +56,15 @@ const page = () => {
             <ul className="mb-3 list-disc space-y-2 pl-6">
               <li>Parse syllabi and generate study materials</li>
               <li>Create downloadable PDFs</li>
-              <li>
-                Provide access to a community marketplace for uploading and
-                purchasing modules
-              </li>
-              <li>Enable cost-sharing features for collaborative purchases</li>
+              <li>Connect an OpenAI-compatible provider selected by you</li>
             </ul>
             <Para>
-              While NoteFormula strives to provide accurate and high-quality tools, we
-              do not guarantee the accuracy, reliability, or completeness of
-              syllabus parsing and study material generation. Users acknowledge
-              that the generated content is intended for supplementary use and
-              should be independently verified for academic purposes.
+              While NoteFormula strives to provide accurate and high-quality
+              tools, we do not guarantee the accuracy, reliability, or
+              completeness of syllabus parsing and study material generation.
+              Users acknowledge that the generated content is intended for
+              supplementary use and should be independently verified for
+              academic purposes.
             </Para>
             <Para className="mt-3">
               The Services are subject to updates, and we reserve the right to
@@ -79,8 +76,8 @@ const page = () => {
           <section>
             <h2 className="mb-3 text-xl font-semibold">3. Eligibility</h2>
             <Para>
-              You must be at least 13 years old to use NoteFormula. By accessing our
-              Services, you represent that you are of legal age and have the
+              You must be at least 13 years old to use NoteFormula. By accessing
+              our Services, you represent that you are of legal age and have the
               capacity to enter into a binding agreement.
             </Para>
           </section>
@@ -93,8 +90,9 @@ const page = () => {
               <p>
                 You must provide accurate and complete information when creating
                 an account. Providing false or misleading information may result
-                in the suspension or termination of your account, and NoteFormula
-                reserves the right to pursue legal action if deemed necessary.
+                in the suspension or termination of your account, and
+                NoteFormula reserves the right to pursue legal action if deemed
+                necessary.
               </p>
               <p>
                 You are responsible for maintaining the confidentiality of your
@@ -136,44 +134,17 @@ const page = () => {
 
           <section>
             <h2 className="mb-3 text-xl font-semibold">
-              6. Community Contributions
+              6. Provider Keys and Costs
             </h2>
             <div className="space-y-3">
               <p>
-                When uploading modules to the NoteFormula community marketplace, you
-                retain ownership of your content but grant NoteFormula a non-exclusive,
-                royalty-free, worldwide license to distribute, display, and sell
-                the content. This license remains in effect for as long as the
-                content is available on the marketplace or until you remove it.
+                PDX does not sell subscriptions, plans, or credits. You provide
+                your own API key for an OpenAI-compatible provider.
               </p>
               <p>
-                NoteFormula reserves the right to review, modify, or remove content that
-                violates our guidelines. Earnings from module sales will be
-                shared according to the pricing plan under which the user
-                operates.
-              </p>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="mb-3 text-xl font-semibold">
-              7. Payments and Refunds
-            </h2>
-            <div className="space-y-3">
-              <p>
-                Free Plan: Access is provided with limited features at no cost.
-              </p>
-              <p>
-                Paid Plans: Payment is required to access Pro Learner and Elite
-                Scholar plans. Details of benefits are available on our website.
-              </p>
-              <p>
-                Refunds: Payments are non-refundable unless otherwise required
-                by law or explicitly stated in a promotional offer. Refunds may
-                only be considered in exceptional scenarios such as duplicate
-                payments or billing errors, at the sole discretion of NoteFormula. Users
-                must provide documented evidence to support their claim within
-                14 days of the transaction.
+                Your selected provider may charge for API usage. Those charges,
+                limits, refunds, and provider availability are governed by your
+                agreement with that provider, not PDX.
               </p>
             </div>
           </section>
@@ -184,9 +155,9 @@ const page = () => {
             </h2>
             <div className="space-y-3">
               <p>
-                All materials generated by NoteFormula, including study guides and PDFs,
-                are provided for personal use only. Redistribution or resale of
-                generated content is prohibited.
+                All materials generated by NoteFormula, including study guides
+                and PDFs, are provided for personal use only. Redistribution or
+                resale of generated content is prohibited.
               </p>
               <p>
                 NoteFormula retains all rights to its software, branding, and
@@ -201,16 +172,16 @@ const page = () => {
             </h2>
             <div className="space-y-3">
               <p>
-                NoteFormula provides study materials and resources as-is. While we
-                strive to ensure accuracy and quality, we make no guarantees
+                NoteFormula provides study materials and resources as-is. While
+                we strive to ensure accuracy and quality, we make no guarantees
                 regarding the completeness, reliability, or suitability of the
                 generated content.
               </p>
               <p>
-                To the maximum extent permitted by law, NoteFormula's liability for any
-                claims, damages, or losses arising from your use of our Services
-                is limited to the amount you have paid to NoteFormula, if any, in the 12
-                months preceding the claim.
+                To the maximum extent permitted by law, NoteFormula's liability
+                for any claims, damages, or losses arising from your use of our
+                Services is limited to the amount you have paid to NoteFormula,
+                if any, in the 12 months preceding the claim.
               </p>
               <p>NoteFormula is not liable for:</p>
               <ul className="mb-3 list-disc space-y-2 pl-6">
@@ -268,13 +239,13 @@ const page = () => {
             <Para>
               If you have questions or concerns about these Terms, please
               contact us at{" "}
-              <span className="font-semibold text-brand-yellow">{EMAIL}</span>.
+              <span className="text-brand-yellow font-semibold">{EMAIL}</span>.
             </Para>
           </section>
 
           <Para className="mt-8 font-medium">
-            By using NoteFormula, you acknowledge that you have read, understood, and
-            agreed to these Terms of Use.
+            By using NoteFormula, you acknowledge that you have read,
+            understood, and agreed to these Terms of Use.
           </Para>
         </div>
       </main>

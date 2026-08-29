@@ -4,16 +4,34 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: ["sh", "-c", "redis-server --appendonly yes --requirepass \"$${REDIS_PASSWORD}\""]
+    command:
+      [
+        "sh",
+        "-c",
+        'redis-server --appendonly yes --requirepass "$${REDIS_PASSWORD}"',
+      ]
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
+      test: ["CMD-SHELL", 'redis-cli -a "$${REDIS_PASSWORD}" ping | grep PONG']
       interval: 10s
       timeout: 5s
       retries: 10
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+      args:
+        NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
+        NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    command: ["bunx", "prisma", "migrate", "deploy"]
 
   web:
     build:
@@ -25,6 +43,8 @@ services:
         NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
     restart: unless-stopped
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
     environment:
@@ -49,18 +69,13 @@ services:
       AUTH_TRUST_HOST: ${AUTH_TRUST_HOST}
       AUTH_RESEND_KEY: ${AUTH_RESEND_KEY}
       AUTH_EMAIL_FROM: ${AUTH_EMAIL_FROM}
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
-      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
-      AI_GENERATION_MODELS: ${AI_GENERATION_MODELS}
+      BYOK_ENCRYPTION_KEY: ${BYOK_ENCRYPTION_KEY}
       AI_GENERATION_MAX_OUTPUT_TOKENS: ${AI_GENERATION_MAX_OUTPUT_TOKENS}
       CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
       CLOUDFLARE_ACCESS_KEY_ID: ${CLOUDFLARE_ACCESS_KEY_ID}
       CLOUDFLARE_SECRET_ACCESS_KEY: ${CLOUDFLARE_SECRET_ACCESS_KEY}
       BUCKET_NAME: ${BUCKET_NAME}
-      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
       WORKER_CALLBACK_SECRET: ${WORKER_CALLBACK_SECRET}
-      STATIC_PAYMENT_LINK: ${STATIC_PAYMENT_LINK}
-      ADMIN_KEY: ${ADMIN_KEY}
       NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
       NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
     # No host port publish: the Coolify proxy routes the domain to this exposed
@@ -68,7 +83,11 @@ services:
     expose:
       - "3000"
     healthcheck:
-      test: ["CMD-SHELL", "bun -e \"fetch('http://127.0.0.1:3000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      test:
+        [
+          "CMD-SHELL",
+          'bun -e "fetch(''http://127.0.0.1:3000/api/health'').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"',
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -96,9 +115,6 @@ services:
       REDIS_TLS: "false"
       BACKEND_URL: http://web:3000
       WORKER_CALLBACK_SECRET: ${WORKER_CALLBACK_SECRET}
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
-      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
-      AI_GENERATION_MODELS: ${AI_GENERATION_MODELS}
       AI_GENERATION_MAX_OUTPUT_TOKENS: ${AI_GENERATION_MAX_OUTPUT_TOKENS}
       CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
       CLOUDFLARE_ACCESS_KEY_ID: ${CLOUDFLARE_ACCESS_KEY_ID}

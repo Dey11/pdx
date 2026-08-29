@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.4-debian AS base
+FROM oven/bun:1.3.14-debian AS base
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1

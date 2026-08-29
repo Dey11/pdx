@@ -1,6 +1,6 @@
-import { timingSafeEqual } from "node:crypto";
-
 import { NextRequest, NextResponse } from "next/server";
+
+import { timingSafeEqual } from "node:crypto";
 
 const WORKER_SECRET_HEADER = "x-worker-secret";
 
@@ -25,14 +25,16 @@ function timingSafeMatches(a: string, b: string): boolean {
  * Returns a 401 NextResponse when WORKER_CALLBACK_SECRET is configured and the
  * request's `x-worker-secret` header does not match it (timing-safe compare).
  *
- * Backward-compat: if WORKER_CALLBACK_SECRET is unset/empty, the request is
- * allowed and a one-time warning is logged, so existing deployments keep working
- * until the env var is rolled out to both services.
+ * Development stays convenient when the secret is absent. Production fails
+ * closed because this boundary can return decrypted provider credentials.
  */
 export function verifyWorkerRequest(req: NextRequest): NextResponse | null {
   const secret = process.env.WORKER_CALLBACK_SECRET;
 
   if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!warnedAboutMissingSecret) {
       warnedAboutMissingSecret = true;
       console.warn(

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-yellow" />
+      <div className="bg-brand-yellow mx-auto mt-[15dvh] h-[2px] w-32 rounded-md" />
 
-      <H1 className="pt-5 text-center text-brand-heading lg:text-5xl">
+      <H1 className="text-brand-heading pt-5 text-center lg:text-5xl">
         About NoteFormula
       </H1>
       <Para className="text-center text-xs">
@@ -24,7 +24,7 @@ const page = () => {
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium text-brand-blue underline underline-offset-2">
+        <Para className="text-brand-blue font-medium underline underline-offset-2">
           UPDATED DECEMBER 25, 2024
         </Para>
 
@@ -32,11 +32,11 @@ const page = () => {
           <section>
             <h2 className="mb-3 text-xl font-semibold">Who We Are</h2>
             <Para>
-              At NoteFormula, we believe in empowering students by transforming how they
-              learn. Tackling vast syllabi and creating study materials is
-              overwhelming, and that's where we come in. Our AI-driven platform
-              generates well-structured, in-depth study guides tailored to your
-              syllabus—saving time and boosting learning efficiency.
+              At NoteFormula, we believe in empowering students by transforming
+              how they learn. Tackling vast syllabi and creating study materials
+              is overwhelming, and that's where we come in. Our AI-driven
+              platform generates well-structured, in-depth study guides tailored
+              to your syllabus—saving time and boosting learning efficiency.
             </Para>
           </section>
 
@@ -58,12 +58,12 @@ const page = () => {
                 generate detailed PDFs, ready for download.
               </li>
               <li>
-                Flexible Pricing: Affordable credit-based system—pay only for
-                what you need.
+                Bring your own provider: Connect an OpenAI-compatible API key
+                and choose the model that fits your needs.
               </li>
               <li>
-                Collaborative Learning: Share credits and materials with friends
-                and learn together.
+                Free workspace: PDX does not sell plans or credits. Provider
+                usage is billed directly by the provider you select.
               </li>
             </ul>
           </section>
@@ -74,10 +74,7 @@ const page = () => {
               <li>
                 Time-efficient: No more wasting hours gathering materials.
               </li>
-              <li>
-                Cost-effective: High-quality resources at student-friendly
-                prices.
-              </li>
+              <li>Flexible: Choose your provider, model, and usage budget.</li>
               <li>Innovative: Harnessing AI to revolutionize learning.</li>
             </ul>
           </section>

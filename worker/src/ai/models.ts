@@ -1,125 +1,149 @@
-// Keep in sync with src/lib/ai/model.ts — the web app and the worker have
-// separate tsconfig roots, so this factory is intentionally duplicated. Any
-// change to the fallback-chain parsing, provider inference, provider options,
-// or MAX_OUTPUT_TOKENS must be mirrored there.
-import { createDeepSeek } from "@ai-sdk/deepseek";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import type { SharedV3ProviderOptions } from "@ai-sdk/provider";
-import type { LanguageModel } from "ai";
+import {
+  createOpenAICompatible,
+  type OpenAICompatibleProviderSettings,
+} from "@ai-sdk/openai-compatible";
+import axios from "axios";
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
+import { z } from "zod";
 
-type SupportedProvider = "deepseek" | "google";
+import { workerCallbackHeaders } from "../callback";
 
-export type GenerationModelCandidate = {
-  id: string;
-  label: string;
-  model: LanguageModel;
-  provider: SupportedProvider;
-  providerOptions?: SharedV3ProviderOptions;
-};
-
-const DEFAULT_GENERATION_MODELS =
-  "deepseek:deepseek-v4-flash,deepseek:deepseek-chat,google:gemini-2.5-flash";
-
-const deepseek = createDeepSeek({
-  apiKey: process.env.DEEPSEEK_API_KEY,
+const credentialSchema = z.object({
+  provider: z.enum(["openai", "openrouter", "deepseek", "groq", "custom"]),
+  baseUrl: z.string().url(),
+  modelId: z.string().min(1),
+  apiKey: z.string().min(1),
 });
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-});
+const nativeStructuredOutputProviders = new Set([
+  "openai",
+  "openrouter",
+  "groq",
+]);
 
 export const MAX_OUTPUT_TOKENS = Number(
   process.env.AI_GENERATION_MAX_OUTPUT_TOKENS ?? 8192
 );
 
-// The fallback chain is priority-ordered: candidates are tried left-to-right
-// and the first one that succeeds wins. Each entry is either "provider:modelId"
-// or a bare "modelId" whose provider is inferred (gemini-* => google, otherwise
-// deepseek). DeepSeek models disable reasoning ("thinking") to keep generation
-// fast and cheap.
-function inferProvider(modelId: string): SupportedProvider {
-  if (modelId.startsWith("gemini-")) {
-    return "google";
+const isPrivateAddress = (address: string): boolean => {
+  if (isIP(address) === 4) {
+    const [a, b] = address.split(".").map(Number);
+    return (
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 0) ||
+      (a === 192 && b === 168) ||
+      (a === 198 && (b === 18 || b === 19)) ||
+      a >= 224
+    );
   }
 
-  return "deepseek";
-}
-
-function parseModelEntry(entry: string) {
-  const trimmedEntry = entry.trim();
-  const [maybeProvider, ...modelParts] = trimmedEntry.split(":");
-
-  if (modelParts.length === 0) {
-    return {
-      provider: inferProvider(trimmedEntry),
-      modelId: trimmedEntry,
-    };
+  const normalized = address.toLowerCase();
+  if (normalized.startsWith("::ffff:")) {
+    const mapped = normalized.slice("::ffff:".length);
+    if (isIP(mapped) === 4) return isPrivateAddress(mapped);
+    const [high, low] = mapped
+      .split(":")
+      .map((part) => parseInt(part, 16));
+    if (Number.isFinite(high) && Number.isFinite(low)) {
+      return isPrivateAddress(
+        `${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`
+      );
+    }
+    return true;
   }
-
-  return {
-    provider: maybeProvider as SupportedProvider,
-    modelId: modelParts.join(":"),
-  };
-}
-
-function createModelCandidate(entry: string): GenerationModelCandidate {
-  const { provider, modelId } = parseModelEntry(entry);
-
-  if (provider === "google") {
-    return {
-      id: modelId,
-      label: `${provider}:${modelId}`,
-      model: google(modelId),
-      provider,
-    };
-  }
-
-  if (provider === "deepseek") {
-    return {
-      id: modelId,
-      label: `${provider}:${modelId}`,
-      model: deepseek(modelId),
-      provider,
-      providerOptions: {
-        deepseek: {
-          thinking: { type: "disabled" },
-        },
-      },
-    };
-  }
-
-  throw new Error(`Unsupported AI provider: ${provider}`);
-}
-
-// Providers actually referenced by the configured model list. The worker's env
-// validation uses this to require only the API keys that will be used, so
-// switching providers is a pure env change (AI_GENERATION_MODELS + its key).
-export function getReferencedProviders(): Set<SupportedProvider> {
-  const configuredModels =
-    process.env.AI_GENERATION_MODELS ?? DEFAULT_GENERATION_MODELS;
-
-  return new Set(
-    configuredModels
-      .split(",")
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .map((entry) => parseModelEntry(entry).provider)
+  return (
+    isIP(address) !== 6 ||
+    normalized === "::" ||
+    normalized === "::1" ||
+    normalized.startsWith("::") ||
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd") ||
+    /^fe[89ab]/.test(normalized) ||
+    normalized.startsWith("ff")
   );
-}
+};
 
-export function getGenerationModelCandidates(): GenerationModelCandidate[] {
-  const configuredModels =
-    process.env.AI_GENERATION_MODELS ?? DEFAULT_GENERATION_MODELS;
-
-  const candidates = configuredModels
-    .split(",")
-    .map((entry) => entry.trim())
-    .filter(Boolean)
-    .map(createModelCandidate);
-
-  if (candidates.length === 0) {
-    throw new Error("AI_GENERATION_MODELS must include at least one model.");
+const assertSafeUrl = async (value: string): Promise<void> => {
+  const url = new URL(value);
+  if (
+    url.protocol !== "https:" ||
+    url.username ||
+    url.password ||
+    url.search ||
+    url.hash
+  ) {
+    throw new Error("Unsafe provider URL");
   }
 
-  return candidates;
-}
+  const hostname = url.hostname.replace(/^\[|\]$/g, "");
+  const addresses = isIP(hostname)
+    ? [hostname]
+    : (await lookup(hostname, { all: true, verbatim: true })).map(
+        ({ address }) => address
+      );
+  if (addresses.length === 0 || addresses.some(isPrivateAddress)) {
+    throw new Error("Unsafe provider address");
+  }
+};
+
+type ProviderFetch = NonNullable<OpenAICompatibleProviderSettings["fetch"]>;
+
+const safeProviderFetch = (baseUrl: string): ProviderFetch => {
+  const origin = new URL(baseUrl).origin;
+
+  const safeFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = new URL(
+      typeof input === "string" || input instanceof URL ? input : input.url
+    );
+    if (url.origin !== origin) throw new Error("Provider origin changed");
+    await assertSafeUrl(url.origin);
+
+    const timeout = AbortSignal.timeout(60_000);
+    const signal = init?.signal
+      ? AbortSignal.any([init.signal, timeout])
+      : timeout;
+    const response = await fetch(input, {
+      ...init,
+      redirect: "error",
+      signal,
+    });
+    const contentLength = Number(response.headers.get("content-length"));
+    if (Number.isFinite(contentLength) && contentLength > 10 * 1024 * 1024) {
+      throw new Error("Provider response exceeded the size limit");
+    }
+    return response;
+  };
+
+  return Object.assign(safeFetch, { preconnect: () => undefined });
+};
+
+/** Resolves a material owner's key just-in-time; the key never enters Redis. */
+export const getGenerationModel = async (materialId: string) => {
+  const response = await axios.get(
+    `${process.env.BACKEND_URL}/api/internal/ai-credentials/${materialId}`,
+    {
+      headers: workerCallbackHeaders(),
+      timeout: 15_000,
+    }
+  );
+  const credential = credentialSchema.parse(response.data);
+  await assertSafeUrl(credential.baseUrl);
+
+  const provider = createOpenAICompatible({
+    name: `pdx-${credential.provider}`,
+    baseURL: credential.baseUrl,
+    apiKey: credential.apiKey,
+    supportsStructuredOutputs: nativeStructuredOutputProviders.has(
+      credential.provider
+    ),
+    fetch: safeProviderFetch(credential.baseUrl),
+  });
+
+  return provider.chatModel(credential.modelId);
+};

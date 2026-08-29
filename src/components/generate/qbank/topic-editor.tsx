@@ -5,14 +5,15 @@ import { useState, useTransition } from "react";
 import {
   DragDropContext,
   Draggable,
-  Droppable,
   type DropResult,
+  Droppable,
 } from "@hello-pangea/dnd";
 import { Edit2, GripVertical, Loader2, Plus, Save, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { openAiSetup } from "@/lib/ai/setup-events";
 import { TopicsType } from "@/lib/types/topics";
 
 import { H3 } from "../../typography/h3";
@@ -36,16 +37,12 @@ interface SubmodulesType {
 }
 
 type TopicEditorProps = {
-  credits: number;
-  setCredits: (credits: number) => void;
   topics: TopicsType;
   setSteps: (steps: number) => void;
   setGeneratingMaterialId: (materialId: string) => void;
 };
 
 export function TopicEditor({
-  credits,
-  setCredits,
   topics,
   setSteps,
   setGeneratingMaterialId,
@@ -210,14 +207,13 @@ export function TopicEditor({
             exam: topics.exam,
             language: topics.language,
             weightage: topics.weightage,
-            credits,
           }),
           headers: { "Content-Type": "application/json" },
         });
         const response = await res.json();
         if (response?.error) {
+          if (response.code === "AI_CREDENTIAL_REQUIRED") openAiSetup();
           setError(response.error);
-          setCredits(response.credits);
           return;
         }
         setGeneratingMaterialId(response.materialId);
@@ -233,7 +229,7 @@ export function TopicEditor({
     <form className="mx-auto my-5 max-w-[870px]" action={handleSubmit}>
       <Card className="bg-brand-bg text-card-foreground">
         <CardHeader>
-          <CardTitle className="text-center text-base text-brand-heading md:text-lg">
+          <CardTitle className="text-brand-heading text-center text-base md:text-lg">
             Topics and Subtopics
           </CardTitle>
         </CardHeader>
@@ -256,14 +252,14 @@ export function TopicEditor({
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className="rounded-lg border border-border bg-background p-2"
+                          className="border-border bg-background rounded-lg border p-2"
                         >
                           <div className="mb-4 flex items-center justify-between">
                             <div
                               {...provided.dragHandleProps}
                               className="cursor-move"
                             >
-                              <GripVertical className="h-5 w-5 text-muted-foreground" />
+                              <GripVertical className="text-muted-foreground h-5 w-5" />
                             </div>
                             {editingTopic === topic.id ? (
                               <div className="flex flex-1 items-center gap-2">
@@ -337,7 +333,7 @@ export function TopicEditor({
                                             {...provided.dragHandleProps}
                                             className="mr-2 cursor-move"
                                           >
-                                            <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                            <GripVertical className="text-muted-foreground h-4 w-4" />
                                           </div>
                                           {editingSubtopic === subtopic.id ? (
                                             <div className="flex flex-1 items-center gap-2">
@@ -411,7 +407,7 @@ export function TopicEditor({
                               size="sm"
                               variant="ghost"
                               onClick={() => addSubtopic(topic.id)}
-                              className="mt-2 text-primary"
+                              className="text-primary mt-2"
                               disabled={!topic.id.startsWith("topic-new")}
                             >
                               <Plus className="mr-2 h-4 w-4" /> Add Subtopic
@@ -435,7 +431,7 @@ export function TopicEditor({
         <Button
           type="submit"
           variant={"glowy"}
-          className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
+          className="bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90 my-5 w-full"
         >
           Generate Question Bank
         </Button>
@@ -443,18 +439,12 @@ export function TopicEditor({
         <Button
           type="submit"
           variant={"glowy"}
-          className="my-5 w-full bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90"
+          className="bg-brand-yellow text-primary-foreground hover:bg-brand-yellow/90 my-5 w-full"
           disabled
         >
           <Loader2 className="animate-spin" />
           Generating Question Bank...
         </Button>
-      )}
-
-      {credits && (
-        <div className="text-center text-brand-green">
-          Approx Credits Required: {credits}.
-        </div>
       )}
     </form>
   );

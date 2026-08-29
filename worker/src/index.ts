@@ -1,22 +1,23 @@
+import axios from "axios";
 import { Job, Worker } from "bullmq";
-import fs from "fs";
+import { Queue } from "bullmq";
 import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
-import { jobSchema, qbankSchema } from "./zod/schema";
+
+import { generateQnaAction } from "./ai/qna-generator";
 import { generateTheoryAction } from "./ai/theory-generator";
-import { generatePdfFromMarkdown } from "./lib/generate-pdf";
-import { mergePdfsFromR2, uploadPdfToR2 } from "./object-storage";
+import { workerCallbackHeaders } from "./callback";
 import {
   BUCKET_NAME,
   MERGE_PDF_QUEUE_NAME,
   QNA_QUEUE_NAME,
   QUEUE_NAME,
 } from "./constants";
-import axios from "axios";
-import { Queue } from "bullmq";
-import { generateQnaAction } from "./ai/qna-generator";
-import { workerCallbackHeaders } from "./callback";
 import { validateWorkerEnv } from "./env";
+import { generatePdfFromMarkdown } from "./lib/generate-pdf";
+import { mergePdfsFromR2, uploadPdfToR2 } from "./object-storage";
+import { jobSchema, qbankSchema } from "./zod/schema";
 
 dotenv.config();
 validateWorkerEnv();
@@ -38,7 +39,7 @@ validateWorkerEnv();
 // Callback state machine per material:
 //   update-task (per part) -> progress (per part, increments completedParts)
 //   -> when completedParts === totalParts the web app enqueues mergePdf
-//   -> mergePdf -> complete (finalizes material + settles credits).
+//   -> mergePdf -> complete (finalizes the material).
 
 const connection = {
   host: process.env.REDIS_HOST || "localhost",
@@ -106,8 +107,8 @@ new Worker(
         },
         { headers: workerCallbackHeaders() }
       );
-    } catch (err) {
-      console.error(err);
+    } catch {
+      console.error("Theory generation failed");
       await axios.post(
         `${process.env.BACKEND_URL}/api/generation/update-task`,
         {
@@ -149,8 +150,8 @@ new Worker(
       }
 
       await generateQnaAction(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      console.error("Question-bank generation failed");
     }
   },
   {

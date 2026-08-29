@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-NoteFormula accepts a syllabus, turns it into theory notes or a question bank, and delivers a generated PDF. The repository is one deployable unit, but the runtime has three processes and three external service boundaries.
+PDX turns a syllabus into theory notes or a question-bank PDF. PDX itself is free; each account supplies an API key for an OpenAI-compatible provider.
 
 ## Runtime topology
 
@@ -10,63 +10,54 @@ NoteFormula accepts a syllabus, turns it into theory notes or a question bank, a
 Browser
   |
   v
-Next.js Web ---- PostgreSQL (Neon)
-  |  |  \
-  |  |   `------ Email / auth providers
-  |  `---------- Redis queues
-  |                |
-  |                v
-  `------------- BullMQ Worker ---- AI providers
-                         |
-                         `---------- Cloudflare R2
+Next.js Web ---------------- PostgreSQL / Neon
+  |   |                         | sessions, materials, tasks
+  |   |                         ` encrypted per-user AI credential
+  |   `--- OAuth / Resend
+  |
+  `--- Redis / BullMQ --- Worker --- selected AI provider
+                              |
+                              `--- Chromium --- Cloudflare R2
 ```
 
-The production Compose stack runs Web, Worker, and Redis. PostgreSQL, R2, AI providers, OAuth providers, and email delivery remain external.
+Compose runs `migrate`, `redis`, `web`, and `worker`. Only Web is public.
 
-## Web
+## Credential boundary
 
-The Next.js App Router application lives under `src/app`. It owns public and authenticated pages, session handling, generation enqueueing, progress APIs, download authorization, and the health endpoint.
+Web owns provider presets, input validation, endpoint policy, encryption, persistence, and status APIs. It encrypts keys with a dedicated 32-byte `BYOK_ENCRYPTION_KEY` using AES-256-GCM. The stored envelope is versioned and authenticated.
 
-`GET /api/health` verifies both the Web process and a live database query. A `503` from this endpoint means the application cannot be considered healthy even if the container is running.
+Generation routes resolve the signed-in user’s credential. Redis payloads never contain an API key. Worker receives only a material ID, then requests that material owner’s resolved credential from `/api/internal/ai-credentials/[materialId]`. The endpoint is no-store and protected by the shared Worker secret. Plaintext exists only in Web/Worker process memory while making a provider request.
 
-## Worker
+Custom endpoints must use HTTPS, cannot contain URL credentials/query/fragment data, and cannot resolve to loopback, private, link-local, carrier-grade NAT, multicast, or metadata destinations. Web verifies this before save and generation; Worker rechecks before provider requests. Redirects are rejected and provider calls have time and response-size limits.
 
-Worker starts from `worker/src/index.ts`. It consumes BullMQ jobs, invokes the configured model fallback chain, renders and merges PDFs, uploads artifacts to R2, and calls Web with progress and completion results.
+Provider changes are blocked while the user has a pending or in-progress Material so one generation cannot switch models midway.
 
-Web and Worker intentionally have separate build targets in the root `Dockerfile`. Both are built from the same commit and share the same dependency lockfile.
+## Generation and queues
 
-## Queue and callback contract
+The queue names in `src/lib/constants.ts` and `worker/src/constants.ts` are cross-process contracts: `theoryQueue`, `qbankQueue`, `mergePdfQueue`, and `completionQueue`.
 
-The queue names in `src/lib/constants.ts` and `worker/src/constants.ts` are a literal cross-process contract:
+Theory generation fans out one task per topic. Question-bank generation has one job that processes its topics in order. Worker reports task updates and completion to Web using `x-worker-secret`, renders PDFs with Chromium, and stores final artifacts in R2.
 
-- `theoryQueue`
-- `qbankQueue`
-- `mergePdfQueue`
-- `completionQueue`
-
-Worker callbacks use the internal Compose URL `http://web:3000` and attach `x-worker-secret`. The same `WORKER_CALLBACK_SECRET` must be configured on Web and Worker in production.
+Token usage remains diagnostic data. It does not map to credits or entitlement.
 
 ## Persistence
 
-- PostgreSQL stores users, sessions, materials, tasks, transactions, activity, and coupons. Prisma models live in `prisma/schema.prisma`.
-- Redis stores BullMQ state and uses the named `redis-data` Compose volume.
-- R2 stores generated PDF artifacts.
-- Worker scratch files use the named `worker-temp` Compose volume.
+- PostgreSQL: users, sessions, encrypted AI credentials, materials, tasks, activity, and dormant historical billing rows.
+- Redis: queue state in `redis-data`.
+- R2: generated PDFs.
+- Worker scratch: `worker-temp`.
 
-The Compose stack does not apply Prisma migrations automatically. Schema changes are a separate, explicitly controlled production operation.
+The billing and coupon Prisma structures remain intentionally dormant. Active application code neither exposes nor mutates them.
 
-## Configuration boundaries
+## Authentication
 
-The committed `.env*.example` files are the canonical variable inventory. Production values belong in Coolify, never in Git.
+Better Auth supports Google, GitHub, and email/password. Email signup signs in automatically and does not require verification. Resend delivers password-reset messages. Production OAuth callbacks are:
 
-- Web/auth: public URL, auth secrets, OAuth, email.
-- Data: PostgreSQL and Redis.
-- Generation: model list, provider API keys, token cap.
-- Worker link: internal callback URL and shared secret.
-- Storage and rendering: R2 and Chromium.
-- Billing: webhook and checkout configuration while billing remains enabled.
-- Analytics: public PostHog build/runtime values.
+- `https://pdx.sdey.me/api/auth/callback/google`
+- `https://pdx.sdey.me/api/auth/callback/github`
 
-## Deployment boundary
+## Health and migrations
 
-Coolify builds `docker-compose.yml` from the GitHub repository. Only Web receives a public route; Worker and Redis remain internal. A healthy launch requires all three services, valid external credentials, a reachable database, and a Coolify proxy route to Web port `3000`.
+`GET /api/health` checks the Web process and performs a database query. A `503` is unhealthy even when the container process is running.
+
+Prisma migrations are committed under `prisma/migrations`. Existing production databases must mark `00000000000000_baseline` as applied once, then apply the additive BYOK migration. After that one-time adoption, Compose’s `migrate` service runs `prisma migrate deploy` before Web starts.

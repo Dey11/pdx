@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: design decisions settled; dependency checkpoint completed; feature implementation not started.
+Status: implementation and local verification complete; production credentials, database adoption, and parallel Coolify deployment pending.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -246,13 +246,13 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Lint, type checking, Worker compilation, and the Next.js 16.3.3 production build pass.
 - Kept this work separate from feature implementation.
 
-### Phase 2: credential data and deep module
+### Phase 2: credential data and deep module, completed
 
 - Establish Prisma migration history and add the credential schema.
 - Implement authenticated encryption, preset registry, URL policy, validation probe, status/save/delete operations, and internal Worker resolution.
 - Add focused tests at the module interface, including encryption tamper detection, redaction, URL rejection, ownership, and pending-generation rules.
 
-### Phase 3: generation migration
+### Phase 3: generation migration, completed
 
 - Replace Web and Worker model factories with OpenAI-compatible model creation from the user's resolved configuration.
 - Remove server model fallback and provider environment validation.
@@ -260,7 +260,7 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Remove all credit gates, reservation, settlement, and credit response fields.
 - Add focused route and Worker contract tests.
 
-### Phase 4: product and auth UI
+### Phase 4: product and auth UI, implementation completed
 
 - Build the reusable provider form, first-run dialog, server-side generation gate, and Settings view.
 - Archive the pricing page and disable its checkout behavior.
@@ -268,14 +268,16 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Update copy, legal pages, metadata, and privacy disclosure.
 - Verify Google, GitHub, email signup/sign-in, and password reset locally with provider test credentials.
 
-### Phase 5: production Compose
+Google/GitHub OAuth and Resend remain unverified until production credentials are supplied.
+
+### Phase 5: production Compose, completed locally
 
 - Add the migration target after the production baseline is established.
 - Tighten health checks and startup dependencies.
 - Render Compose using safe placeholder values and inspect the generated services, networks, volumes, and exposed ports.
 - Build both ARM64 targets locally through the repository's safe runner.
 
-### Phase 6: parallel Coolify deployment
+### Phase 6: parallel Coolify deployment, pending
 
 1. Resolve the exact `noteformula` project, `production` environment, server, and GitHub App source.
 2. Create a new Docker Compose application from `Dey11/pdx.git`, branch `master`, without modifying the current application.
@@ -298,7 +300,7 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - `docker compose --env-file <safe-test-env> config --quiet`
 - local container health checks for Redis, Web, and Worker
 
-The current pre-change baseline passes lint and type checking.
+The implemented release passes focused Bun tests, lint, type checking, Worker compilation, and the Next.js production build. Compose rendering and production database checks remain deployment gates.
 
 ### Product
 

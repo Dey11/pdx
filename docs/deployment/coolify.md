@@ -1,73 +1,83 @@
 # Coolify deployment runbook
 
-## Intended production shape
+## Target
 
-- Provider: Coolify at `cooldash.xyz`.
-- Project: `noteformula`.
-- Environment: `production`.
-- Source repository: `Dey11/pdx.git`.
-- Branch: `master`.
-- Build pack: Docker Compose using `/docker-compose.yml`.
-- Public service: `web` on container port `3000`.
-- Internal services: `worker` and `redis`.
-- External database: Neon through `DATABASE_URL`.
+- Provider: the existing Coolify installation at `cooldash.xyz`
+- Project/environment: `noteformula` / `production`
+- Source: GitHub App, `Dey11/pdx.git`, branch `master`
+- Build pack: Docker Compose at `/docker-compose.yml`
+- Public origin: `https://pdx.sdey.me`
+- Compose domain value: `https://pdx.sdey.me:3000`
+- External database: confirmed production Neon database
 
-Never assume those values still match the provider. Resolve the exact application, environment, and domain before a write.
+Create a parallel application. Do not modify or stop the old application until the replacement passes all gates.
 
-## Current finding (2026-08-28 UTC)
+## Why the old app is unusable
 
-Coolify contains an application for this repository in the NoteFormula production environment. The application is running but reports `unhealthy`.
+On 2026-08-29, Coolify reported the old application as `running:unhealthy`, while `/` and `/api/health` returned deterministic `503 no available server` responses. Web listened on container port `3000`, but the stored Compose domain omitted `:3000`; generated proxy labels therefore had no usable explicit Web load-balancer port and retained stale port-80 routing.
 
-The intended Compose domain is `https://noteformula.cooldash.xyz`, but public requests to `/` and `/api/health` return `503 no available server`. The application record also exposes a generated hostname with an erroneous-looking `:3000` suffix. This is a configured deployment, not a working hosted site.
+The deployed image was also behind the repository. Google, GitHub, and Resend variables were empty, and `pdx.sdey.me` had no DNS record. Those are independent release blockers even after routing is fixed.
 
-No production settings were changed while recording this finding.
+## Required variables
 
-## Required configuration
+Start from `.env.production.docker.example`.
 
-Start from `.env.production.docker.example` and replace every placeholder in Coolify. Important invariants:
+- `SERVICE_FQDN_WEB_3000=https://pdx.sdey.me:3000`
+- `BETTER_AUTH_URL=https://pdx.sdey.me`
+- confirmed `DATABASE_URL`
+- unique Redis password
+- non-empty `WORKER_CALLBACK_SECRET`, shared by Web and Worker
+- 32 random bytes in base64 as `BYOK_ENCRYPTION_KEY`, Web only
+- Google and GitHub client IDs/secrets
+- Resend key and verified `AUTH_EMAIL_FROM`
+- intended R2 credentials and bucket
 
-- `SERVICE_FQDN_WEB_3000` is the public HTTPS origin routed to Web port `3000`.
-- `BETTER_AUTH_URL` uses that same public origin.
-- OAuth callback URLs and password-reset links use that same origin.
-- `DATABASE_URL` names the confirmed Neon production database.
-- `REDIS_PASSWORD` is set; Web and Worker use the Compose service name `redis`.
-- `WORKER_CALLBACK_SECRET` is non-empty and identical for Web and Worker.
-- `BACKEND_URL` remains `http://web:3000` inside Compose.
-- Every provider named by `AI_GENERATION_MODELS` has a corresponding API key.
-- R2 credentials and `BUCKET_NAME` point to the intended production bucket.
+Generate secrets outside Git, for example `openssl rand -base64 32`. Never print or copy filled values into logs or documentation. There are no payment or server AI-provider variables.
 
-If billing is intentionally removed, remove its UI, routes, webhook behavior, schema assumptions, dependencies, and environment variables as one coherent product change. Do not merely blank the payment secrets on a build that still exposes billing actions.
+## One-time database adoption
 
-## Pre-deployment checks
+The baseline describes the schema that existed before repository migration history. For an existing production database:
 
-1. Confirm the Coolify project, production environment, application UUID, Git repository, and branch.
-2. Confirm the chosen public subdomain and its DNS target.
-3. Confirm no unrelated application already owns the domain.
-4. Compare Coolify variables with `.env.production.docker.example` without printing secret values.
-5. Render the Compose configuration locally with safe placeholder values and inspect the `web`, `worker`, and `redis` services.
-6. Run `safe-dev-run bun run lint`, `safe-dev-run bun run typecheck`, `safe-dev-run bun run worker:build`, and `safe-dev-run bun run build` in proportion to the change.
-7. Confirm the production Prisma schema separately. Coolify does not apply it.
+1. Resolve the exact Neon host/database and inspect it read-only.
+2. Take or confirm a recoverable provider backup.
+3. Confirm the live pre-BYOK objects match `00000000000000_baseline`.
+4. Run `bunx prisma migrate resolve --applied 00000000000000_baseline` against that exact database.
+5. Run `bunx prisma migrate deploy`; this applies `20260829000000_add_ai_credentials`.
+6. Run `bunx prisma migrate status` and require no pending migration.
 
-## Post-deployment verification
+Do not mark the baseline on a new empty database. A new database should replay both migrations normally.
 
-1. Confirm all three Compose services are running and inspect their individual health states.
-2. Request `/api/health`; require HTTP `200` with both `app` and `database` equal to `ok`.
-3. Load `/`, `/login`, and `/dashboard` through the public HTTPS domain.
-4. Verify authentication callbacks use the public domain and do not redirect to an old origin.
-5. Enqueue one controlled generation and verify queue progress, Worker callbacks, PDF rendering, R2 upload, and authenticated download.
-6. Check Web and Worker logs for missing variables, database failures, Redis failures, callback authentication failures, and Chromium errors.
-7. If payment removal is part of the release, confirm that pricing, settings, navigation, API routes, webhooks, and environment requirements no longer expose or depend on billing.
+## OAuth and email
 
-## Diagnosing `503 no available server`
+Register these exact callbacks:
 
-Work from the public route inward:
+- Google: `https://pdx.sdey.me/api/auth/callback/google`
+- GitHub: `https://pdx.sdey.me/api/auth/callback/github`
 
-1. Confirm the domain is attached specifically to the Compose `web` service.
-2. Confirm Coolify routes to container port `3000`, not host port `3000` and not port `80`.
-3. Inspect the Web container status and logs. A running container can still fail its health check.
-4. From inside the Web container, request `http://127.0.0.1:3000/api/health`.
-5. If Web responds but health is `503`, validate database reachability and `DATABASE_URL`.
-6. If Web does not respond, inspect the build output, startup command, `HOSTNAME=0.0.0.0`, and `PORT=3000`.
-7. After correcting the application-level cause, verify Coolify regenerated proxy labels for the intended HTTPS hostname and removed stale generated-domain routing.
+Verify the Resend sender used by `AUTH_EMAIL_FROM`. Email/password login works without email verification; password reset still requires Resend.
 
-Do not restart the Coolify daemon or alter unrelated proxy, server, application, or DNS resources while diagnosing this application.
+## Pre-deployment gates
+
+1. Confirm the project, environment, server, GitHub source, branch, and new app UUID.
+2. Confirm no other app owns `pdx.sdey.me`.
+3. Confirm the DNS target from the selected Coolify server.
+4. Compare variables against the template by presence, without printing values.
+5. Complete the production database adoption above.
+6. Run tests, lint, type checking, Worker build, Next production build, frozen install, and `docker compose config --quiet`.
+7. Push the reviewed commits only after all checks pass.
+
+## Deployment and cutover
+
+1. Create the parallel Compose application from the GitHub App source.
+2. Set its Web domain to `https://pdx.sdey.me:3000`.
+3. Set required variables, then create a DNS-only A record for `pdx.sdey.me` pointing to the confirmed Coolify server IP.
+4. Deploy and wait for `migrate` to complete, Redis and Web to become healthy, and Worker to start.
+5. Require `https://pdx.sdey.me/api/health` to return HTTP 200 with app/database `ok`.
+6. Verify `/`, `/login`, authentication redirects, provider setup, Settings, and existing downloads.
+7. Run one controlled theory generation and one question-bank generation through R2 download.
+8. Inspect Web/Worker logs for missing variables, callback failures, leaked credentials, Redis/DB errors, and Chromium failures.
+9. Stop—but do not delete—the old broken application only after every gate passes.
+
+## Expected routing
+
+Only Web receives a public route to container port `3000`. Redis, Worker, and migrate expose no public ports. The `:3000` in Coolify’s Compose domain identifies the internal destination; users browse normal HTTPS port 443.

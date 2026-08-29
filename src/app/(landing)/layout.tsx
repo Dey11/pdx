@@ -7,7 +7,7 @@ export const metadata = {
   title:
     "NoteFormula - AI Study Material Generator | Generate Study Notes from Syllabus | 100+ Page PDF Notes",
   description:
-    "Generate comprehensive study materials instantly from any syllabus using AI. Create detailed 100+ page PDF notes with examples, summaries, and practice questions. Ideal for exam preparation, course materials, and self-study. Start with 75 free credits!",
+    "Generate comprehensive study materials from any syllabus with your own OpenAI-compatible provider. Create detailed PDF notes, summaries, and practice questions with no PDX subscription.",
   keywords: [
     "generate study materials",
     "syllabus to study notes",

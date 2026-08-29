@@ -17,10 +17,6 @@ const headerContents = [
     name: "ABOUT",
     url: "/about",
   },
-  {
-    name: "PRICING",
-    url: "/pricing",
-  },
 ];
 
 const merriweather = Merriweather({ weight: "400", subsets: ["latin"] });
@@ -42,7 +38,7 @@ const Header = () => {
           <Link
             key={item.name}
             href={item.url}
-            className={`text-brand-heading ${merriweather.className} p-1 text-xs underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:text-brand-yellow hover:underline hover:underline-offset-4 sm:text-base`}
+            className={`text-brand-heading ${merriweather.className} hover:text-brand-yellow p-1 text-xs underline-offset-1 transition-all duration-200 hover:-translate-y-1 hover:underline hover:underline-offset-4 sm:text-base`}
           >
             {item.name}
           </Link>
@@ -50,7 +46,7 @@ const Header = () => {
       </div>
 
       <Link href={"/dashboard"}>
-        <Button className="hidden rounded-none border border-b-4 border-brand-heading px-4 py-1 transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
+        <Button className="border-brand-heading hidden rounded-none border border-b-4 px-4 py-1 transition-all duration-100 hover:translate-y-1 hover:border-b md:block">
           TRY NOW
         </Button>
       </Link>

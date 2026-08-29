@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  AiCredentialRequiredError,
+  resolveAiCredentialForUser,
+} from "@/lib/ai/credential-service";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { enqueue } from "@/lib/queue";
@@ -20,44 +24,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 
-    const easyTopics = res.data.topics.filter(
-      (topic) => topic.weightage === "low"
-    );
-    const mediumTopics = res.data.topics.filter(
-      (topic) => topic.weightage === "medium"
-    );
-    const hardTopics = res.data.topics.filter(
-      (topic) => topic.weightage === "high"
-    );
-
-    if (!easyTopics.length && !mediumTopics.length && !hardTopics.length) {
+    if (!res.data.topics.length) {
       return NextResponse.json(
-        { error: "No topics selected", credits: 0 },
+        { error: "No topics selected" },
         { status: 400 }
       );
     }
 
-    const reqCredits =
-      easyTopics.length * 4 + mediumTopics.length * 7 + hardTopics.length * 10;
-
-    const user = await prisma.user.findFirst({
-      where: { id: session.user.id },
-    });
-
-    if (user!.credits! - user!.reservedCredits! < reqCredits) {
-      return NextResponse.json(
-        {
-          error: "Insufficient credits. Try deleting some topics.",
-          credits: Math.round(reqCredits),
-        },
-        { status: 400 }
-      );
-    }
-
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { reservedCredits: reqCredits },
-    });
+    await resolveAiCredentialForUser(session.user.id);
 
     const newMaterial = await prisma.material.create({
       data: {
@@ -85,7 +59,13 @@ export async function POST(req: NextRequest) {
       materialId: newMaterial.id,
     });
   } catch (err) {
-    console.error(err);
+    if (err instanceof AiCredentialRequiredError) {
+      return NextResponse.json(
+        { error: err.message, code: err.code },
+        { status: 409 }
+      );
+    }
+    console.error("Generation enqueue failed");
     return NextResponse.json(
       { error: "Some error occured. Please try again later." },
       { status: 500 }

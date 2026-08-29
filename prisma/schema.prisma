@@ -56,26 +56,45 @@ model Verification {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false) @map("email_verified")
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  credits         Int     @default(75)
-  reservedCredits Int     @default(0) @map("reserve_credits")
-  subscriptionId  String? @unique @map("subscription_id")
+  credits                  Int       @default(75)
+  reservedCredits          Int       @default(0) @map("reserve_credits")
+  subscriptionId           String?   @unique @map("subscription_id")
+  aiSetupPromptDismissedAt DateTime? @map("ai_setup_prompt_dismissed_at")
 
   accounts         Account[]
   sessions         Session[]
+  aiCredential     AiCredential?
   Material         Material[]
   Transaction      Transaction[]
   UserActivity     UserActivity[]
   CouponRedemption CouponRedemption[]
 
   @@map("users")
+}
+
+model AiCredential {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  provider     String
+  baseUrl      String   @map("base_url")
+  modelId      String   @map("model_id")
+  encryptedKey String   @map("encrypted_key") @db.Text
+  keyHint      String   @map("key_hint")
+  verifiedAt   DateTime @map("verified_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_credentials")
 }
 
 model Material {

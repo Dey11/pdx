@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateObject } from "ai";
 import { z } from "zod";
 
-import { getGenerationModelCandidates, MAX_OUTPUT_TOKENS } from "@/lib/ai/model";
+import {
+  AiCredentialRequiredError,
+  resolveAiCredentialForUser,
+} from "@/lib/ai/credential-service";
+import { MAX_OUTPUT_TOKENS, createGenerationModel } from "@/lib/ai/model";
 import { systemPrompt } from "@/lib/ai/prompts/system";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -74,71 +78,32 @@ export async function POST(req: NextRequest) {
       ),
     });
 
-    const modelCandidates = getGenerationModelCandidates();
-    let generatedTopicPlan:
-      | { object: z.infer<typeof topicSchema>; usage: { totalTokens?: number } }
-      | undefined;
-    let generationError: unknown;
-
-    for (const candidate of modelCandidates) {
-      try {
-        generatedTopicPlan = await generateObject({
-          model: candidate.model,
-          providerOptions: candidate.providerOptions,
-          maxRetries: 0,
-          maxOutputTokens: MAX_OUTPUT_TOKENS,
-          system: `${systemPrompt}. The language should be in ${body.language}. Subject: ${body.subject}.
+    const credential = await resolveAiCredentialForUser(session.user.id);
+    const { object } = await generateObject({
+      model: createGenerationModel(credential),
+      maxRetries: 0,
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
+      system: `${systemPrompt}. The language should be in ${body.language}. Subject: ${body.subject}.
         The difficulty is set to ${body.complexity}. It will be a ${body.type} material.
         The exam is ${body.exam}. The course is ${body.course}.
         Respond as strict JSON that matches the requested schema.
       `,
-          schema: topicSchema,
-          prompt: body.syllabus,
-        });
-        break;
-      } catch (err) {
-        generationError = err;
-        console.error(`Topic planning failed with ${candidate.label}`, err);
-      }
-    }
+      schema: topicSchema,
+      prompt: body.syllabus,
+    });
 
-    if (!generatedTopicPlan) {
-      throw generationError ?? new Error("Topic planning failed");
-    }
-
-    const { object, usage } = generatedTopicPlan;
-
-    const easyTopics = object.submodules.filter(
-      (obj) => obj.weightage === "low"
-    );
-    const mediumTopics = object.submodules.filter(
-      (obj) => obj.weightage === "medium"
-    );
-    const hardTopics = object.submodules.filter(
-      (obj) => obj.weightage === "high"
-    );
-
-    const credits =
-      easyTopics.length * 4 +
-      mediumTopics.length * 7 +
-      hardTopics.length * 10 +
-      (usage.totalTokens ?? 0) / 1000;
-
-    return new NextResponse(
-      JSON.stringify({ data: object, credits: Math.round(credits) }),
-      {
-        status: 200,
-      }
-    );
+    return NextResponse.json({ data: object });
   } catch (err) {
-    console.error(err);
-    return new NextResponse(
-      JSON.stringify({
-        error: "Something went wrong",
-      }),
-      {
-        status: 500,
-      }
+    if (err instanceof AiCredentialRequiredError) {
+      return NextResponse.json(
+        { error: err.message, code: err.code },
+        { status: 409 }
+      );
+    }
+    console.error("Topic planning failed");
+    return NextResponse.json(
+      { error: "Topic planning failed" },
+      { status: 502 }
     );
   }
 }

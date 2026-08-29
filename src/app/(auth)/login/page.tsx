@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { GitBranch, Loader2, Mail, ShieldCheck } from "lucide-react";
 
@@ -30,7 +30,7 @@ const getMessage = (mode: AuthMode) => {
     return "Send a reset link to the email on your NoteFormula account.";
   }
 
-  return "Use the same account for dashboard, credits, and downloads.";
+  return "Use the same account for your provider settings, history, and downloads.";
 };
 
 const SignIn = () => {
@@ -78,7 +78,10 @@ const SignIn = () => {
       },
       {
         onError: (ctx) => {
-          setError(ctx.error.message || `Could not continue with ${providerLabels[provider]}.`);
+          setError(
+            ctx.error.message ||
+              `Could not continue with ${providerLabels[provider]}.`
+          );
           setLoadingProvider(null);
         },
       }
@@ -152,25 +155,26 @@ const SignIn = () => {
   };
 
   return (
-    <main className="min-h-screen bg-background px-4 py-10 text-foreground">
+    <main className="bg-background text-foreground min-h-screen px-4 py-10">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center gap-8 md:grid-cols-[0.9fr_1.1fr]">
         <section className="hidden md:block">
           <div className="max-w-sm">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 px-3 py-1 text-sm text-brand-yellow">
+            <div className="border-brand-yellow/30 bg-brand-yellow/10 text-brand-yellow mb-6 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
               <ShieldCheck className="size-4" />
               Secure study workspace
             </div>
-            <h1 className="text-4xl font-semibold leading-tight text-brand-heading">
+            <h1 className="text-brand-heading text-4xl leading-tight font-semibold">
               Generate, review, and download from one account.
             </h1>
-            <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              NoteFormula keeps credits, generation history, and downloads tied to the
-              same sign-in identity across every study-material workflow.
+            <p className="text-muted-foreground mt-4 text-sm leading-6">
+              PDX keeps provider settings, generation history, and downloads
+              tied to the same sign-in identity across every study-material
+              workflow.
             </p>
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-md rounded-lg border border-border bg-brand-bg p-5 shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
+        <section className="border-border bg-brand-bg mx-auto w-full max-w-md rounded-lg border p-5 shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
           <div className="mb-6">
             <H3 className="text-brand-heading">{title}</H3>
             <Muted>{getMessage(mode)}</Muted>
@@ -182,7 +186,7 @@ const SignIn = () => {
                 type="button"
                 className={cn(
                   "h-11 w-full bg-white text-black hover:bg-white/90",
-                  lastUsed === "google" && "ring-2 ring-brand-yellow"
+                  lastUsed === "google" && "ring-brand-yellow ring-2"
                 )}
                 disabled={loadingProvider !== null}
                 onClick={() => handleSocialSignIn("google")}
@@ -194,7 +198,9 @@ const SignIn = () => {
                 )}
                 Continue with Google
                 {lastUsed === "google" && (
-                  <span className="ml-auto text-xs text-black/60">Last used</span>
+                  <span className="ml-auto text-xs text-black/60">
+                    Last used
+                  </span>
                 )}
               </Button>
 
@@ -202,7 +208,7 @@ const SignIn = () => {
                 type="button"
                 className={cn(
                   "h-11 w-full bg-zinc-950 text-white hover:bg-zinc-900",
-                  lastUsed === "github" && "ring-2 ring-brand-yellow"
+                  lastUsed === "github" && "ring-brand-yellow ring-2"
                 )}
                 disabled={loadingProvider !== null}
                 onClick={() => handleSocialSignIn("github")}
@@ -214,16 +220,18 @@ const SignIn = () => {
                 )}
                 Continue with GitHub
                 {lastUsed === "github" && (
-                  <span className="ml-auto text-xs text-white/60">Last used</span>
+                  <span className="ml-auto text-xs text-white/60">
+                    Last used
+                  </span>
                 )}
               </Button>
 
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
+                  <span className="border-border w-full border-t" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-brand-bg px-2 text-xs uppercase text-muted-foreground">
+                  <span className="bg-brand-bg text-muted-foreground px-2 text-xs uppercase">
                     Or use email
                   </span>
                 </div>
@@ -233,7 +241,7 @@ const SignIn = () => {
 
           <form className="grid gap-4" onSubmit={handleEmailSubmit}>
             {mode === "sign-up" && (
-              <label className="grid gap-2 text-sm text-brand-heading">
+              <label className="text-brand-heading grid gap-2 text-sm">
                 Name
                 <Input
                   autoComplete="name"
@@ -246,7 +254,7 @@ const SignIn = () => {
               </label>
             )}
 
-            <label className="grid gap-2 text-sm text-brand-heading">
+            <label className="text-brand-heading grid gap-2 text-sm">
               Email
               <Input
                 autoComplete="email"
@@ -259,10 +267,12 @@ const SignIn = () => {
             </label>
 
             {mode !== "forgot-password" && (
-              <label className="grid gap-2 text-sm text-brand-heading">
+              <label className="text-brand-heading grid gap-2 text-sm">
                 Password
                 <Input
-                  autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
+                  autoComplete={
+                    mode === "sign-up" ? "new-password" : "current-password"
+                  }
                   name="password"
                   minLength={8}
                   placeholder="At least 8 characters"
@@ -275,13 +285,17 @@ const SignIn = () => {
 
             <Button
               className={cn(
-                "h-11 w-full bg-brand-yellow text-brand-bg hover:bg-brand-yellow/90",
-                lastUsed === "email" && "ring-2 ring-brand-yellow/70"
+                "bg-brand-yellow text-brand-bg hover:bg-brand-yellow/90 h-11 w-full",
+                lastUsed === "email" && "ring-brand-yellow/70 ring-2"
               )}
               disabled={loadingProvider !== null}
               type="submit"
             >
-              {loadingProvider === "email" ? <Loader2 className="animate-spin" /> : <Mail />}
+              {loadingProvider === "email" ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Mail />
+              )}
               {mode === "sign-up"
                 ? "Create account"
                 : mode === "forgot-password"
@@ -297,14 +311,14 @@ const SignIn = () => {
             {mode === "sign-in" ? (
               <>
                 <button
-                  className="text-muted-foreground transition-colors hover:text-brand-yellow"
+                  className="text-muted-foreground hover:text-brand-yellow transition-colors"
                   onClick={() => setMode("forgot-password")}
                   type="button"
                 >
                   Forgot password?
                 </button>
                 <button
-                  className="font-medium text-brand-yellow transition-colors hover:text-brand-yellow/80"
+                  className="text-brand-yellow hover:text-brand-yellow/80 font-medium transition-colors"
                   onClick={() => setMode("sign-up")}
                   type="button"
                 >
@@ -313,7 +327,7 @@ const SignIn = () => {
               </>
             ) : (
               <button
-                className="font-medium text-brand-yellow transition-colors hover:text-brand-yellow/80"
+                className="text-brand-yellow hover:text-brand-yellow/80 font-medium transition-colors"
                 onClick={() => setMode("sign-in")}
                 type="button"
               >
@@ -323,12 +337,12 @@ const SignIn = () => {
           </div>
 
           {success && (
-            <p className="mt-4 rounded-md border border-brand-green/30 bg-brand-green/10 px-3 py-2 text-sm text-brand-green">
+            <p className="border-brand-green/30 bg-brand-green/10 text-brand-green mt-4 rounded-md border px-3 py-2 text-sm">
               {success}
             </p>
           )}
           {error && (
-            <p className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <p className="border-destructive/30 bg-destructive/10 text-destructive mt-4 rounded-md border px-3 py-2 text-sm">
               {error}
             </p>
           )}

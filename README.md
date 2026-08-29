@@ -1,71 +1,52 @@
-# NoteFormula
+# PDX
 
-> Formerly PDX.
-
-AI study material generator. Paste a syllabus and NoteFormula generates
-comprehensive, exam-ready PDF study notes and question banks.
+PDX is a free, bring-your-own-key study-material generator. A signed-in user connects an OpenAI-compatible provider, pastes a syllabus, and generates theory notes or question-bank PDFs.
 
 Operational and architectural documentation lives in [`docs/`](docs/README.md).
 
-This repository is a single deployable unit:
+## Runtime
 
-- a **Next.js web app** at the repo root (marketing pages, dashboard, auth, API
-  route handlers, BullMQ queue producers, payments)
-- a **colocated BullMQ worker** under `worker/` (AI generation, PDF rendering,
-  PDF merging) that connects to the same Redis instance
-- one **`Dockerfile`** with separate `web` and `worker` build targets
-- one **`docker-compose.yml`** that runs `redis`, `web`, and `worker`
-  (Postgres is an external managed database — Neon)
+This repository is one deployable unit with four Compose roles:
+
+- `migrate`: applies committed Prisma migrations and exits;
+- `redis`: stores BullMQ state;
+- `web`: Next.js pages, Better Auth, APIs, credential storage, and queue producers;
+- `worker`: AI generation, PDF rendering/merging, R2 upload, and progress callbacks.
+
+PostgreSQL is an external Neon database. Cloudflare R2, OAuth providers, Resend, and each user’s selected AI provider are external services.
 
 ## Stack
 
-- Next.js 16.3.3 (App Router, Turbopack)
-- React 19.2.8
-- TypeScript 6
-- Tailwind CSS 4 (CSS-first config) with the full shadcn/ui component set
-- Prisma 7.10 with `@prisma/adapter-pg` (PostgreSQL)
-- Better Auth 1.7.2 (Google, GitHub, email/password)
-- BullMQ 5.81 on Redis
-- Bun runtime and package manager
-- AI SDK v6 — DeepSeek V4 Flash primary with a Gemini fallback chain
-- Cloudflare R2 (via the AWS S3 SDK) for generated PDFs
-- Dodo Payments (webhook verification via `standardwebhooks`)
-- Resend for transactional email
-- PostHog and Vercel Analytics / Speed Insights
+- Next.js 16.3.3, React 19.2, TypeScript 6, and Tailwind CSS 4
+- shadcn/ui and Radix UI
+- Prisma 7.10 with PostgreSQL
+- Better Auth 1.7 with Google, GitHub, and email/password
+- AI SDK 6 with `@ai-sdk/openai-compatible`
+- BullMQ 5 and Redis 7
+- Bun 1.3.14
+- Cloudflare R2 and Chromium/Puppeteer
+
+## BYOK model
+
+Every account must configure a provider before generation. Presets cover OpenAI, OpenRouter, DeepSeek, and Groq; Custom accepts a public HTTPS OpenAI-compatible endpoint.
+
+Provider API keys are encrypted in PostgreSQL with AES-256-GCM and `BYOK_ENCRYPTION_KEY`. APIs return only safe metadata and a short key hint. Redis jobs contain material IDs and generation inputs, never credentials. Worker resolves the material owner’s credential from Web immediately before inference over an endpoint protected by `WORKER_CALLBACK_SECRET`.
+
+The product has no active plans, credits, checkout, coupons, transactions, or payment webhooks. Historical billing columns and tables remain dormant for a future deliberate data migration. `/pricing` is an unlinked archive notice.
 
 ## Routes
 
-Pages:
+Pages include `/`, `/about`, `/policy`, `/terms`, `/login`, `/dashboard`, both generation routes, `/history`, and `/settings`.
 
-- `/`
-- `/pricing`
-- `/about`
-- `/policy`
-- `/terms`
-- `/login`
-- `/login/reset-password`
-- `/dashboard`
-- `/dashboard/generate/theory`
-- `/dashboard/generate/qbank`
-- `/history`
-- `/settings`
+Important APIs:
 
-API:
-
-- `/api/auth/[...all]`
 - `/api/health`
-- `/api/credits`
-- `/api/payment-link/[productId]`
-- `/api/transactions`
-- `/api/webhook`
-- `/api/admin/create-coupon`
+- `/api/auth/[...all]`
+- `/api/ai-credentials` and `/api/ai-credentials/dismiss`
+- `/api/internal/ai-credentials/[materialId]`
 - `/api/generation/generate-topics`
 - `/api/generation/enqueue-generation`
-- `/api/generation/update-task`
-- `/api/generation/progress`
-- `/api/generation/progress/[materialId]`
-- `/api/generation/complete`
-- `/api/generation/download/[materialId]`
+- `/api/generation/update-task`, `/progress`, `/complete`, and `/download/[materialId]`
 
 ## Commands
 
@@ -73,124 +54,59 @@ Bun is the only supported toolchain.
 
 ```bash
 bun install
+bun run dev
+bun run worker:dev
 
-bun run dev            # Next.js dev server (Turbopack)
-bun run worker:dev     # run the worker against the same Redis
-bun run worker:build   # compile the worker to worker/dist
-bun run worker:start   # run the compiled worker
-
-bun run lint           # ESLint
+bun run test
+bun run lint
+bun run typecheck
+bun run worker:build
+bun run build
 
 bun run prisma:generate
-bun run prisma:push    # only after DATABASE_URL is confirmed
+bunx prisma migrate deploy
 
-bun run docker:config  # render the compose config
-bun run docker:up      # build + start the full stack
-bun run docker:down    # stop the stack
+bun run docker:config
+bun run docker:up
+bun run docker:down
 ```
 
-`prisma.config.ts` owns the Prisma datasource URL. `bunx prisma generate` runs
-without a live database; do **not** run `bunx prisma db push` or migrations
-until the target `DATABASE_URL` is confirmed.
+Do not run migrations or `prisma:push` until the exact database target is confirmed. Production was created before migration history; follow the baseline procedure in [`docs/deployment/coolify.md`](docs/deployment/coolify.md).
 
-ESLint is pinned to `9.39.4` because ESLint 10 currently crashes through the
-React plugin used by `eslint-config-next@16.2.11`.
+## Queue contract
 
-Validation note: builds and type checks are heavy. On the shared VPS run them
-through the `safe-dev-run` wrapper (e.g. `safe-dev-run bun run build`); never
-launch a raw `next build` or `tsc` directly.
-
-## The worker
-
-The generation pipeline is not complete with the Next.js server alone. The
-worker must run and connect to the same Redis instance.
-
-Queues (names shared literally between `src/lib/constants.ts` and
-`worker/src/constants.ts` — never rename one without the other):
+The queue names are a literal Web/Worker contract:
 
 - `theoryQueue`
 - `qbankQueue`
 - `mergePdfQueue`
 - `completionQueue`
 
-The worker posts progress and results back to the web app:
-
-- `/api/generation/update-task`
-- `/api/generation/progress`
-- `/api/generation/complete`
-
-These callbacks are **authenticated** with a shared secret. The worker attaches
-`x-worker-secret: $WORKER_CALLBACK_SECRET` (see `worker/src/callback.ts`) and
-the web app verifies it with a timing-safe compare (see
-`src/lib/worker-auth.ts`). If `WORKER_CALLBACK_SECRET` is unset, verification is
-skipped and a one-time warning is logged, so set it on **both** services in
-production. `worker/src/env.ts` requires it in production.
-
-### Model fallback chain
-
-Both the web app and the worker read `AI_GENERATION_MODELS`: an ordered,
-comma-separated list of `provider:model-id` entries tried in sequence. Default:
-
-```text
-deepseek:deepseek-v4-flash,deepseek:deepseek-chat,google:gemini-2.5-flash
-```
-
-Bare `gemini-*` IDs are inferred as Google; other bare IDs are inferred as
-DeepSeek. Reorder or replace the list to change the primary model or fallback
-chain without editing generator code. `AI_GENERATION_MAX_OUTPUT_TOKENS` caps
-output tokens per call.
+Worker callbacks and internal credential resolution use `x-worker-secret`. Production fails closed when `WORKER_CALLBACK_SECRET` is absent.
 
 ## Environment
 
-Pick the template that matches how you run the app, copy it, and replace every
-placeholder. Never commit a filled-in file.
+Use the matching committed template and never commit a filled environment file:
 
-- `.env.local.example` — local web + worker without Docker
-- `.env.production.example` — production web + worker run directly on a host/VM
-- `.env.production.docker.example` — combined env list for `docker-compose.yml`
-  (also what you paste into Coolify)
+- `.env.local.example`
+- `.env.production.example`
+- `.env.production.docker.example`
 
-Variables by concern:
+Main concerns:
 
-- **Auth / web** — `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `AUTH_SECRET`,
-  `AUTH_TRUST_HOST`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_GITHUB_ID`,
-  `AUTH_GITHUB_SECRET`
-- **Email** — `AUTH_RESEND_KEY` (the single Resend key), `AUTH_EMAIL_FROM`
-- **Database** — `DATABASE_URL` (external managed Postgres — Neon; the compose
-  stack does not run its own Postgres)
-- **Redis** — `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_TLS` (always
-  the compose-managed Redis)
-- **Worker link** — `BACKEND_URL`, `WORKER_CALLBACK_SECRET`
-- **AI** — `AI_GENERATION_MODELS`, `AI_GENERATION_MAX_OUTPUT_TOKENS` (read by
-  both web and worker), plus the API key for each referenced provider
-  (`DEEPSEEK_API_KEY`, `GOOGLE_API_KEY`); a key is only required when its
-  provider appears in the model list
-- **Storage (Cloudflare R2)** — `CLOUDFLARE_ACCOUNT_ID`,
-  `CLOUDFLARE_ACCESS_KEY_ID`, `CLOUDFLARE_SECRET_ACCESS_KEY`, `BUCKET_NAME`
-- **PDF rendering** — `PUPPETEER_EXECUTABLE_PATH`
-  (`PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` is a Docker build arg, not a runtime var)
-- **Payments** — `WEBHOOK_SECRET`, `STATIC_PAYMENT_LINK`, `ADMIN_KEY`
-- **Analytics** — `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_POSTHOG_KEY`
+- Web/auth: `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, OAuth credentials
+- Password reset: `AUTH_RESEND_KEY`, `AUTH_EMAIL_FROM`
+- Data: `DATABASE_URL`, Redis variables
+- Credential encryption: `BYOK_ENCRYPTION_KEY` on Web only
+- Worker link: `BACKEND_URL`, `WORKER_CALLBACK_SECRET`
+- Generation: `AI_GENERATION_MAX_OUTPUT_TOKENS`
+- Storage: R2 credentials and `BUCKET_NAME`
+- Analytics: public PostHog variables
+
+There are no server-funded AI-provider or payment variables.
 
 ## Deployment
 
-`docker-compose.yml` builds `web` and `worker` from the same `Dockerfile`
-(targets `web` and `worker`) and starts the `redis` service alongside them.
-Postgres is external (Neon) via `DATABASE_URL`. For Coolify, paste
-`.env.production.docker.example` (with placeholders replaced) and let the
-connected GitHub App source auto-deploy on push.
+Coolify builds `docker-compose.yml` through the repository’s GitHub App source. Only Web receives a public route. For the target deployment, configure its Compose domain as `https://pdx.sdey.me:3000`; the suffix identifies Web’s internal port and is not part of the public browser URL.
 
-The Compose stack does **not** run Prisma migrations automatically; applying the
-schema is a manual step against a confirmed `DATABASE_URL`.
-
-## Known Drift
-
-- The web app (`src/lib` zod usage) and the worker (`worker/src/zod/schema.ts`)
-  maintain independent Zod schemas rather than a shared package.
-- Database schema migration is a manual deployment step (see Deployment).
-- Visual identity still references the old brand pending user input:
-  `public/logo.png`, `public/og-image.png`, the design tokens/colors, the social
-  handles (`instagram.com/use.pdx`, `x.com/usepdx_`, the `@usepdx_` Twitter
-  metadata, `@pdxstudios` on the About page), the Dodo product IDs (`pdt_…`), and
-  the Google site-verification file (`public/google38d960025354decc.html`, tied
-  to the old domain).
+See [`docs/deployment/coolify.md`](docs/deployment/coolify.md) for database baselining, OAuth callbacks, deployment gates, and cutover checks.

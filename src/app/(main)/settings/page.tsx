@@ -1,28 +1,28 @@
-"use client";
-
-import React, { useState } from "react";
-
-import BillingSection from "@/components/settings/billing";
-import RedeemSection from "@/components/settings/redeem-section";
-import SettingsTabs from "@/components/settings/settings-tab";
-import { TransactionList } from "@/components/settings/transactions";
+import { AiCredentialForm } from "@/components/settings/ai-credential-form";
 import { H2 } from "@/components/typography/h2";
+import { getAiCredentialStatus } from "@/lib/ai/credential-service";
+import { auth } from "@/lib/auth";
 
-export type TabType = "Billing" | "Redeem" | "Transactions";
-
-const Page = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("Billing");
+const Page = async () => {
+  const session = await auth();
+  const status = await getAiCredentialStatus(session!.user.id);
 
   return (
-    <div className="mx-auto min-h-[70dvh] max-w-[1200px] p-4 px-4">
-      <H2 className="py-8 text-brand-heading">Settings</H2>
-
-      <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      {activeTab === "Billing" && <BillingSection />}
-      {activeTab === "Redeem" && <RedeemSection />}
-      {activeTab === "Transactions" && <TransactionList />}
-    </div>
+    <main className="mx-auto min-h-[70dvh] max-w-[1200px] px-4 py-8">
+      <H2 className="text-brand-heading">Settings</H2>
+      <section className="border-border bg-brand-bg/50 mt-8 rounded-xl border p-5 sm:p-7">
+        <div className="mb-6 max-w-2xl">
+          <h3 className="text-brand-heading text-xl font-semibold text-balance">
+            AI provider
+          </h3>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed text-pretty">
+            Choose an OpenAI-compatible provider and model. PDX verifies the
+            connection before saving it.
+          </p>
+        </div>
+        <AiCredentialForm initialStatus={status} />
+      </section>
+    </main>
   );
 };
 

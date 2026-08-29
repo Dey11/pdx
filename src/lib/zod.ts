@@ -1,9 +1,7 @@
 import { array, boolean, number, object, string, z } from "zod";
 
 export const signInSchema = object({
-  email: string()
-    .min(1, "Email is required")
-    .email("Invalid email"),
+  email: string().min(1, "Email is required").email("Invalid email"),
   password: string()
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
@@ -33,7 +31,6 @@ export const generateTopicsSchema = object({
 export const topicsSchema = object({
   type: z.enum(["theory", "qbank"]),
   weightage: z.enum(["auto", "short", "long", "medium"]).optional(),
-  credits: number().positive("Credits must be a positive number"),
   moduleName: string().min(1, "Module name is required"),
   instruction: string().min(1, "Instruction is required"),
   complexity: z.enum(["beginner", "intermediate", "advanced"]),

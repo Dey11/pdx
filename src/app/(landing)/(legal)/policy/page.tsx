@@ -13,27 +13,28 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4">
-      <div className="mx-auto mt-[15dvh] h-[2px] w-32 rounded-md bg-brand-yellow" />
+      <div className="bg-brand-yellow mx-auto mt-[15dvh] h-[2px] w-32 rounded-md" />
 
-      <H1 className="pt-5 text-center text-brand-heading lg:text-5xl">
+      <H1 className="text-brand-heading pt-5 text-center lg:text-5xl">
         Privacy Policy
       </H1>
       <Para className="text-center text-xs">
-        Learn how NoteFormula collects, uses, and protects your personal information
+        Learn how NoteFormula collects, uses, and protects your personal
+        information
       </Para>
 
       <main className="py-16">
-        <Para className="font-medium text-brand-blue underline underline-offset-2">
-          UPDATED DECEMBER 25, 2024
+        <Para className="text-brand-blue font-medium underline underline-offset-2">
+          UPDATED AUGUST 29, 2026
         </Para>
 
         <Para className="mt-6">
-          At NoteFormula ("we," "our," "us"), we value your privacy and are committed to
-          protecting your personal information. This Privacy Policy ("Policy")
-          explains how we collect, use, disclose, and protect information
-          obtained through your use of our platform, products, and services
-          (collectively, the "Services"). By accessing or using our Services,
-          you consent to the practices described in this Policy.
+          At NoteFormula ("we," "our," "us"), we value your privacy and are
+          committed to protecting your personal information. This Privacy Policy
+          ("Policy") explains how we collect, use, disclose, and protect
+          information obtained through your use of our platform, products, and
+          services (collectively, the "Services"). By accessing or using our
+          Services, you consent to the practices described in this Policy.
         </Para>
 
         <div className="mt-8 space-y-8">
@@ -51,10 +52,11 @@ const page = () => {
             <ul className="mb-3 list-disc space-y-2 pl-6">
               <li>Name</li>
               <li>Email address</li>
-              <li>
-                Payment information (e.g., billing address, transaction details)
-              </li>
               <li>Account credentials (e.g., username, password)</li>
+              <li>
+                An encrypted AI provider API key, its provider, endpoint, model,
+                and a short non-secret key hint
+              </li>
             </ul>
 
             <h3 className="mb-2 font-medium">b. Usage Data</h3>
@@ -76,14 +78,6 @@ const page = () => {
             <Para>
               Any files, syllabi, or modules you upload to our platform.
             </Para>
-
-            <h3 className="mb-2 mt-3 font-medium">
-              d. Community Marketplace Data
-            </h3>
-            <Para>
-              Information related to content shared, sold, or purchased through
-              the marketplace, including sales earnings and pricing data.
-            </Para>
           </section>
 
           <section>
@@ -93,7 +87,7 @@ const page = () => {
             <Para className="mb-3">We use the collected information to:</Para>
             <ul className="mb-3 list-disc space-y-2 pl-6">
               <li>Provide, operate, and improve our Services</li>
-              <li>Process transactions and manage accounts</li>
+              <li>Manage accounts and provider settings</li>
               <li>Personalize user experiences and recommendations</li>
               <li>
                 Communicate updates, promotions, or customer support responses
@@ -115,16 +109,13 @@ const page = () => {
             </Para>
             <ul className="mb-3 list-disc space-y-2 pl-6">
               <li>
-                Service Providers: Third-party vendors who assist in payment
-                processing, cloud storage, or analytics
+                Service Providers: Third-party vendors who assist with hosting,
+                cloud storage, email, or analytics
               </li>
               <li>
-                Legal Authorities: When required by law, subpoena, or to protect
-                our legal rights
-              </li>
-              <li>
-                Community Marketplace Users: Limited profile information may be
-                visible to other users for transactions
+                Your AI Provider: Prompts and generated content are sent to the
+                provider and model you configure, under that provider&apos;s
+                terms and privacy policy
               </li>
               <li>
                 Business Transfers: In the event of a merger, acquisition, or
@@ -215,11 +206,11 @@ const page = () => {
             <h2 className="mb-3 text-xl font-semibold">9. Third-Party Links</h2>
             <Para>
               Our platform may contain links to third-party websites or
-              services. NoteFormula is not responsible for the privacy practices, data
-              collection, or content of these third-party services. We encourage
-              users to review the privacy policies of any external websites they
-              engage with to understand how their data may be collected and
-              used.
+              services. NoteFormula is not responsible for the privacy
+              practices, data collection, or content of these third-party
+              services. We encourage users to review the privacy policies of any
+              external websites they engage with to understand how their data
+              may be collected and used.
             </Para>
           </section>
 
@@ -263,8 +254,8 @@ const page = () => {
           </section>
 
           <Para className="mt-8 font-medium">
-            By using NoteFormula, you acknowledge that you have read, understood, and
-            agreed to this Privacy Policy.
+            By using NoteFormula, you acknowledge that you have read,
+            understood, and agreed to this Privacy Policy.
           </Para>
         </div>
       </main>

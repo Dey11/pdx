@@ -90,18 +90,20 @@ export async function enqueue(
     });
 
     if (jobs.type === "theory") {
-      res.forEach(async (element) => {
-        await getTheoryQueue().add("theory", {
-          instruction: jobs.instruction,
-          complexity: jobs.complexity,
-          language: jobs.language,
-          course: jobs.course,
-          exam: jobs.exam,
-          subject: jobs.subject,
-          topic: element,
-          type: jobs.type,
-        });
-      });
+      await Promise.all(
+        res.map((element) =>
+          getTheoryQueue().add("theory", {
+            instruction: jobs.instruction,
+            complexity: jobs.complexity,
+            language: jobs.language,
+            course: jobs.course,
+            exam: jobs.exam,
+            subject: jobs.subject,
+            topic: element,
+            type: jobs.type,
+          })
+        )
+      );
     } else if (jobs.type === "qbank") {
       await getQbankQueue().add("qbank", {
         instruction: jobs.instruction,

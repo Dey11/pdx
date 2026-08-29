@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import BetaBanner from "@/components/beta-banner";
 import { GeneratingMessage } from "@/components/generate/qbank/generating-message";
@@ -13,29 +13,6 @@ const Page = () => {
   const [steps, setSteps] = useState(1);
   const [topics, setTopics] = useState<TopicsType>();
   const [generatingMaterialId, setGeneratingMaterialId] = useState<string>();
-  const [credits, setCredits] = useState<number>(0);
-  const [userCredits, setUserCredits] = useState<number>(0);
-  const [error, setError] = useState<string>("");
-
-  const fetchUserCredits = async () => {
-    try {
-      setError("");
-      const res = await fetch("/api/credits");
-      const data = await res.json();
-      if (data?.error) {
-        setError(data.error);
-        return;
-      }
-      setUserCredits(data.credits);
-    } catch (err) {
-      console.error(err);
-      setError("Error fetching user credits");
-    }
-  };
-
-  useEffect(() => {
-    fetchUserCredits();
-  }, []);
 
   return (
     <div className="container mx-auto max-w-[1400px] px-5">
@@ -44,16 +21,10 @@ const Page = () => {
       <BetaBanner />
 
       {steps === 1 && (
-        <SyllabusEditor
-          setSteps={setSteps}
-          setTopics={setTopics}
-          setCredits={setCredits}
-        />
+        <SyllabusEditor setSteps={setSteps} setTopics={setTopics} />
       )}
       {steps === 2 && (
         <TopicEditor
-          credits={credits}
-          setCredits={setCredits}
           topics={topics!}
           setSteps={setSteps}
           setGeneratingMaterialId={setGeneratingMaterialId}
@@ -62,13 +33,6 @@ const Page = () => {
 
       {steps === 3 && (
         <GeneratingMessage generatingMaterialId={generatingMaterialId!} />
-      )}
-
-      {error && <div className="text-center text-red-500">{error}</div>}
-      {userCredits && (
-        <div className="mt-1 w-full text-center text-brand-green">
-          Current credits: {userCredits}
-        </div>
       )}
     </div>
   );

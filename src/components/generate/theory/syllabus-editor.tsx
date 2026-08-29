@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 
 import { Loader2, Zap } from "lucide-react";
 
+import { openAiSetup } from "@/lib/ai/setup-events";
 import { TopicsType } from "@/lib/types/topics";
 import { generateTopicsSchema } from "@/lib/zod";
 
@@ -24,14 +25,12 @@ type MaterialType = "theory";
 type ComplexityType = "beginner" | "intermediate" | "advanced";
 type SyllabusEditorProps = {
   setSteps: (steps: number) => void;
-  setCredits: (credits: number) => void;
   setTopics: (topics: TopicsType) => void;
 };
 
 export const SyllabusEditor = ({
   setSteps,
   setTopics,
-  setCredits,
 }: SyllabusEditorProps) => {
   const [formData, setFormData] = useState({
     syllabus: "",
@@ -64,6 +63,7 @@ export const SyllabusEditor = ({
         const topics = await data.json();
 
         if (topics.error) {
+          if (topics.code === "AI_CREDENTIAL_REQUIRED") openAiSetup();
           setError(topics.error);
           return;
         }
@@ -78,7 +78,6 @@ export const SyllabusEditor = ({
           language: formData.language,
         };
         setTopics(stateData);
-        setCredits(topics.credits);
         setSteps(2);
       } catch {
         setError("Something went wrong. Please try again.");
@@ -99,12 +98,12 @@ export const SyllabusEditor = ({
 
   return (
     <form className="mx-auto max-w-[870px] py-5" action={handleSubmit}>
-      <H2 className="text-center text-brand-heading">
+      <H2 className="text-brand-heading text-center">
         Create Your Study Material
       </H2>
 
       <section className="mx-auto grid grid-cols-1 gap-5 pt-10 md:grid-cols-2">
-        <div className="flex flex-col justify-between rounded-lg bg-brand-bg p-5">
+        <div className="bg-brand-bg flex flex-col justify-between rounded-lg p-5">
           <H3>Syllabus Content</H3>
 
           <Textarea
@@ -133,7 +132,7 @@ export const SyllabusEditor = ({
           </label>
         </div>
 
-        <div className="flex flex-col gap-2 rounded-lg bg-brand-bg p-5">
+        <div className="bg-brand-bg flex flex-col gap-2 rounded-lg p-5">
           <H3>Material Type</H3>
           <Select
             name="type"
@@ -193,7 +192,7 @@ export const SyllabusEditor = ({
       {!isPending ? (
         <Button
           variant={"glowy"}
-          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80"
+          className="bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80 mt-4 flex w-full items-center justify-center gap-x-2"
           disabled={
             !formData.syllabus ||
             !formData.subject ||
@@ -207,7 +206,7 @@ export const SyllabusEditor = ({
       ) : (
         <Button
           variant={"glowy"}
-          className="mt-4 flex w-full items-center justify-center gap-x-2 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80"
+          className="bg-brand-yellow text-brand-bg hover:bg-brand-yellow/80 mt-4 flex w-full items-center justify-center gap-x-2"
           disabled
         >
           <Loader2 className="animate-spin" />
