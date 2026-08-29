@@ -8,6 +8,7 @@ datasource db {
 
 model Account {
   id                    String    @id @default(cuid())
+  issuer                String
   accountId             String    @map("provider_account_id")
   providerId            String    @map("provider")
   userId                String    @map("user_id")
@@ -23,7 +24,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, accountId])
+  @@unique([issuer, accountId])
   @@index([userId])
   @@map("accounts")
 }

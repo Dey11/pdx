@@ -274,6 +274,7 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Remove billing settings and primary pricing navigation.
 - Update copy, legal pages, metadata, and privacy disclosure.
 - Verify email signup/sign-in with optional providers hidden when credentials are absent.
+- Include Better Auth 1.7's required account `issuer` identity field and compound uniqueness in the Prisma schema and migration history.
 
 Google/GitHub OAuth and Resend remain deferred until production credentials are deliberately supplied.
 

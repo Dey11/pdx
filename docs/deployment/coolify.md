@@ -36,6 +36,8 @@ Start from `.env.production.docker.example`.
 
 Generate secrets outside Git, for example `openssl rand -base64 32`. Never print or copy filled values into logs or documentation. There are no payment or server AI-provider variables.
 
+Use `sslmode=verify-full` in both Neon URLs so the Node PostgreSQL client keeps hostname and certificate verification explicit across future major releases.
+
 ## One-time database adoption
 
 The migration service connects through `DIRECT_URL`; Web and Worker use the pooled `DATABASE_URL`.
