@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: design decisions settled; implementation not started.
+Status: design decisions settled; dependency checkpoint completed; feature implementation not started.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -188,21 +188,21 @@ Google, GitHub, and Resend credentials are not present in the documented VPS cre
 
 ## Dependency plan
 
-Use a separate dependency checkpoint before feature work:
+The dependency checkpoint is complete and verified:
 
-| Package | Current | Target | Reason |
+| Package | Before | Now | Reason |
 | --- | --- | --- | --- |
 | `next` | `16.2.11` | `16.3.3` | Current stable Next.js release |
 | `eslint-config-next` | `16.2.11` | `16.3.3` | Keep framework lint rules aligned |
-| `ai` | `6.0.233` | latest `6.0.x` | Compatible fixes without AI SDK 7 migration |
-| `@ai-sdk/openai-compatible` | absent | latest compatible `2.0.x` | One provider adapter for all BYOK endpoints |
+| `ai` | `6.0.233` | `6.0.271` | Compatible fixes without AI SDK 7 migration |
+| `@ai-sdk/openai-compatible` | absent | `2.0.73` | One provider adapter for all BYOK endpoints |
 | `@ai-sdk/deepseek` | `2.0.x` | remove | Replaced by OpenAI-compatible BYOK adapter |
 | `@ai-sdk/google` | `3.0.x` | remove | Server-funded Google path is removed |
-| `better-auth` | `1.6.23` | latest compatible `1.x` | Auth code is in scope; verify release notes and flows |
-| Prisma packages | `7.9.0` | latest `7.x` | Add credential schema without Prisma 8 migration |
-| `zod` | `4.4.3` | latest `4.x` | Credential and endpoint validation |
-| `resend` | `6.18.0` | latest `6.x` | Password-reset path is in scope |
-| `bullmq` | `5.80.10` | latest `5.x` | Queue fixes without BullMQ 6 migration |
+| `better-auth` | `1.6.23` | `1.7.2` | Auth code is in scope; verify release notes and flows |
+| Prisma packages | `7.9.0` | `7.10.0` | Add credential schema without Prisma 8 migration |
+| `zod` | `4.4.3` | `4.5.2` | Credential and endpoint validation |
+| `resend` | `6.18.0` | `6.25.0` | Password-reset path is in scope |
+| `bullmq` | `5.80.10` | `5.81.4` | Queue fixes without BullMQ 6 migration |
 
 Take other patch/minor updates only when they are touched or required by the selected versions. Keep React `19.2.x`, TypeScript `6.x`, ESLint `9.x`, and all unrelated major versions unchanged.
 
@@ -239,13 +239,12 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 
 ## Implementation sequence
 
-### Phase 1: dependency checkpoint
+### Phase 1: dependency checkpoint, completed
 
-- Upgrade the selected compatible package versions.
-- Add `@ai-sdk/openai-compatible` and remove provider packages only after their call sites migrate.
-- Regenerate the Bun lockfile.
-- Run lint, type checking, Worker build, and production build.
-- Commit independently.
+- Upgraded the selected compatible package versions and regenerated the Bun lockfile.
+- Added `@ai-sdk/openai-compatible`; existing provider packages remain until their call sites migrate.
+- Lint, type checking, Worker compilation, and the Next.js 16.3.3 production build pass.
+- Kept this work separate from feature implementation.
 
 ### Phase 2: credential data and deep module
 

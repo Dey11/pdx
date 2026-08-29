@@ -19,13 +19,13 @@ This repository is a single deployable unit:
 
 ## Stack
 
-- Next.js 16.2.11 (App Router, Turbopack)
+- Next.js 16.3.3 (App Router, Turbopack)
 - React 19.2.8
 - TypeScript 6
 - Tailwind CSS 4 (CSS-first config) with the full shadcn/ui component set
-- Prisma 7.9 with `@prisma/adapter-pg` (PostgreSQL)
-- Better Auth 1.6.23 (Google, GitHub, email/password)
-- BullMQ 5.80 on Redis
+- Prisma 7.10 with `@prisma/adapter-pg` (PostgreSQL)
+- Better Auth 1.7.2 (Google, GitHub, email/password)
+- BullMQ 5.81 on Redis
 - Bun runtime and package manager
 - AI SDK v6 — DeepSeek V4 Flash primary with a Gemini fallback chain
 - Cloudflare R2 (via the AWS S3 SDK) for generated PDFs

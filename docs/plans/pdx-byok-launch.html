@@ -106,7 +106,7 @@
           <h1>PDX becomes a free BYOK product</h1>
           <p class="lede">A staged implementation and cutover plan for mandatory per-account provider credentials, removal of active billing, a clean Coolify deployment, and launch at <code>pdx.sdey.me</code>.</p>
           <div class="meta">
-            <span class="pill">Status: design settled</span>
+            <span class="pill">Status: dependencies upgraded</span>
             <span class="pill">Target: https://pdx.sdey.me</span>
             <span class="pill">Next.js target: 16.3.3</span>
             <span class="pill">Deployment: parallel clean app</span>
@@ -212,10 +212,10 @@ User-selected OpenAI-compatible provider</code></pre>
             <tbody>
               <tr><td><code>next</code></td><td>16.2.11 → 16.3.3</td><td>Upgrade</td></tr>
               <tr><td><code>eslint-config-next</code></td><td>16.2.11 → 16.3.3</td><td>Keep aligned</td></tr>
-              <tr><td><code>ai</code></td><td>6.0.233 → latest 6.0.x</td><td>Compatible fixes</td></tr>
-              <tr><td><code>@ai-sdk/openai-compatible</code></td><td>absent → compatible 2.0.x</td><td>Add</td></tr>
+              <tr><td><code>ai</code></td><td>6.0.233 → 6.0.271</td><td>Upgraded</td></tr>
+              <tr><td><code>@ai-sdk/openai-compatible</code></td><td>absent → 2.0.73</td><td>Added</td></tr>
               <tr><td>DeepSeek and Google AI SDK adapters</td><td>installed → removed</td><td>Replace with BYOK adapter</td></tr>
-              <tr><td>Better Auth, Prisma, Zod, Resend, BullMQ</td><td>latest compatible majors</td><td>Update because touched</td></tr>
+              <tr><td>Better Auth, Prisma, Zod, Resend, BullMQ</td><td>compatible current-major releases</td><td>Upgraded</td></tr>
               <tr><td>AI SDK 7, BullMQ 6, ESLint 10, Prisma 8</td><td>breaking majors</td><td>Defer</td></tr>
             </tbody>
           </table>
@@ -237,7 +237,7 @@ User-selected OpenAI-compatible provider</code></pre>
 
         <section id="sequence">
           <h2>Implementation sequence</h2>
-          <div class="phase"><b>Phase 1</b><div><h3>Dependency checkpoint</h3><p>Upgrade compatible packages, regenerate the Bun lockfile, verify, and commit separately.</p></div></div>
+          <div class="phase"><b>Phase 1 ✓</b><div><h3>Dependency checkpoint</h3><p>Compatible packages and the Bun lockfile are updated. Lint, type checking, Worker compilation, and the production build pass.</p></div></div>
           <div class="phase"><b>Phase 2</b><div><h3>Credential module</h3><p>Baseline migrations, add credential data, encryption, URL policy, provider presets, validation, and focused module tests.</p></div></div>
           <div class="phase"><b>Phase 3</b><div><h3>Generation migration</h3><p>Resolve each user’s provider for Web and Worker, remove server fallback and every credit gate, and keep credentials out of Redis.</p></div></div>
           <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, archived pricing, copy and legal updates, and all three authentication flows.</p></div></div>
