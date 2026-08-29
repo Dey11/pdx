@@ -28,7 +28,7 @@ Web owns provider presets, input validation, endpoint policy, encryption, persis
 
 Generation routes resolve the signed-in user’s credential. Redis payloads never contain an API key. Worker receives only a material ID, then requests that material owner’s resolved credential from `/api/internal/ai-credentials/[materialId]`. The endpoint is no-store and protected by the shared Worker secret. Plaintext exists only in Web/Worker process memory while making a provider request.
 
-Custom endpoints must use HTTPS, cannot contain URL credentials/query/fragment data, and cannot resolve to loopback, private, link-local, carrier-grade NAT, multicast, or metadata destinations. Web verifies this before save and generation; Worker rechecks before provider requests. Redirects are rejected and provider calls have time and response-size limits.
+Custom endpoints must use HTTPS, cannot contain URL credentials/query/fragment data, and cannot resolve to loopback, private, link-local, carrier-grade NAT, multicast, or metadata destinations. Web verifies this before save and generation; Worker rechecks before provider requests. Each request pins the validated public address into the HTTPS connection to prevent DNS rebinding. Redirects are rejected and provider calls have time and response-size limits.
 
 Provider changes are blocked while the user has a pending or in-progress Material so one generation cannot switch models midway.
 
@@ -36,7 +36,7 @@ Provider changes are blocked while the user has a pending or in-progress Materia
 
 The queue names in `src/lib/constants.ts` and `worker/src/constants.ts` are cross-process contracts: `theoryQueue`, `qbankQueue`, `mergePdfQueue`, and `completionQueue`.
 
-Theory generation fans out one task per topic. Question-bank generation has one job that processes its topics in order. Worker reports task updates and completion to Web using `x-worker-secret`, renders PDFs with Chromium, and stores final artifacts in R2.
+Theory generation fans out one task per topic. Question-bank generation has one job that processes its topics in order. Material creation also writes a PostgreSQL dispatch outbox record; Worker asks Web to drain pending records until deterministic Redis jobs are confirmed. Before retrying paid work, Worker reads terminal task state from Web and checks deterministic completion jobs, so it skips outcomes that are persisted or awaiting persistence. Each completed question-bank task stores its next question number, preserving continuous numbering when later topics retry. Expensive generation has five attempts, and permanent credential/provider errors skip directly to failure reconciliation. Failed generation jobs remain in Redis until the reconciler publishes a deterministic completion job; completion and merge delivery use separate long-lived retry budgets. Worker sends each idempotent terminal outcome to Web using `x-worker-secret`; Web persists it in a serializable transaction and derives Material progress from task state. Deterministic BullMQ job IDs, deterministic R2 keys, and durable callback retries prevent duplicate counting and orphaned queue work. Worker renders PDFs with Chromium and stores final artifacts in R2.
 
 Token usage remains diagnostic data. It does not map to credits or entitlement.
 

@@ -17,10 +17,9 @@ import { topicsSchema } from "./zod";
 //     per topic, generated and merged independently.
 //   - "qbank" materials enqueue a SINGLE qbankQueue job carrying every topic;
 //     the worker iterates topics itself.
-//   - Every MaterialTask carries currIndex/totalIndex (1-based). The worker
-//     echoes these back through /api/generation/update-task so the web app can
-//     track per-part progress; /api/generation/progress increments
-//     completedParts until it reaches totalParts and triggers mergePdf().
+//   - Every MaterialTask carries currIndex/totalIndex (1-based). Worker submits
+//     its terminal task outcome through /api/generation/progress. Web derives
+//     completedParts from task rows and triggers mergePdf() once all are terminal.
 //
 // Queues are created lazily per call (getXxxQueue()) rather than as module-level
 // singletons: this module is imported by Next.js route handlers, and deferring
@@ -39,8 +38,11 @@ const getTheoryQueue = () =>
   new Queue(THEORY_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
-      attempts: 1,
-      removeOnComplete: true,
+      attempts: 5,
+      backoff: { type: "fixed", delay: 30_000 },
+      // Keep deterministic IDs long enough for the database outbox to
+      // reconcile an enqueue whose Redis acknowledgement was lost.
+      removeOnComplete: { count: 100_000 },
     },
   });
 
@@ -48,8 +50,9 @@ const getQbankQueue = () =>
   new Queue(QBANK_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
-      attempts: 1,
-      removeOnComplete: true,
+      attempts: 5,
+      backoff: { type: "fixed", delay: 30_000 },
+      removeOnComplete: { count: 100_000 },
     },
   });
 
@@ -57,44 +60,33 @@ const getMergePdfQueue = () =>
   new Queue(MERGE_PDF_QUEUE_NAME, {
     connection: redisConnection(),
     defaultJobOptions: {
-      attempts: 2,
-      removeOnComplete: true,
+      attempts: 100_000,
+      backoff: { type: "fixed", delay: 30_000 },
+      removeOnComplete: { count: 100_000 },
     },
   });
-
-type MaterialTask = {
-  materialId: string;
-  topic: string;
-  data: z.infer<typeof topicsSchema>["topics"][0];
-};
 
 export async function enqueue(
   jobs: z.infer<typeof topicsSchema>,
   materialId: string
 ) {
   try {
-    const dbInsertableArr: MaterialTask[] = [];
-    jobs.topics.forEach((element, index) => {
-      const temp = {
-        materialId,
-        topic: element.name,
-        data: element,
-        currIndex: index + 1,
-        totalIndex: jobs.topics.length,
-      };
-      dbInsertableArr.push(temp);
+    const tasks = await prisma.materialTask.findMany({
+      where: { materialId },
+      orderBy: { currIndex: "asc" },
     });
-
-    const res = await prisma.materialTask.createManyAndReturn({
-      data: dbInsertableArr,
-    });
+    if (tasks.length !== jobs.topics.length) {
+      throw new Error("Material task count does not match its dispatch");
+    }
 
     if (jobs.type === "theory") {
       const queue = getTheoryQueue();
+      let added = false;
       try {
         await queue.addBulk(
-          res.map((element) => ({
+          tasks.map((element) => ({
             name: "theory",
+            opts: { jobId: `theory-${element.id}` },
             data: {
               instruction: jobs.instruction,
               complexity: jobs.complexity,
@@ -107,30 +99,41 @@ export async function enqueue(
             },
           }))
         );
+        added = true;
       } finally {
-        await queue.close();
+        await queue.close().catch(() => {
+          if (!added) throw new Error("Theory queue connection failed");
+        });
       }
     } else if (jobs.type === "qbank") {
       const queue = getQbankQueue();
+      let added = false;
       try {
-        await queue.add("qbank", {
-          instruction: jobs.instruction,
-          complexity: jobs.complexity,
-          language: jobs.language,
-          course: jobs.course,
-          exam: jobs.exam,
-          subject: jobs.subject,
-          topics: res,
-          type: jobs.type,
-          weightage: jobs.weightage,
-        });
+        await queue.add(
+          "qbank",
+          {
+            instruction: jobs.instruction,
+            complexity: jobs.complexity,
+            language: jobs.language,
+            course: jobs.course,
+            exam: jobs.exam,
+            subject: jobs.subject,
+            topics: tasks,
+            type: jobs.type,
+            weightage: jobs.weightage,
+          },
+          { jobId: `qbank-${materialId}` }
+        );
+        added = true;
       } finally {
-        await queue.close();
+        await queue.close().catch(() => {
+          if (!added) throw new Error("Question-bank queue connection failed");
+        });
       }
     }
     return true;
-  } catch (err) {
-    console.error(err);
+  } catch {
+    console.error("Failed to enqueue generation jobs");
     return false;
   }
 }
@@ -141,6 +144,7 @@ type ArrOfKeysType = {
 };
 
 export async function mergePdf(jobs: { materialId: string; type: string }) {
+  const queue = getMergePdfQueue();
   try {
     const materials = await prisma.materialTask.findMany({
       where: {
@@ -159,14 +163,20 @@ export async function mergePdf(jobs: { materialId: string; type: string }) {
       };
     });
 
-    await getMergePdfQueue().add("mergePdf", {
-      materialId: jobs.materialId,
-      type: jobs.type,
-      arrOfKeys,
-    });
+    await queue.add(
+      "mergePdf",
+      {
+        materialId: jobs.materialId,
+        type: jobs.type,
+        arrOfKeys,
+      },
+      { jobId: `merge-${jobs.materialId}` }
+    );
     return true;
-  } catch (err) {
-    console.error(err);
+  } catch {
+    console.error("Failed to enqueue PDF merge");
     return false;
+  } finally {
+    await queue.close().catch(() => undefined);
   }
 }

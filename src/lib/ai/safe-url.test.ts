@@ -18,6 +18,7 @@ describe("custom provider URL policy", () => {
     "https://example.com/v1#fragment",
     "https://localhost/v1",
     "https://127.0.0.1/v1",
+    "https://192.0.2.1/v1",
     "https://[::1]/v1",
     "https://[::ffff:7f00:1]/v1",
     "https://169.254.169.254/latest/meta-data",

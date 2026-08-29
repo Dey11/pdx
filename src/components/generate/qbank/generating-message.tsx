@@ -11,6 +11,7 @@ export function GeneratingMessage({
 }) {
   const [progress, setProgress] = useState({ completed: 0, total: 1 });
   const [isComplete, setIsComplete] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
@@ -23,8 +24,11 @@ export function GeneratingMessage({
         const data = await response.json();
         setProgress({ completed: data.completedParts, total: data.totalParts });
 
-        if (data.completedParts >= data.totalParts) {
+        if (data.status === "completed") {
           setIsComplete(true);
+          clearInterval(interval);
+        } else if (data.status === "failed") {
+          setIsFailed(true);
           clearInterval(interval);
         }
       } catch (error) {
@@ -82,19 +86,27 @@ export function GeneratingMessage({
           <div className="w-full max-w-[600px] space-y-2">
             <Progress
               value={progressPercentage}
-              className="h-2 bg-brand-bg"
+              className="bg-brand-bg h-2"
               indicatorClassName="bg-brand-green"
             />
-            <div className="text-sm text-muted-foreground">
-              {progressPercentage}% complete
+            <div className="text-muted-foreground text-sm">
+              {progressPercentage >= 100 && !isComplete
+                ? "Finalizing your PDF…"
+                : `${progressPercentage}% complete`}
             </div>
           </div>
+
+          {isFailed && (
+            <div className="text-destructive text-sm">
+              Generation could not complete. Please start a new material.
+            </div>
+          )}
 
           {isComplete && (
             <div>
               <Button
                 variant={"glowy"}
-                className="mt-4 bg-brand-yellow text-brand-bg hover:bg-brand-yellow/90"
+                className="bg-brand-yellow text-brand-bg hover:bg-brand-yellow/90 mt-4"
                 onClick={handleDownload}
                 disabled={isDownloading}
               >

@@ -17,20 +17,53 @@ export const waitlistSchema = object({
   name: string().min(3, "Name must be at least 3 characters"),
 });
 
-export const generateTopicsSchema = object({
+const generationWeightageSchema = z.enum(["auto", "short", "long", "medium"]);
+
+const generateTopicsShape = {
   language: string().optional(),
   subject: string().min(1, "Subject is required"),
   syllabus: string().min(3, "Syllabus is required"),
   complexity: z.enum(["beginner", "intermediate", "advanced"]),
-  type: z.enum(["theory", "qbank"]),
-  weightage: z.enum(["auto", "short", "long", "medium"]).optional(),
   exam: string().optional(),
   course: string().optional(),
+};
+
+export const generateTopicsSchema = z.discriminatedUnion("type", [
+  object({
+    ...generateTopicsShape,
+    type: z.literal("theory"),
+    weightage: generationWeightageSchema.optional(),
+  }),
+  object({
+    ...generateTopicsShape,
+    type: z.literal("qbank"),
+    weightage: generationWeightageSchema,
+  }),
+]);
+
+const normalizedTopicSchema = object({
+  id: string(),
+  name: string(),
+  weightage: z.enum(["low", "medium", "high"]),
+  subtopics: array(
+    object({
+      id: string(),
+      title: string(),
+    })
+  ),
+  numericals: array(
+    object({
+      id: string(),
+      title: string(),
+    })
+  ),
+  formulas: boolean(),
+  examples: boolean(),
+  completed: boolean(),
+  tryCount: number(),
 });
 
-export const topicsSchema = object({
-  type: z.enum(["theory", "qbank"]),
-  weightage: z.enum(["auto", "short", "long", "medium"]).optional(),
+const topicsShape = {
   moduleName: string().min(1, "Module name is required"),
   instruction: string().min(1, "Instruction is required"),
   complexity: z.enum(["beginner", "intermediate", "advanced"]),
@@ -38,27 +71,18 @@ export const topicsSchema = object({
   course: string().optional(),
   subject: string(),
   language: string().optional(),
-  topics: array(
-    object({
-      id: string(),
-      name: string(),
-      weightage: z.enum(["low", "medium", "high"]),
-      subtopics: array(
-        object({
-          id: string(),
-          title: string(),
-        })
-      ),
-      numericals: array(
-        object({
-          id: string(),
-          title: string(),
-        })
-      ),
-      formulas: boolean(),
-      examples: boolean(),
-      completed: boolean(),
-      tryCount: number(),
-    })
-  ),
-});
+  topics: array(normalizedTopicSchema),
+};
+
+export const topicsSchema = z.discriminatedUnion("type", [
+  object({
+    ...topicsShape,
+    type: z.literal("theory"),
+    weightage: generationWeightageSchema.optional(),
+  }),
+  object({
+    ...topicsShape,
+    type: z.literal("qbank"),
+    weightage: generationWeightageSchema,
+  }),
+]);

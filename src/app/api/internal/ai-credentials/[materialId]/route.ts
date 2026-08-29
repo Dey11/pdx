@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { resolveAiCredentialForMaterial } from "@/lib/ai/credential-service";
+import {
+  AiCredentialRequiredError,
+  resolveAiCredentialForMaterial,
+} from "@/lib/ai/credential-service";
 import { verifyWorkerRequest } from "@/lib/worker-auth";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +20,14 @@ export async function GET(
     return NextResponse.json(await resolveAiCredentialForMaterial(materialId), {
       headers: { "Cache-Control": "no-store" },
     });
-  } catch {
-    return NextResponse.json(
-      { error: "AI credential not available" },
-      { status: 404 }
-    );
+  } catch (error) {
+    if (error instanceof AiCredentialRequiredError) {
+      return NextResponse.json(
+        { error: "AI credential not available" },
+        { status: 404 }
+      );
+    }
+    console.error("Failed to resolve the material AI credential");
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

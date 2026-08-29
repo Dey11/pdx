@@ -213,9 +213,9 @@ export const AiCredentialForm = ({
           required
         />
         <p className="text-muted-foreground text-xs leading-relaxed text-pretty">
-          Your key is encrypted at rest, never shown again, and used only for
-          generation. Your prompts and generated content are sent to the
-          provider you select.
+          Your API key is encrypted at rest, never shown again after saving, and
+          used only for your generation requests. Your prompts and study content
+          are sent directly to the provider you choose.
         </p>
       </div>
 

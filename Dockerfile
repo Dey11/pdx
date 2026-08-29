@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.14-debian AS base
+FROM oven/bun:1.4.0-debian AS base
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -14,13 +14,16 @@ FROM base AS deps
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-FROM deps AS builder
+FROM deps AS web-builder
 ARG NEXT_PUBLIC_POSTHOG_HOST
 ARG NEXT_PUBLIC_POSTHOG_KEY
 ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
 ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
 COPY . .
 RUN bun run build
+
+FROM deps AS worker-builder
+COPY . .
 RUN bun run worker:build
 
 FROM base AS web
@@ -29,12 +32,12 @@ ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/next.config.ts ./next.config.ts
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=web-builder /app/.next ./.next
+COPY --from=web-builder /app/public ./public
+COPY --from=web-builder /app/package.json ./package.json
+COPY --from=web-builder /app/next.config.ts ./next.config.ts
+COPY --from=web-builder /app/prisma ./prisma
+COPY --from=web-builder /app/prisma.config.ts ./prisma.config.ts
 
 # node_modules came from the deps stage (install only); the Prisma client is
 # generated in the builder stage, so regenerate it here for the runtime image.
@@ -58,8 +61,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/worker/dist ./worker/dist
+COPY --from=worker-builder /app/package.json ./package.json
+COPY --from=worker-builder /app/worker/dist ./worker/dist
 
 RUN mkdir -p /app/worker/temp
 

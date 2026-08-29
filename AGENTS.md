@@ -48,7 +48,7 @@ Explicit user instructions take precedence over this file. Keep changes within t
 - Keep Worker callback authentication intact on both sides: `worker/src/callback.ts` sends `x-worker-secret`; Web verifies it in `src/lib/worker-auth.ts`.
 - Provider presets live in `src/lib/ai/providers.ts`; users may edit the model ID. Do not reintroduce server-funded provider keys or put credentials into Redis.
 - The production Compose stack owns Redis but not PostgreSQL. Do not add a production Postgres container without an intentional migration plan.
-- Coolify uses `/docker-compose.yml`, the GitHub App source, and the `master` branch. Confirm application UUID, environment, domain, and current health before any Coolify write.
+- Coolify uses `/docker-compose.yml` and the GitHub App source. Confirm the application UUID, source branch, environment, domain, and current health before any Coolify write; the parallel BYOK launch tracks `launch/byok-pdx` so the old `master` deployment remains untouched.
 - Add focused Bun tests for meaningful credential, URL-policy, and generation-contract behavior. Run tests, lint, type checking, the relevant build, and targeted manual checks.
 - Update documentation when routes, environment variables, queue contracts, setup commands, architecture, or visible behavior change.
 - Inspect `git diff` before committing. Local checkpoint commits are allowed; pushing, deploying, changing remotes, or rewriting history requires explicit authorization.

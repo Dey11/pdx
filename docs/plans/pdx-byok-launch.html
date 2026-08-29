@@ -187,7 +187,7 @@ User-selected OpenAI-compatible provider</code></pre>
             <li>Remove Dodo Payments, <code>standardwebhooks</code>, product IDs, checkout links, and billing environment variables.</li>
             <li>Remove credit gates, reservations, deductions, and estimated-credit UI.</li>
             <li>Replace Billing, Redeem, and Transactions settings with provider configuration.</li>
-            <li>Keep <code>/pricing</code> as a clearly archived page with no checkout action, and remove it from primary navigation.</li>
+            <li>Remove <code>/pricing</code>, its purchase UI, and all primary navigation to pricing.</li>
             <li>Keep historical billing tables and columns dormant. No release-time destructive migration.</li>
           </ul>
         </section>
@@ -240,7 +240,7 @@ User-selected OpenAI-compatible provider</code></pre>
           <div class="phase"><b>Phase 1 ✓</b><div><h3>Dependency checkpoint</h3><p>Compatible packages and the Bun lockfile are updated. Lint, type checking, Worker compilation, and the production build pass.</p></div></div>
           <div class="phase"><b>Phase 2</b><div><h3>Credential module</h3><p>Baseline migrations, add credential data, encryption, URL policy, provider presets, validation, and focused module tests.</p></div></div>
           <div class="phase"><b>Phase 3</b><div><h3>Generation migration</h3><p>Resolve each user’s provider for Web and Worker, remove server fallback and every credit gate, and keep credentials out of Redis.</p></div></div>
-          <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, archived pricing, copy and legal updates, and all three authentication flows.</p></div></div>
+          <div class="phase"><b>Phase 4</b><div><h3>Product and auth</h3><p>First-run dialog, Settings, pricing removal, copy and legal updates, and all three authentication flows.</p></div></div>
           <div class="phase"><b>Phase 5</b><div><h3>Production Compose</h3><p>Add migration orchestration, tighten health checks, render configuration, and build ARM64 images.</p></div></div>
           <div class="phase"><b>Phase 6</b><div><h3>Parallel Coolify cutover</h3><p>Create a clean application, configure <code>https://pdx.sdey.me:3000</code>, add DNS, verify end to end, then stop the broken app without deleting it.</p></div></div>
         </section>

@@ -4,7 +4,7 @@
 
 - Provider: the existing Coolify installation at `cooldash.xyz`
 - Project/environment: `noteformula` / `production`
-- Source: GitHub App, `Dey11/pdx.git`, branch `master`
+- Source: GitHub App, `Dey11/pdx.git`, branch `launch/byok-pdx`
 - Build pack: Docker Compose at `/docker-compose.yml`
 - Public origin: `https://pdx.sdey.me`
 - Compose domain value: `https://pdx.sdey.me:3000`
@@ -65,7 +65,7 @@ Verify the Resend sender used by `AUTH_EMAIL_FROM`. Email/password login works w
 3. Confirm the DNS target from the selected Coolify server.
 4. Compare variables against the template by presence, without printing values.
 5. Complete the production database adoption above.
-6. Run tests, lint, type checking, Worker build, Next production build, frozen install, and `docker compose config --quiet`.
+6. Run tests, lint, type checking, Worker build, Next production build, frozen install, `docker compose config --quiet`, and both ARM64 image builds.
 7. Push the reviewed commits only after all checks pass.
 
 ## Deployment and cutover

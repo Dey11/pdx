@@ -24,7 +24,9 @@ export async function GET(
     const material = await prisma.material.findFirst({
       where: {
         id: materialId,
+        userId: session.user.id,
       },
+      select: { completedParts: true, totalParts: true, status: true },
     });
 
     if (!material) {
@@ -37,6 +39,7 @@ export async function GET(
     return NextResponse.json({
       completedParts: material.completedParts,
       totalParts: material.totalParts,
+      status: material.status,
     });
   } catch (err) {
     console.error(err);

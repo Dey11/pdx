@@ -23,7 +23,7 @@ PostgreSQL is an external Neon database. Cloudflare R2, OAuth providers, Resend,
 - Better Auth 1.7 with Google, GitHub, and email/password
 - AI SDK 6 with `@ai-sdk/openai-compatible`
 - BullMQ 5 and Redis 7
-- Bun 1.3.14
+- Bun 1.4.0
 - Cloudflare R2 and Chromium/Puppeteer
 
 ## BYOK model
@@ -32,7 +32,7 @@ Every account must configure a provider before generation. Presets cover OpenAI,
 
 Provider API keys are encrypted in PostgreSQL with AES-256-GCM and `BYOK_ENCRYPTION_KEY`. APIs return only safe metadata and a short key hint. Redis jobs contain material IDs and generation inputs, never credentials. Worker resolves the material owner’s credential from Web immediately before inference over an endpoint protected by `WORKER_CALLBACK_SECRET`.
 
-The product has no active plans, credits, checkout, coupons, transactions, or payment webhooks. Historical billing columns and tables remain dormant for a future deliberate data migration. `/pricing` is an unlinked archive notice.
+The product has no pricing route, plans, credits, checkout, coupons, transactions, or payment webhooks. Historical billing columns and tables remain dormant for a future deliberate data migration.
 
 ## Routes
 
@@ -44,9 +44,11 @@ Important APIs:
 - `/api/auth/[...all]`
 - `/api/ai-credentials` and `/api/ai-credentials/dismiss`
 - `/api/internal/ai-credentials/[materialId]`
+- `/api/internal/generation-dispatch`
+- `/api/internal/generation-state/[materialId]`
 - `/api/generation/generate-topics`
 - `/api/generation/enqueue-generation`
-- `/api/generation/update-task`, `/progress`, `/complete`, and `/download/[materialId]`
+- `/api/generation/progress`, `/complete`, and `/download/[materialId]`
 
 ## Commands
 
@@ -82,7 +84,7 @@ The queue names are a literal Web/Worker contract:
 - `mergePdfQueue`
 - `completionQueue`
 
-Worker callbacks and internal credential resolution use `x-worker-secret`. Production fails closed when `WORKER_CALLBACK_SECRET` is absent.
+Worker completion callbacks are idempotent: each one persists a task outcome, then derives Material progress from terminal task rows. Expensive generation uses a small, classified retry budget; failed generation jobs remain in Redis until a separate reconciler durably publishes their terminal outcomes. A PostgreSQL dispatch outbox, deterministic BullMQ job IDs, deterministic R2 keys, and pre-retry task-state checks make retries safe across service restarts without repeating completed AI work. Worker callbacks and internal endpoints use `x-worker-secret`; every environment fails closed when `WORKER_CALLBACK_SECRET` is absent.
 
 ## Environment
 

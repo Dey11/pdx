@@ -4,6 +4,7 @@ import {
 } from "@ai-sdk/openai-compatible";
 import axios from "axios";
 import { lookup } from "node:dns/promises";
+import { request as httpsRequest } from "node:https";
 import { isIP } from "node:net";
 import { z } from "zod";
 
@@ -67,7 +68,112 @@ const isPrivateAddress = (address: string): boolean => {
   );
 };
 
-const assertSafeUrl = async (value: string): Promise<void> => {
+const resolveSafeAddresses = async (hostname: string): Promise<string[]> => {
+  const addresses = isIP(hostname)
+    ? [hostname]
+    : (await lookup(hostname, { all: true, verbatim: true })).map(
+        ({ address }) => address
+      );
+  if (addresses.length === 0 || addresses.some(isPrivateAddress)) {
+    throw new Error("Unsafe provider address");
+  }
+  return addresses;
+};
+
+const responseHeaders = (
+  headers: Record<string, string | string[] | undefined>
+): Headers => {
+  const result = new Headers();
+  for (const [name, value] of Object.entries(headers)) {
+    if (Array.isArray(value)) {
+      for (const item of value) result.append(name, item);
+    } else if (value !== undefined) {
+      result.set(name, value);
+    }
+  }
+  return result;
+};
+
+const pinnedHttpsFetch = async (
+  input: RequestInfo | URL,
+  init: RequestInit | undefined,
+  pinnedAddress: string,
+  maximumResponseBytes: number
+): Promise<Response> => {
+  const normalizedRequest = new Request(input, init);
+  const url = new URL(normalizedRequest.url);
+  const method = normalizedRequest.method;
+  const body =
+    method === "GET" || method === "HEAD"
+      ? undefined
+      : Buffer.from(await normalizedRequest.arrayBuffer());
+
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const fail = (error: Error) => {
+      if (settled) return;
+      settled = true;
+      reject(error);
+    };
+
+    const request = httpsRequest(
+      url,
+      {
+        method,
+        headers: Object.fromEntries(normalizedRequest.headers.entries()),
+        signal: AbortSignal.any([
+          normalizedRequest.signal,
+          AbortSignal.timeout(60_000),
+        ]),
+        lookup: (_hostname, lookupOptions, callback) => {
+          const family = isIP(pinnedAddress);
+          if (lookupOptions.all) {
+            callback(null, [{ address: pinnedAddress, family }]);
+            return;
+          }
+          callback(null, pinnedAddress, family);
+        },
+      },
+      (incoming) => {
+        const status = incoming.statusCode ?? 500;
+        if (status >= 300 && status < 400) {
+          incoming.resume();
+          fail(new Error("Provider redirects are not allowed"));
+          return;
+        }
+
+        const chunks: Buffer[] = [];
+        let receivedBytes = 0;
+        incoming.on("data", (chunk: Buffer) => {
+          receivedBytes += chunk.byteLength;
+          if (receivedBytes > maximumResponseBytes) {
+            incoming.destroy();
+            fail(new Error("Provider response exceeded the size limit"));
+            return;
+          }
+          chunks.push(chunk);
+        });
+        incoming.on("error", fail);
+        incoming.on("end", () => {
+          if (settled) return;
+          settled = true;
+          resolve(
+            new Response(Buffer.concat(chunks), {
+              status,
+              statusText: incoming.statusMessage,
+              headers: responseHeaders(incoming.headers),
+            })
+          );
+        });
+      }
+    );
+
+    request.on("error", fail);
+    request.end(body);
+  });
+};
+
+export const assertSafeUrl = async (value: string): Promise<void> => {
   const url = new URL(value);
   if (
     url.protocol !== "https:" ||
@@ -80,55 +186,14 @@ const assertSafeUrl = async (value: string): Promise<void> => {
   }
 
   const hostname = url.hostname.replace(/^\[|\]$/g, "");
-  const addresses = isIP(hostname)
-    ? [hostname]
-    : (await lookup(hostname, { all: true, verbatim: true })).map(
-        ({ address }) => address
-      );
-  if (addresses.length === 0 || addresses.some(isPrivateAddress)) {
-    throw new Error("Unsafe provider address");
-  }
-};
-
-const limitResponseBody = (response: Response): Response => {
-  const maximumBytes = 10 * 1024 * 1024;
-  const contentLength = Number(response.headers.get("content-length"));
-  if (Number.isFinite(contentLength) && contentLength > maximumBytes) {
-    throw new Error("Provider response exceeded the size limit");
-  }
-  if (!response.body) return response;
-
-  let receivedBytes = 0;
-  const reader = response.body.getReader();
-  const body = new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      const chunk = await reader.read();
-      if (chunk.done) {
-        controller.close();
-        return;
-      }
-      receivedBytes += chunk.value.byteLength;
-      if (receivedBytes > maximumBytes) {
-        await reader.cancel();
-        controller.error(
-          new Error("Provider response exceeded the size limit")
-        );
-        return;
-      }
-      controller.enqueue(chunk.value);
-    },
-    cancel(reason) {
-      return reader.cancel(reason);
-    },
-  });
-
-  return new Response(body, response);
+  await resolveSafeAddresses(hostname);
 };
 
 type ProviderFetch = NonNullable<OpenAICompatibleProviderSettings["fetch"]>;
 
 const safeProviderFetch = (baseUrl: string): ProviderFetch => {
   const origin = new URL(baseUrl).origin;
+  const maximumResponseBytes = 10 * 1024 * 1024;
 
   const safeFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(
@@ -136,17 +201,10 @@ const safeProviderFetch = (baseUrl: string): ProviderFetch => {
     );
     if (url.origin !== origin) throw new Error("Provider origin changed");
     await assertSafeUrl(url.origin);
-
-    const timeout = AbortSignal.timeout(60_000);
-    const signal = init?.signal
-      ? AbortSignal.any([init.signal, timeout])
-      : timeout;
-    const response = await fetch(input, {
-      ...init,
-      redirect: "error",
-      signal,
-    });
-    return limitResponseBody(response);
+    const hostname = url.hostname.replace(/^\[|\]$/g, "");
+    const addresses = await resolveSafeAddresses(hostname);
+    const pinnedAddress = addresses[0];
+    return pinnedHttpsFetch(input, init, pinnedAddress, maximumResponseBytes);
   };
 
   return Object.assign(safeFetch, { preconnect: () => undefined });

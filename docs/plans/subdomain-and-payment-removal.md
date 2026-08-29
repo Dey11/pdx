@@ -6,7 +6,7 @@ Target URL: `https://pdx.sdey.me`
 
 ## Goal
 
-Relaunch NoteFormula as a free, bring-your-own-key product. Every account supplies an API key for an OpenAI-compatible provider. The release removes the active billing and credit system, preserves historical billing rows without using them, keeps the old pricing page only as an archive, upgrades the supported dependency set, and deploys a clean Docker Compose application to Coolify.
+Relaunch NoteFormula as a free, bring-your-own-key product. Every account supplies an API key for an OpenAI-compatible provider. The release removes the pricing surface and active billing and credit system, preserves historical billing rows without using them, upgrades the supported dependency set, and deploys a clean Docker Compose application to Coolify.
 
 ## Settled product decisions
 
@@ -14,10 +14,10 @@ Relaunch NoteFormula as a free, bring-your-own-key product. Every account suppli
 - A user without a provider configuration may browse the dashboard, history, settings, and existing downloads, but cannot start topic planning or generation.
 - The first authenticated visit without a configured key opens setup. The dialog can be dismissed. Generation actions reopen it until setup succeeds.
 - Provider presets are OpenAI, OpenRouter, DeepSeek, and Groq. A Custom option accepts any supported OpenAI-compatible endpoint.
-- Each preset supplies a base URL and editable default model ID. Custom requires provider name, HTTPS base URL, model ID, and API key.
+- Each preset supplies a base URL and editable default model ID. Custom requires an HTTPS base URL, model ID, and API key.
 - Saving a configuration runs a small real structured-output request. Only a successful configuration is stored.
 - API keys are encrypted in PostgreSQL. They are not hashed, because the worker must recover the original key to call the provider.
-- `/pricing` remains as an archived historical page with a prominent BYOK notice and no working purchase action. It leaves the primary navigation.
+- Remove `/pricing` and every active pricing, purchase, credit, and billing surface.
 - Transaction, coupon, subscription, credit, and reserved-credit columns and tables remain dormant in the database. Application code stops reading and writing them.
 - Google, GitHub, and email/password remain the supported sign-in methods. Email/password does not require verification. Resend still handles password-reset email.
 - Dependency upgrades stay within compatible majors. Breaking upgrades such as AI SDK 7, BullMQ 6, ESLint 10, Prisma 8, and Recharts 3 are outside this release.
@@ -116,6 +116,8 @@ Add one credential record per user:
 
 Add `aiSetupPromptDismissedAt` to User. Existing users have no credential and no dismissal timestamp, so they receive the same one-time prompt after launch.
 
+Add a one-row-per-Material generation dispatch outbox containing the validated, non-secret queue payload. Material creation, tasks, and outbox intent commit together. Worker asks Web to drain pending records until deterministic BullMQ jobs are confirmed, so Redis or Web restarts cannot strand a Material or unlock its credential early.
+
 Use AES-256-GCM or an equivalent authenticated-encryption primitive with a dedicated 32-byte production key. Store the nonce, authentication tag, ciphertext, and envelope version together. Keep the master key only in Coolify as `BYOK_ENCRYPTION_KEY`; do not reuse auth, Worker, database, or Redis secrets.
 
 User-facing copy must say:
@@ -133,7 +135,7 @@ Custom endpoints introduce an SSRF path. The server must:
 - accept HTTPS only;
 - reject credentials in URLs, fragments, and unexpected query strings;
 - reject localhost, loopback, private, link-local, multicast, carrier-grade NAT, and cloud-metadata ranges for IPv4 and IPv6;
-- resolve DNS and reject any forbidden result before validation and again before generation;
+- resolve DNS, reject any forbidden result, and pin the accepted public address into each HTTPS connection;
 - follow no cross-origin redirects;
 - apply short connection and response timeouts and response-size limits;
 - never accept arbitrary user-supplied headers.
@@ -150,7 +152,7 @@ Saving a credential runs a minimal structured-output request through `@ai-sdk/op
 - Remove Dodo Payments and `standardwebhooks` after no imports remain.
 - Remove product IDs, checkout URLs, webhook secrets, admin coupon secrets, and payment environment variables.
 - Remove Billing, Redeem, and Transactions settings tabs. Replace them with the provider configuration.
-- Remove purchase buttons and network calls from the archived pricing page.
+- Remove the pricing route and its purchase UI.
 - Remove credit balances, estimated-credit copy, reservation checks, insufficient-credit errors, settlement, and deductions from both generation flows.
 - Remove billing and credit wording from login, marketing metadata, navigation, settings, legal pages, and email copy.
 
@@ -192,19 +194,19 @@ Google, GitHub, and Resend credentials are not present in the documented VPS cre
 
 The dependency checkpoint is complete and verified:
 
-| Package | Before | Now | Reason |
-| --- | --- | --- | --- |
-| `next` | `16.2.11` | `16.3.3` | Current stable Next.js release |
-| `eslint-config-next` | `16.2.11` | `16.3.3` | Keep framework lint rules aligned |
-| `ai` | `6.0.233` | `6.0.271` | Compatible fixes without AI SDK 7 migration |
-| `@ai-sdk/openai-compatible` | absent | `2.0.73` | One provider adapter for all BYOK endpoints |
-| `@ai-sdk/deepseek` | `2.0.x` | remove | Replaced by OpenAI-compatible BYOK adapter |
-| `@ai-sdk/google` | `3.0.x` | remove | Server-funded Google path is removed |
-| `better-auth` | `1.6.23` | `1.7.2` | Auth code is in scope; verify release notes and flows |
-| Prisma packages | `7.9.0` | `7.10.0` | Add credential schema without Prisma 8 migration |
-| `zod` | `4.4.3` | `4.5.2` | Credential and endpoint validation |
-| `resend` | `6.18.0` | `6.25.0` | Password-reset path is in scope |
-| `bullmq` | `5.80.10` | `5.81.4` | Queue fixes without BullMQ 6 migration |
+| Package                     | Before    | Now       | Reason                                                |
+| --------------------------- | --------- | --------- | ----------------------------------------------------- |
+| `next`                      | `16.2.11` | `16.3.3`  | Current stable Next.js release                        |
+| `eslint-config-next`        | `16.2.11` | `16.3.3`  | Keep framework lint rules aligned                     |
+| `ai`                        | `6.0.233` | `6.0.271` | Compatible fixes without AI SDK 7 migration           |
+| `@ai-sdk/openai-compatible` | absent    | `2.0.73`  | One provider adapter for all BYOK endpoints           |
+| `@ai-sdk/deepseek`          | `2.0.x`   | remove    | Replaced by OpenAI-compatible BYOK adapter            |
+| `@ai-sdk/google`            | `3.0.x`   | remove    | Server-funded Google path is removed                  |
+| `better-auth`               | `1.6.23`  | `1.7.2`   | Auth code is in scope; verify release notes and flows |
+| Prisma packages             | `7.9.0`   | `7.10.0`  | Add credential schema without Prisma 8 migration      |
+| `zod`                       | `4.4.3`   | `4.5.2`   | Credential and endpoint validation                    |
+| `resend`                    | `6.18.0`  | `6.25.0`  | Password-reset path is in scope                       |
+| `bullmq`                    | `5.80.10` | `5.81.4`  | Queue fixes without BullMQ 6 migration                |
 
 Take other patch/minor updates only when they are touched or required by the selected versions. Keep React `19.2.x`, TypeScript `6.x`, ESLint `9.x`, and all unrelated major versions unchanged.
 
@@ -212,15 +214,15 @@ After each dependency group, run lint, type checking, Worker compilation, and th
 
 ## Database migration plan
 
-The repository has a Prisma schema but no migration history. Do not add automatic production migration execution until this is corrected.
+The repository previously had a Prisma schema but no migration history. A baseline and separate additive BYOK migration are now committed, along with the future `migrate` Compose role. Do not deploy that role against the existing production database until the baseline-adoption steps are completed.
 
 1. Inspect the production Neon schema read-only and compare it with `prisma/schema.prisma`.
 2. Create a baseline migration representing the existing schema.
 3. Test the baseline on an isolated database.
 4. Mark the baseline as applied in production without replaying its DDL.
-5. Create a separate additive migration for the credential record and onboarding timestamp.
+5. Create a separate additive migration for the credential record, onboarding timestamp, dispatch outbox, and question-number retry checkpoint.
 6. Back up the target database and apply the additive migration.
-7. Only then add a one-shot `migrate` Compose service using `prisma migrate deploy` for future releases.
+7. Deploy the committed one-shot `migrate` Compose service; it runs `prisma migrate deploy` for this and future releases.
 
 Every database write requires the exact Neon target to be confirmed immediately before execution.
 
@@ -261,11 +263,12 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Keep keys out of job payloads and logs.
 - Remove all credit gates, reservation, settlement, and credit response fields.
 - Add focused credential-response and Worker queue-contract tests.
+- Make dispatch, progress, and R2 writes idempotent across retries with a PostgreSQL outbox, serializable progress updates, deterministic job IDs, deterministic object keys, bounded paid-work retries, and durable failed-job reconciliation.
 
 ### Phase 4: product and auth UI, implementation completed
 
 - Build the reusable provider form, first-run dialog, server-side generation gate, and Settings view.
-- Archive the pricing page and disable its checkout behavior.
+- Remove the pricing route and all purchase behavior.
 - Remove billing settings and primary pricing navigation.
 - Update copy, legal pages, metadata, and privacy disclosure.
 - Verify Google, GitHub, email signup/sign-in, and password reset locally with provider test credentials.
@@ -282,7 +285,7 @@ Google/GitHub OAuth and Resend remain unverified until production credentials ar
 ### Phase 6: parallel Coolify deployment, pending
 
 1. Resolve the exact `noteformula` project, `production` environment, server, and GitHub App source.
-2. Create a new Docker Compose application from `Dey11/pdx.git`, branch `master`, without modifying the current application.
+2. Create a new Docker Compose application from `Dey11/pdx.git`, branch `launch/byok-pdx`, without modifying the current application.
 3. Add only the required runtime variables and secrets.
 4. Configure the Web domain as `https://pdx.sdey.me:3000`.
 5. Create an A record for `pdx.sdey.me` in the authoritative Namecheap DNS zone, pointing to the re-confirmed Coolify server IP.
@@ -311,7 +314,7 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 - Settings can save, replace, revalidate, and delete a credential without ever returning the key.
 - Invalid key, model, endpoint, rate limit, and structured-output failures have safe, distinct messages.
 - Provider credentials never appear in browser responses, Redis jobs, logs, traces, analytics, or generated PDFs.
-- Pricing has no checkout action; billing endpoints return 404 because they no longer exist.
+- The pricing route and billing endpoints return 404 because they no longer exist.
 - Credit balances and estimated-credit copy are absent from active product flows.
 
 ### Production
@@ -338,7 +341,7 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 - Google OAuth client ID and secret with the production callback registered.
 - GitHub OAuth client ID and secret with the production callback and email scope registered.
 - Resend API key and a verified sender address for `pdx.sdey.me` or its parent domain.
-- Confirmation of the production Neon database before migration writes.
-- Authorization at execution time to create the Cloudflare DNS record and the new Coolify application.
+- Restoration of the confirmed production Neon database's compute quota before migration writes.
+- A manual Namecheap A record change, or direct Namecheap API credentials, for `pdx.sdey.me`.
 
 No production provider, DNS, database, or deployment state was changed while preparing this plan.

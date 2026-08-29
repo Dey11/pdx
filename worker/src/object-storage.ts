@@ -1,15 +1,17 @@
-import dotenv from "dotenv";
-import fs from "fs";
 import {
   GetObjectCommand,
   ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import { BUCKET_NAME } from "./constants";
-import { PDFDocument } from "pdf-lib";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
+import { PDFDocument } from "pdf-lib";
+
+import { BUCKET_NAME, WORKER_TEMP_DIR } from "./constants";
+import { mergedMaterialKey } from "./storage-keys";
 import { R2Object } from "./zod/schema";
 
 dotenv.config();
@@ -40,11 +42,16 @@ export async function listObjectAndMerge(
     const arr2 =
       arr?.map((item) => {
         return {
-        Key: item as string,
-        Bucket: BUCKET_NAME,
+          Key: item as string,
+          Bucket: BUCKET_NAME,
         };
       }) ?? [];
-    const outputKey = await mergePdfsFromR2(arr2, BUCKET_NAME, type);
+    const outputKey = await mergePdfsFromR2(
+      arr2,
+      BUCKET_NAME,
+      type,
+      materialId
+    );
     return outputKey;
   } catch (err) {
     console.error(err);
@@ -89,11 +96,12 @@ export async function uploadPdfToR2(
 export async function mergePdfsFromR2(
   objects: R2Object[],
   outputBucket: string,
-  type: string
+  type: string,
+  materialId: string
 ): Promise<string> {
   try {
     // Create temp directory
-    const tempDir = path.join(__dirname, "temp");
+    const tempDir = WORKER_TEMP_DIR;
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);
     }
@@ -120,11 +128,11 @@ export async function mergePdfsFromR2(
 
     // Save merged PDF
     const mergedPdfBytes = await mergedPdf.save();
-    const outputPath = path.join(tempDir, `merged-${Date.now()}.pdf`);
+    const outputPath = path.join(tempDir, `merged-${materialId}.pdf`);
     fs.writeFileSync(outputPath, mergedPdfBytes);
 
     // Upload to R2
-    const outputKey = `merged/${type}/${Date.now()}.pdf`;
+    const outputKey = mergedMaterialKey(type, materialId);
     await S3.send(
       new PutObjectCommand({
         Bucket: outputBucket,

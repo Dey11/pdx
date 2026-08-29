@@ -119,19 +119,33 @@ model Material {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   UserActivity UserActivity[]
   Task         MaterialTask[]
+  dispatch     GenerationDispatch?
+}
+
+model GenerationDispatch {
+  materialId String @id @map("material_id")
+  payload    Json
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@map("generation_dispatches")
 }
 
 model MaterialTask {
-  id               String  @id @default(ulid())
-  materialId       String  @map("material_id")
-  topic            String
-  data             Json
-  status           Status  @default(pending)
-  tokensUsed       Int     @default(0) @map("tokens_used")
-  partialResultUrl String? @map("partial_result")
+  id                 String  @id @default(ulid())
+  materialId         String  @map("material_id")
+  topic              String
+  data               Json
+  status             Status  @default(pending)
+  tokensUsed         Int     @default(0) @map("tokens_used")
+  nextQuestionNumber Int?    @map("next_question_number")
+  partialResultUrl   String? @map("partial_result")
 
   currIndex  Int @default(0) @map("curr_index")
   totalIndex Int @default(0) @map("total_index")

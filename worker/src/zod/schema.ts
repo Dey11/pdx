@@ -77,6 +77,41 @@ export const qbankSchema = z
   })
   .strict();
 
+export const completionJobSchema = z
+  .object({
+    materialId: z.string(),
+    taskId: z.string(),
+    type: z.enum(["theory", "qbank"]),
+    key: z.string(),
+    usage: z.number().nonnegative(),
+    success: z.boolean(),
+    nextQuestionNumber: z.number().int().positive().optional(),
+  })
+  .strict();
+
+export const generationStateSchema = z
+  .object({
+    terminalTasks: z.array(
+      z
+        .object({
+          id: z.string(),
+          nextQuestionNumber: z.number().int().positive().nullable(),
+        })
+        .strict()
+    ),
+  })
+  .strict();
+
+export const mergeJobSchema = z
+  .object({
+    materialId: z.string(),
+    type: z.enum(["theory", "qbank"]),
+    arrOfKeys: z.array(
+      z.object({ Key: z.string(), Bucket: z.string() }).strict()
+    ),
+  })
+  .strict();
+
 export interface R2Object {
   Key: string;
   Bucket: string;

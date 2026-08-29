@@ -48,6 +48,17 @@ export async function POST(req: NextRequest) {
             type: res.data.type,
             subject: res.data.subject,
             totalParts: res.data.topics.length,
+            Task: {
+              create: res.data.topics.map((topic, index) => ({
+                topic: topic.name,
+                data: topic,
+                currIndex: index + 1,
+                totalIndex: res.data.topics.length,
+              })),
+            },
+            dispatch: {
+              create: { payload: res.data },
+            },
           },
         });
       },
@@ -56,9 +67,20 @@ export async function POST(req: NextRequest) {
 
     const enqueueStatus = await enqueue(res.data, newMaterial.id);
     if (!enqueueStatus) {
-      await prisma.material.delete({ where: { id: newMaterial.id } });
-      throw new Error("Failed to enqueue jobs");
+      // The database outbox keeps this pending dispatch durable. Worker asks
+      // Web to retry it until deterministic Redis jobs are confirmed.
+      return NextResponse.json(
+        {
+          message: "Generation is waiting for the queue.",
+          materialId: newMaterial.id,
+        },
+        { status: 202 }
+      );
     }
+
+    await prisma.generationDispatch.deleteMany({
+      where: { materialId: newMaterial.id },
+    });
 
     return NextResponse.json({
       message: "Success",
