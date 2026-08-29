@@ -96,8 +96,8 @@ Use the matching committed template and never commit a filled environment file:
 
 Main concerns:
 
-- Web/auth: `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, OAuth credentials
-- Password reset: `AUTH_RESEND_KEY`, `AUTH_EMAIL_FROM`
+- Web/auth: `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`; OAuth credentials are optional and each provider appears only when both values are set
+- Password reset: optional `AUTH_RESEND_KEY`, `AUTH_EMAIL_FROM`; the reset UI is hidden when Resend is not configured
 - Data: `DATABASE_URL`, Redis variables
 - Credential encryption: `BYOK_ENCRYPTION_KEY` on Web only
 - Worker link: `BACKEND_URL`, `WORKER_CALLBACK_SECRET`

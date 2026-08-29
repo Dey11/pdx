@@ -141,7 +141,7 @@
             <li>Coolify reports the application as <code>running:unhealthy</code>.</li>
             <li>Web listens on container port <code>3000</code>, but the stored domain omits the internal <code>:3000</code> routing suffix.</li>
             <li>The generated host route has no explicit Web load-balancer port, and stale resource labels still target port <code>80</code>.</li>
-            <li>The deployed image is behind the repository, and the Google, GitHub, and Resend variables are empty.</li>
+            <li>The deployed image is behind the repository. Google, GitHub, and Resend are empty and intentionally deferred for the email-only launch.</li>
             <li><code>pdx.sdey.me</code> has no DNS record yet.</li>
           </ul>
           <p>Coolify requires a domain such as <code>https://pdx.sdey.me:3000</code> when the Compose service listens on port 3000. The suffix selects the internal port. Public traffic still uses HTTPS port 443.</p>
@@ -197,10 +197,10 @@ User-selected OpenAI-compatible provider</code></pre>
           <table>
             <thead><tr><th>Method</th><th>Production requirement</th></tr></thead>
             <tbody>
-              <tr><td>Google</td><td>Client ID and secret; callback <code>https://pdx.sdey.me/api/auth/callback/google</code></td></tr>
-              <tr><td>GitHub</td><td>Client ID and secret, email scope; callback <code>https://pdx.sdey.me/api/auth/callback/github</code></td></tr>
-              <tr><td>Email/password</td><td>No verification requirement; automatic sign-in remains enabled</td></tr>
-              <tr><td>Password reset</td><td>Resend API key and verified sender; production base URL set to <code>https://pdx.sdey.me</code></td></tr>
+              <tr><td>Email/password</td><td>Enabled for initial launch; no verification requirement and automatic sign-in remains enabled</td></tr>
+              <tr><td>Google</td><td>Deferred; appears only after both credentials are set. Callback: <code>https://pdx.sdey.me/api/auth/callback/google</code></td></tr>
+              <tr><td>GitHub</td><td>Deferred; appears only after both credentials are set. Callback: <code>https://pdx.sdey.me/api/auth/callback/github</code></td></tr>
+              <tr><td>Password reset</td><td>Deferred until a Resend API key and verified sender are configured</td></tr>
             </tbody>
           </table>
         </section>
@@ -253,7 +253,7 @@ User-selected OpenAI-compatible provider</code></pre>
             <li>Generation APIs reject missing credentials on the server.</li>
             <li>No key appears in browser responses, logs, Redis, analytics, traces, or PDFs.</li>
             <li>Public health returns 200 with database OK.</li>
-            <li>Google, GitHub, email signup/sign-in, and password reset work.</li>
+            <li>Email signup/sign-in works; deferred providers and password reset are hidden.</li>
             <li>One theory and one question-bank job finish and download correctly.</li>
             <li>Restarts preserve queued work and credential access.</li>
           </ul>
@@ -263,11 +263,9 @@ User-selected OpenAI-compatible provider</code></pre>
         <section id="blockers">
           <h2>Inputs required before deployment</h2>
           <ul>
-            <li>Google OAuth client ID and secret with the production callback.</li>
-            <li>GitHub OAuth client ID and secret with the production callback and email scope.</li>
-            <li>Resend API key and verified sender.</li>
-            <li>Confirmation of the exact Neon production database before writes.</li>
-            <li>Execution-time authority for the Cloudflare DNS record and new Coolify application.</li>
+            <li>Exact connection URL for the selected new Neon database, supplied outside Git.</li>
+            <li>A clean-launch versus old-data migration decision.</li>
+            <li>A manual Namecheap A record after the Coolify server IP is re-confirmed.</li>
           </ul>
           <div class="callout">No Coolify, DNS, database, or hosted application state changed while this plan was prepared.</div>
         </section>

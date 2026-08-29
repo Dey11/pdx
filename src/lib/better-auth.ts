@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { lastLoginMethod } from "better-auth/plugins";
 
+import { getAuthCapabilities } from "@/lib/auth-capabilities";
 import { prisma } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
 
@@ -13,6 +14,7 @@ const localOnlySecret =
     : undefined;
 const authSecret =
   process.env.BETTER_AUTH_SECRET ?? process.env.AUTH_SECRET ?? localOnlySecret;
+const authCapabilities = getAuthCapabilities();
 const socialProviders = {
   ...(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
     ? {
@@ -38,7 +40,9 @@ if (!authSecret) {
 
 export const auth = betterAuth({
   secret: authSecret,
-  baseURL: process.env.BETTER_AUTH_URL ?? (isNextBuild ? "http://localhost:3000" : undefined),
+  baseURL:
+    process.env.BETTER_AUTH_URL ??
+    (isNextBuild ? "http://localhost:3000" : undefined),
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -46,20 +50,18 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     resetPasswordTokenExpiresIn: 60 * 30,
-    sendResetPassword({ user, url }) {
-      void sendPasswordResetEmail({
-        to: user.email,
-        name: user.name,
-        resetUrl: url,
-      }).catch(() => {
-        console.error("Password-reset email delivery failed");
-      });
-      return Promise.resolve();
-    },
+    ...(authCapabilities.passwordReset
+      ? {
+          async sendResetPassword({ user, url }) {
+            await sendPasswordResetEmail({
+              to: user.email,
+              name: user.name,
+              resetUrl: url,
+            });
+          },
+        }
+      : {}),
   },
   socialProviders,
-  plugins: [
-    lastLoginMethod(),
-    nextCookies(),
-  ],
+  plugins: [lastLoginMethod(), nextCookies()],
 });

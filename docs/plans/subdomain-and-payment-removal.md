@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: implementation and local verification complete; deployment blocked by the Neon compute quota, missing OAuth/Resend credentials, and unavailable authoritative DNS credentials.
+Status: implementation and local verification complete; deployment awaits the exact new Neon target and a manual authoritative DNS change.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -19,7 +19,7 @@ Relaunch NoteFormula as a free, bring-your-own-key product. Every account suppli
 - API keys are encrypted in PostgreSQL. They are not hashed, because the worker must recover the original key to call the provider.
 - Remove `/pricing` and every active pricing, purchase, credit, and billing surface.
 - Transaction, coupon, subscription, credit, and reserved-credit columns and tables remain dormant in the database. Application code stops reading and writing them.
-- Google, GitHub, and email/password remain the supported sign-in methods. Email/password does not require verification. Resend still handles password-reset email.
+- Initial launch uses email/password registration and sign-in without email verification. Google, GitHub, and Resend-backed password reset remain supported but disabled until their complete credentials are configured.
 - Dependency upgrades stay within compatible majors. Breaking upgrades such as AI SDK 7, BullMQ 6, ESLint 10, Prisma 8, and Recharts 3 are outside this release.
 - Deployment uses a new Coolify application in the existing `noteformula` production project. The broken application remains untouched until the replacement passes verification.
 
@@ -45,9 +45,9 @@ Three consecutive checks on 2026-08-29 produced the same response.
 - The generated Web proxy labels contain the host rule but no explicit load-balancer port. The public proxy therefore has no usable Web backend and returns `503`.
 - The application also retains stale generated-domain labels that target port `80`.
 - The deployed Web and Worker images use commit `ae7c64b`; `origin/master` is one code commit newer, and the local branch also contains the documentation checkpoint.
-- Live Google OAuth, GitHub OAuth, and Resend variables are empty. Those sign-in/reset paths cannot be considered production-ready.
+- Live Google OAuth, GitHub OAuth, and Resend variables are empty. This matches the selected email-only launch; unavailable methods are hidden at runtime.
 - `pdx.sdey.me` currently has no DNS record.
-- The confirmed Neon target currently rejects connections because its account or project has exceeded the compute-time quota. Schema inspection, baseline adoption, migration, and application health cannot proceed until that quota is restored.
+- The old Neon target rejects connections because its account or project has exceeded the compute-time quota. A new Neon database was selected for launch, but its exact connection target and data-adoption policy must be confirmed before migration writes.
 - `sdey.me` uses Namecheap BasicDNS nameservers. The available Cloudflare token does not own that zone, and no Namecheap credential is present, so the A record requires direct Namecheap access or a manual DNS change.
 
 ### Secondary checks required during replacement deployment
@@ -178,17 +178,17 @@ The dialog opens once when an authenticated account has neither a credential nor
 
 ## Authentication
 
-Keep Better Auth with Google, GitHub, and email/password.
+Keep Better Auth with email/password enabled and optional Google/GitHub providers.
 
 - Set `BETTER_AUTH_URL=https://pdx.sdey.me`.
-- Register `https://pdx.sdey.me/api/auth/callback/google` with Google.
-- Register `https://pdx.sdey.me/api/auth/callback/github` with GitHub and include GitHub's email scope.
-- Set Google and GitHub client IDs and secrets in the new Coolify application.
-- Configure a Resend API key and verified `AUTH_EMAIL_FROM` for password resets.
+- Launch with Google, GitHub, and Resend variables blank. The login UI and Better Auth provider registration derive from complete runtime credential pairs.
+- When enabling Google later, register `https://pdx.sdey.me/api/auth/callback/google` and set both Google credentials.
+- When enabling GitHub later, register `https://pdx.sdey.me/api/auth/callback/github`, include GitHub's email scope, and set both GitHub credentials.
+- Configure a Resend API key and verified `AUTH_EMAIL_FROM` before enabling password reset.
 - Keep `requireEmailVerification` disabled and automatic sign-in after email signup enabled.
-- Change password-reset sending to avoid blocking the auth response while preserving delivery through the host runtime.
+- Propagate password-reset delivery failures so the UI never reports a reset email that was not accepted for delivery.
 
-Google, GitHub, and Resend credentials are not present in the documented VPS credential inventory. Deployment is blocked until the direct credentials and verified sender are available.
+Google, GitHub, and Resend credentials are not present in the documented VPS credential inventory. They are not blockers for the selected initial launch.
 
 ## Dependency plan
 
@@ -273,9 +273,9 @@ Remove server AI provider keys and billing variables from Web and Worker. Add `B
 - Remove the pricing route and all purchase behavior.
 - Remove billing settings and primary pricing navigation.
 - Update copy, legal pages, metadata, and privacy disclosure.
-- Verify Google, GitHub, email signup/sign-in, and password reset locally with provider test credentials.
+- Verify email signup/sign-in with optional providers hidden when credentials are absent.
 
-Google/GitHub OAuth and Resend remain unverified until production credentials are supplied.
+Google/GitHub OAuth and Resend remain deferred until production credentials are deliberately supplied.
 
 ### Phase 5: production Compose, completed locally
 
@@ -323,9 +323,8 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 
 - `https://pdx.sdey.me/api/health` returns HTTP `200` with Web and database checks equal to `ok`.
 - TLS is valid and HTTP redirects to HTTPS.
-- Google callback: `https://pdx.sdey.me/api/auth/callback/google`.
-- GitHub callback: `https://pdx.sdey.me/api/auth/callback/github`.
-- Email signup/sign-in and password reset work without email verification.
+- Email signup/sign-in works without email verification.
+- Google, GitHub, and password reset are absent from the initial login UI.
 - Redis and Worker have no public ports.
 - Controlled theory and question-bank jobs finish, upload to R2, and download through the authenticated route.
 - A Web or Worker restart does not lose queued work or credential access.
@@ -340,10 +339,7 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 
 ## External blockers before deployment
 
-- Google OAuth client ID and secret with the production callback registered.
-- GitHub OAuth client ID and secret with the production callback and email scope registered.
-- Resend API key and a verified sender address for `pdx.sdey.me` or its parent domain.
-- Restoration of the confirmed production Neon database's compute quota before migration writes.
-- A manual Namecheap A record change, or direct Namecheap API credentials, for `pdx.sdey.me`.
+- Exact connection URL for the selected new Neon database, supplied outside Git, plus a decision on a clean launch versus migration of old data.
+- A manual Namecheap A record for `pdx.sdey.me` after the replacement application's server IP is re-confirmed.
 
 No production provider, DNS, database, or deployment state was changed while preparing this plan.

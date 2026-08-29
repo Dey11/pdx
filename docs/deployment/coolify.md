@@ -8,7 +8,7 @@
 - Build pack: Docker Compose at `/docker-compose.yml`
 - Public origin: `https://pdx.sdey.me`
 - Compose domain value: `https://pdx.sdey.me:3000`
-- External database: confirmed production Neon database
+- External database: new Neon database selected; exact connection target pending
 
 Create a parallel application. Do not modify or stop the old application until the replacement passes all gates.
 
@@ -16,7 +16,7 @@ Create a parallel application. Do not modify or stop the old application until t
 
 On 2026-08-29, Coolify reported the old application as `running:unhealthy`, while `/` and `/api/health` returned deterministic `503 no available server` responses. Web listened on container port `3000`, but the stored Compose domain omitted `:3000`; generated proxy labels therefore had no usable explicit Web load-balancer port and retained stale port-80 routing.
 
-The deployed image was also behind the repository. Google, GitHub, and Resend variables were empty, and `pdx.sdey.me` had no DNS record. Those are independent release blockers even after routing is fixed.
+The deployed image was also behind the repository, and `pdx.sdey.me` had no DNS record. Google, GitHub, and Resend variables were empty; the replacement now launches with email/password only, so those optional providers are intentionally deferred.
 
 The confirmed Neon target currently returns PostgreSQL error `53000` because its compute-time quota is exhausted. `sdey.me` is authoritative on Namecheap BasicDNS, not the available Cloudflare account. No Namecheap DNS credential is in the host inventory.
 
@@ -26,12 +26,12 @@ Start from `.env.production.docker.example`.
 
 - `SERVICE_FQDN_WEB_3000=https://pdx.sdey.me:3000`
 - `BETTER_AUTH_URL=https://pdx.sdey.me`
-- confirmed `DATABASE_URL`
+- exact new Neon `DATABASE_URL`
 - unique Redis password
 - non-empty `WORKER_CALLBACK_SECRET`, shared by Web and Worker
 - 32 random bytes in base64 as `BYOK_ENCRYPTION_KEY`, Web only
-- Google and GitHub client IDs/secrets
-- Resend key and verified `AUTH_EMAIL_FROM`
+- optional Google and GitHub client IDs/secrets; leave blank for the initial email-only launch
+- optional Resend key and verified `AUTH_EMAIL_FROM`; leave the key blank to disable password reset initially
 - intended R2 credentials and bucket
 
 Generate secrets outside Git, for example `openssl rand -base64 32`. Never print or copy filled values into logs or documentation. There are no payment or server AI-provider variables.
@@ -49,14 +49,16 @@ The baseline describes the schema that existed before repository migration histo
 
 Do not mark the baseline on a new empty database. A new database should replay both migrations normally.
 
-## OAuth and email
+## Authentication
 
-Register these exact callbacks:
+The initial launch uses email/password registration and sign-in without email verification. Leave Google, GitHub, and Resend variables blank. The login page derives its available methods from complete runtime credential pairs, so unavailable providers and password reset remain hidden.
+
+When enabling optional providers later, register these exact callbacks:
 
 - Google: `https://pdx.sdey.me/api/auth/callback/google`
 - GitHub: `https://pdx.sdey.me/api/auth/callback/github`
 
-Verify the Resend sender used by `AUTH_EMAIL_FROM`. Email/password login works without email verification; password reset still requires Resend.
+Verify the Resend sender used by `AUTH_EMAIL_FROM` before setting `AUTH_RESEND_KEY`. Password reset remains disabled until then.
 
 ## Pre-deployment gates
 
@@ -64,7 +66,7 @@ Verify the Resend sender used by `AUTH_EMAIL_FROM`. Email/password login works w
 2. Confirm no other app owns `pdx.sdey.me`.
 3. Confirm the DNS target from the selected Coolify server.
 4. Compare variables against the template by presence, without printing values.
-5. Complete the production database adoption above.
+5. Confirm whether the new Neon target is an empty launch database or will receive migrated data, then complete the matching database procedure above.
 6. Run tests, lint, type checking, Worker build, Next production build, frozen install, `docker compose config --quiet`, and both ARM64 image builds.
 7. Push the reviewed commits only after all checks pass.
 
