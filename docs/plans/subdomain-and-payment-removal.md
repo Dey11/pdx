@@ -1,6 +1,6 @@
 # PDX BYOK launch plan
 
-Status: implementation and local verification complete; deployment awaits the new Neon's pooled/direct connection URLs and a manual authoritative DNS change.
+Status: deployed at `https://pdx.sdey.me`; health, TLS, email authentication, BYOK onboarding state, and secret redaction verified. A controlled AI generation still requires a disposable user-supplied provider key.
 
 Target URL: `https://pdx.sdey.me`
 
@@ -46,7 +46,7 @@ Three consecutive checks on 2026-08-29 produced the same response.
 - The application also retains stale generated-domain labels that target port `80`.
 - The deployed Web and Worker images use commit `ae7c64b`; `origin/master` is one code commit newer, and the local branch also contains the documentation checkpoint.
 - Live Google OAuth, GitHub OAuth, and Resend variables are empty. This matches the selected email-only launch; unavailable methods are hidden at runtime.
-- `pdx.sdey.me` currently has no DNS record.
+- Before cutover, `pdx.sdey.me` had no DNS record. It now resolves to the Coolify host at `144.24.2.197`.
 - The old Neon target rejects connections because its account or project has exceeded the compute-time quota. A clean, empty Neon launch database was selected, but its pooled and direct connection URLs must be supplied before migration writes.
 - `sdey.me` uses Namecheap BasicDNS nameservers. The available Cloudflare token does not own that zone, and no Namecheap credential is present, so the A record requires direct Namecheap access or a manual DNS change.
 
@@ -285,7 +285,7 @@ Google/GitHub OAuth and Resend remain deferred until production credentials are 
 - Render Compose using safe placeholder values and inspect the generated services, networks, volumes, and exposed ports.
 - Build both ARM64 targets locally through the repository's safe runner.
 
-### Phase 6: parallel Coolify deployment, pending
+### Phase 6: parallel Coolify deployment, completed
 
 1. Resolve the exact `noteformula` project, `production` environment, server, and GitHub App source.
 2. Create a new Docker Compose application from `Dey11/pdx.git`, branch `launch/byok-pdx`, without modifying the current application.
@@ -295,6 +295,8 @@ Google/GitHub OAuth and Resend remain deferred until production credentials are 
 6. Deploy and wait for migrate, Redis, Web, and Worker to reach their expected states.
 7. Verify public health, TLS, authentication, credential setup, one controlled theory generation, one controlled question-bank generation, R2 download, logs, and restart recovery.
 8. Stop the old broken application only after the replacement passes. Do not delete the old resource or volumes in this release.
+
+The replacement application `uqk9mqok4z1njt3vwaiizgjq` is `running:healthy` on commit `d64d9cf`. The old unhealthy application remains untouched pending an explicit stop instruction.
 
 ## Verification gates
 
@@ -308,7 +310,7 @@ Google/GitHub OAuth and Resend remain deferred until production credentials are 
 - `docker compose --env-file <safe-test-env> config --quiet`
 - local container health checks for Redis, Web, and Worker
 
-The implemented release passes focused Bun tests, lint, type checking, Worker compilation, and the Next.js production build. Compose rendering and production database checks remain deployment gates.
+The release passes focused Bun tests, lint, type checking, Worker compilation, the Next.js production build, Compose rendering, three production migrations, public health, TLS, signup, sign-in, sign-out, authenticated dashboard access, and BYOK status redaction.
 
 ### Product
 
@@ -338,9 +340,9 @@ The implemented release passes focused Bun tests, lint, type checking, Worker co
 - Preserve the previous application image and the database backup made before the additive migration.
 - Never print, export, or copy decrypted user keys during rollback or diagnosis.
 
-## External blockers before deployment
+## Remaining production acceptance
 
-- Pooled and direct connection URLs for the selected new Neon database, supplied outside Git. No old accounts or materials will be imported.
-- A manual Namecheap A record for `pdx.sdey.me` after the replacement application's server IP is re-confirmed.
+- Run one controlled theory job and one question-bank job with a disposable user-supplied OpenAI-compatible key.
+- Rotate the Neon API key disclosed during setup and replace the stored `NEON_API_KEY` value.
 
-No production provider, DNS, database, or deployment state was changed while preparing this plan.
+The clean `pdx26` Neon database, Namecheap DNS record, and parallel Coolify application are live. No old accounts or materials were imported.

@@ -8,7 +8,11 @@
 - Build pack: Docker Compose at `/docker-compose.yml`
 - Public origin: `https://pdx.sdey.me`
 - Compose domain value: `https://pdx.sdey.me:3000`
-- External database: new clean Neon database selected; exact pooled/direct connection targets pending
+- External database: clean Neon `pdx26` / `production` / `neondb`; all three migrations applied
+- Replacement application UUID: `uqk9mqok4z1njt3vwaiizgjq`
+- Deployed commit: `d64d9cf530b843ea7314abd179535fb320bbf7bf`
+
+Current production health is `running:healthy`; `https://pdx.sdey.me/api/health` returns HTTP 200 with app and database checks equal to `ok`.
 
 Create a parallel application. Do not modify or stop the old application until the replacement passes all gates.
 
