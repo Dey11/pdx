@@ -3,6 +3,7 @@ export const providerIds = [
   "openrouter",
   "deepseek",
   "groq",
+  "nebius",
   "custom",
 ] as const;
 
@@ -39,6 +40,12 @@ export const providerConfigs: Record<AiProviderId, AiProviderConfig> = {
     label: "Groq",
     baseUrl: "https://api.groq.com/openai/v1",
     defaultModel: "openai/gpt-oss-20b",
+  },
+  nebius: {
+    id: "nebius",
+    label: "Nebius Token Factory",
+    baseUrl: "https://api.tokenfactory.nebius.com/v1",
+    defaultModel: "deepseek-ai/DeepSeek-V4-Flash-0731",
   },
   custom: {
     id: "custom",

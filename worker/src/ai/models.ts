@@ -11,7 +11,14 @@ import { z } from "zod";
 import { workerCallbackHeaders } from "../callback";
 
 const credentialSchema = z.object({
-  provider: z.enum(["openai", "openrouter", "deepseek", "groq", "custom"]),
+  provider: z.enum([
+    "openai",
+    "openrouter",
+    "deepseek",
+    "groq",
+    "nebius",
+    "custom",
+  ]),
   baseUrl: z.string().url(),
   modelId: z.string().min(1),
   apiKey: z.string().min(1),
@@ -21,6 +28,7 @@ const nativeStructuredOutputProviders = new Set([
   "openai",
   "openrouter",
   "groq",
+  "nebius",
 ]);
 
 export const MAX_OUTPUT_TOKENS = Number(

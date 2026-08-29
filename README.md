@@ -28,7 +28,7 @@ PostgreSQL is an external Neon database. Cloudflare R2, OAuth providers, Resend,
 
 ## BYOK model
 
-Every account must configure a provider before generation. Presets cover OpenAI, OpenRouter, DeepSeek, and Groq; Custom accepts a public HTTPS OpenAI-compatible endpoint.
+Every account must configure a provider before generation. Presets cover OpenAI, OpenRouter, DeepSeek, Groq, and Nebius Token Factory; Custom accepts a public HTTPS OpenAI-compatible endpoint.
 
 Provider API keys are encrypted in PostgreSQL with AES-256-GCM and `BYOK_ENCRYPTION_KEY`. APIs return only safe metadata and a short key hint. Redis jobs contain material IDs and generation inputs, never credentials. Worker resolves the material owner’s credential from Web immediately before inference over an endpoint protected by `WORKER_CALLBACK_SECRET`.
 

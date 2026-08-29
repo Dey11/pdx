@@ -9,6 +9,7 @@ describe("AI provider registry", () => {
       "openrouter",
       "deepseek",
       "groq",
+      "nebius",
       "custom",
     ]);
   });
@@ -25,6 +26,10 @@ describe("AI provider registry", () => {
     expect(getProviderConfig("groq")).toMatchObject({
       baseUrl: "https://api.groq.com/openai/v1",
       defaultModel: "openai/gpt-oss-20b",
+    });
+    expect(getProviderConfig("nebius")).toMatchObject({
+      baseUrl: "https://api.tokenfactory.nebius.com/v1",
+      defaultModel: "deepseek-ai/DeepSeek-V4-Flash-0731",
     });
   });
 });

@@ -13,7 +13,7 @@ Relaunch NoteFormula as a free, bring-your-own-key product. Every account suppli
 - BYOK is mandatory for every account, including existing accounts.
 - A user without a provider configuration may browse the dashboard, history, settings, and existing downloads, but cannot start topic planning or generation.
 - The first authenticated visit without a configured key opens setup. The dialog can be dismissed. Generation actions reopen it until setup succeeds.
-- Provider presets are OpenAI, OpenRouter, DeepSeek, and Groq. A Custom option accepts any supported OpenAI-compatible endpoint.
+- Provider presets are OpenAI, OpenRouter, DeepSeek, Groq, and Nebius Token Factory. A Custom option accepts any supported OpenAI-compatible endpoint.
 - Each preset supplies a base URL and editable default model ID. Custom requires an HTTPS base URL, model ID, and API key.
 - Saving a configuration runs a small real structured-output request. Only a successful configuration is stored.
 - API keys are encrypted in PostgreSQL. They are not hashed, because the worker must recover the original key to call the provider.

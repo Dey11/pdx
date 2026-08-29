@@ -15,6 +15,7 @@ const providersWithNativeStructuredOutputs = new Set<AiProviderId>([
   "openai",
   "openrouter",
   "groq",
+  "nebius",
 ]);
 
 export const MAX_OUTPUT_TOKENS = Number(
