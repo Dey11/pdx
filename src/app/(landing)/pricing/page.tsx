@@ -31,7 +31,7 @@ export const metadata = {
 const PricingPage = () => {
   return (
     <div className="mx-auto min-h-screen max-w-[1400px] pt-[20dvh] text-center">
-      <div className="container">
+      <div className="container mx-auto">
         <H1 className="text-brand-heading">Plans made for</H1>
         <H1 className="text-brand-blue">Your needs</H1>
 
