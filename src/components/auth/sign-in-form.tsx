@@ -33,7 +33,7 @@ const getMessage = (mode: AuthMode) => {
   }
 
   if (mode === "forgot-password") {
-    return "Send a reset link to the email on your NoteFormula account.";
+    return "Send a reset link to the email on your PDX account.";
   }
 
   return "Use the same account for your provider settings, history, and downloads.";
@@ -66,14 +66,14 @@ export const SignInForm = ({
 
   const title = useMemo(() => {
     if (mode === "sign-up") {
-      return "Create your NoteFormula account";
+      return "Create your PDX account";
     }
 
     if (mode === "forgot-password") {
       return "Reset your password";
     }
 
-    return "Welcome back to NoteFormula";
+    return "Welcome back to PDX";
   }, [mode]);
 
   const handleSocialSignIn = async (provider: "google" | "github") => {

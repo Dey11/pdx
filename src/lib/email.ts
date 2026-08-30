@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 const fromEmail =
-  process.env.AUTH_EMAIL_FROM ?? "NoteFormula <support@noteformula.com>";
+  process.env.AUTH_EMAIL_FROM ?? "PDX <support@pdx.sdey.me>";
 
 const getResend = () => {
   const apiKey = process.env.AUTH_RESEND_KEY;
@@ -27,11 +27,11 @@ export const sendPasswordResetEmail = async ({
   await getResend().emails.send({
     from: fromEmail,
     to,
-    subject: "Reset your NoteFormula password",
+    subject: "Reset your PDX password",
     text: [
       `Hi ${name || "there"},`,
       "",
-      "Use this link to reset your NoteFormula password. It expires in 30 minutes.",
+      "Use this link to reset your PDX password. It expires in 30 minutes.",
       resetUrl,
       "",
       "If you did not request this, you can ignore this email.",

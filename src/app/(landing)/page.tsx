@@ -62,11 +62,10 @@ export default function Home() {
           </H1>
         </div>
 
-        <Para className={"max-w-lg animate-fade-in text-center"}>
-          <span className="italic">Drowning in prompts?</span> Upload your
-          syllabus, and let
-          <span className="text-brand-blue"> NoteFormula</span> do the heavy
-          lifting—custom study notes & exam papers in sleek PDFs, stress-free!
+        <Para className="max-w-lg animate-fade-in text-center">
+          Paste your syllabus, connect your own AI provider, and let
+          <span className="text-brand-blue"> PDX</span> turn it into structured
+          study notes and exam-ready PDFs.
         </Para>
 
         <Link href={"/dashboard"}>
@@ -87,20 +86,17 @@ export default function Home() {
           <H2 className="pt-2 text-brand-heading">come to life</H2>
 
           <Para>
-            This is where all the good stuff happens –{" "}
-            <span className="font-semibold italic">The dashboard</span>. Whether
-            you're a valedictorian or a backbencher, we’ve got your back.
-            Generate <span className="font-semibold">study materials</span> and{" "}
-            <span className="font-semibold">question papers</span> tailored to
-            your syllabus and learning needs.
+            This is where your material takes shape. In the dashboard, you can
+            generate <span className="font-semibold">study materials</span> and{" "}
+            <span className="font-semibold">question banks</span> tailored to
+            your syllabus, course, and exam.
           </Para>
 
           <Para>
-            <span className="font-semibold italic">The best part?</span> You get
-            it all in beautiful <span className="font-semibold">PDFs</span>,
-            ready to{" "}
+            Your provider handles the AI request. PDX turns the result into a
+            structured <span className="font-semibold">PDF</span>, ready to{" "}
             <span className="font-semibold italic">download and share</span>{" "}
-            with your friends.
+            when generation completes.
           </Para>
         </div>
       </section>
@@ -111,7 +107,7 @@ export default function Home() {
 
       <section className="flex flex-col flex-wrap items-center justify-center py-16">
         <H2 className="text-center text-brand-heading">
-          Why students choose NoteFormula and
+          Why students choose PDX and
         </H2>
         <H2 className="text-brand-heading underline sm:pt-2">
           never look back
@@ -162,23 +158,23 @@ export default function Home() {
 
 const faqs = [
   {
-    question: "How does NoteFormula generate study materials from my syllabus?",
+    question: "How does PDX generate study materials from my syllabus?",
     answer:
-      "Our advanced AI analyzes your syllabus and generates comprehensive study materials including detailed explanations, examples, and key concepts. Each study guide is tailored to your specific course content and learning requirements.",
+      "PDX sends your syllabus and generation settings to the OpenAI-compatible provider you configure. It returns a structured study guide tailored to your course and exam.",
   },
   {
     question: "What's included in the generated study materials?",
     answer:
-      "Our AI generates comprehensive study materials (50-150+ pages) including detailed topic explanations, key concepts, examples, summaries, and important points for each section of your syllabus.",
+      "Each PDF can include topic explanations, key concepts, examples, summaries, diagrams, and worked problems, depending on your syllabus and provider.",
   },
   {
     question: "Can I edit the generated content?",
     answer:
-      "Not at the moment but we are working to add this feature! Expect this in the coming weeks.",
+      "Not yet. You can review and edit the generated topic plan before PDX creates the final material.",
   },
   {
     question: "What formats are supported for syllabus upload?",
     answer:
-      "We support only copy-pasting your syllabus directly for now. We are working to add support for PDFs and other formats.",
+      "Paste syllabus text directly into the generator. PDF and document uploads are not supported yet.",
   },
 ];

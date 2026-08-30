@@ -2,8 +2,6 @@ import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Suspense } from "react";
 
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 
 import { AgentationDev } from "@/components/agentation-dev";
@@ -18,13 +16,13 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://noteformula.com"),
+  metadataBase: new URL("https://pdx.sdey.me"),
   title: {
-    default: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
-    template: "%s | NoteFormula",
+    default: "PDX - BYOK AI Study Material Generator",
+    template: "%s | PDX",
   },
   description:
-    "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
+    "Turn your syllabus into detailed PDF study materials with your own OpenAI-compatible provider and API key.",
   keywords: [
     "AI study materials",
     "custom study guides",
@@ -35,9 +33,9 @@ export const metadata: Metadata = {
     "AI notes",
     "AI study guides",
   ],
-  authors: [{ name: "NoteFormula Team" }],
-  creator: "NoteFormula Team",
-  publisher: "NoteFormula",
+  authors: [{ name: "PDX Team" }],
+  creator: "PDX Team",
+  publisher: "PDX",
   robots: {
     index: true,
     follow: true,
@@ -49,25 +47,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://noteformula.com",
-    siteName: "NoteFormula",
-    title: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
+    url: "https://pdx.sdey.me",
+    siteName: "PDX",
+    title: "PDX - BYOK AI Study Material Generator",
     description:
-      "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
+      "Turn your syllabus into detailed PDF study materials with your own OpenAI-compatible provider and API key.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NoteFormula - Transform Your Study Experience",
+        alt: "PDX study material generator",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NoteFormula - AI Study Material Generator | Custom Syllabus to PDF",
+    title: "PDX - BYOK AI Study Material Generator",
     description:
-      "Transform your syllabus into in-depth, 100+ page study materials using AI. Customize and generate comprehensive PDFs tailored for your academic success.",
+      "Turn your syllabus into detailed PDF study materials with your own OpenAI-compatible provider and API key.",
     images: ["/og-image.png"],
     creator: "@usepdx_",
     site: "@usepdx_",
@@ -97,9 +95,6 @@ export default function RootLayout({
           className={`${poppins.className} dark bg-[#131212] tracking-wide antialiased`}
         >
           <NextTopLoader showSpinner={false} color="#FFC947" />
-          {/* max-w-screen-xl */}
-          <Analytics />
-          <SpeedInsights />
           <div className="mx-auto">
             <Suspense>{children}</Suspense>
           </div>

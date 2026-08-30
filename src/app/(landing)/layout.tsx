@@ -4,8 +4,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 export const metadata = {
-  title:
-    "NoteFormula - AI Study Material Generator | Generate Study Notes from Syllabus | 100+ Page PDF Notes",
+  title: "PDX - Generate PDF Study Materials with Your Own AI Provider",
   description:
     "Generate comprehensive study materials from any syllabus with your own OpenAI-compatible provider. Create detailed PDF notes, summaries, and practice questions with no PDX subscription.",
   keywords: [
@@ -27,21 +26,21 @@ export const metadata = {
   ],
   openGraph: {
     type: "website",
-    url: "https://noteformula.com",
-    title: "NoteFormula - Generate Complete Study Materials from Any Syllabus",
+    url: "https://pdx.sdey.me",
+    title: "PDX - Generate Study Materials with Your Own AI Provider",
     description:
-      "Transform your syllabus into detailed study materials instantly. Generate comprehensive 100+ page PDF notes with our AI technology. Perfect for exam preparation and course materials.",
+      "Paste your syllabus, connect an OpenAI-compatible provider, and generate detailed PDF notes for your course or exam.",
     images: [
       {
-        url: "https://noteformula.com/logo.png",
-        alt: "NoteFormula Study Material Generator Logo",
+        url: "https://pdx.sdey.me/logo.png",
+        alt: "PDX Study Material Generator Logo",
       },
     ],
   },
   twitter: {
-    title: "NoteFormula - Generate Complete Study Materials from Any Syllabus",
+    title: "PDX - Generate Study Materials with Your Own AI Provider",
     description:
-      "Create comprehensive study materials instantly from any syllabus. Get 100+ page detailed PDF notes for better exam preparation.",
+      "Paste your syllabus, connect an OpenAI-compatible provider, and generate detailed PDF notes for your course or exam.",
   },
 };
 

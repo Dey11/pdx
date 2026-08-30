@@ -7,8 +7,8 @@ import { Para } from "@/components/typography/para";
 import { EMAIL, INSTAGRAM, TWITTER } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "About | NoteFormula",
-  description: "Learn more about NoteFormula and our mission",
+  title: "About | PDX",
+  description: "Learn more about PDX and our mission",
 };
 
 const page = () => {
@@ -17,7 +17,7 @@ const page = () => {
       <div className="bg-brand-yellow mx-auto mt-[15dvh] h-[2px] w-32 rounded-md" />
 
       <H1 className="text-brand-heading pt-5 text-center lg:text-5xl">
-        About NoteFormula
+        About PDX
       </H1>
       <Para className="text-center text-xs">
         Learn more about our mission and what drives us
@@ -32,7 +32,7 @@ const page = () => {
           <section>
             <h2 className="mb-3 text-xl font-semibold">Who We Are</h2>
             <Para>
-              At NoteFormula, we believe in empowering students by transforming
+              At PDX, we believe in empowering students by transforming
               how they learn. Tackling vast syllabi and creating study materials
               is overwhelming, and that's where we come in. Our AI-driven
               platform generates well-structured, in-depth study guides tailored

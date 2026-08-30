@@ -6,7 +6,7 @@ import { Para } from "@/components/typography/para";
 import { EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Privacy policy | NoteFormula",
+  title: "Privacy policy | PDX",
   description: "Under our privacy policy",
 };
 
@@ -19,7 +19,7 @@ const page = () => {
         Privacy Policy
       </H1>
       <Para className="text-center text-xs">
-        Learn how NoteFormula collects, uses, and protects your personal
+        Learn how PDX collects, uses, and protects your personal
         information
       </Para>
 
@@ -29,7 +29,7 @@ const page = () => {
         </Para>
 
         <Para className="mt-6">
-          At NoteFormula ("we," "our," "us"), we value your privacy and are
+          At PDX ("we," "our," "us"), we value your privacy and are
           committed to protecting your personal information. This Privacy Policy
           ("Policy") explains how we collect, use, disclose, and protect
           information obtained through your use of our platform, products, and
@@ -206,7 +206,7 @@ const page = () => {
             <h2 className="mb-3 text-xl font-semibold">9. Third-Party Links</h2>
             <Para>
               Our platform may contain links to third-party websites or
-              services. NoteFormula is not responsible for the privacy
+              services. PDX is not responsible for the privacy
               practices, data collection, or content of these third-party
               services. We encourage users to review the privacy policies of any
               external websites they engage with to understand how their data
@@ -254,7 +254,7 @@ const page = () => {
           </section>
 
           <Para className="mt-8 font-medium">
-            By using NoteFormula, you acknowledge that you have read,
+            By using PDX, you acknowledge that you have read,
             understood, and agreed to this Privacy Policy.
           </Para>
         </div>

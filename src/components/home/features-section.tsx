@@ -28,11 +28,8 @@ const FeaturesSection = () => {
           </H2>
 
           <Para className="max-w-4xl text-center">
-            The AI we use is built on top of the best models out there and
-            needless to say, we'll keep increasing the quality of the study
-            materials with time. Currently it focuses on generating exhaustive
-            content so you don't have to look into others' papers when the exam
-            has a trick question
+            Connect an OpenAI-compatible provider, choose the level and exam,
+            and review the topic plan before PDX generates your PDF.
           </Para>
         </div>
 
@@ -107,28 +104,28 @@ const Features: FeatureType[] = [
     id: 1,
     title: "Start with your course syllabus",
     description:
-      "Paste or upload your syllabus—detailed syllabi ensure precise, high-quality study materials. NoteFormula efficiently structures content for complete subject coverage.",
+      "Paste your syllabus text. More detail gives your provider better context for the topic plan and final material.",
     image: "/home/feature_1.png",
   },
   {
     id: 2,
     title: "Customize your study material",
     description:
-      "Customize your study material according to your needs. Beginner or advanced, NoteFormula has you covered. Preparing for a specific exam? Enter the exam name and NoteFormula will generate study materials tailored to your exam needs.",
+      "Choose the complexity, subject, exam, course, and language before generation starts.",
     image: "/home/feature_2.png",
   },
   {
     id: 3,
     title: "Preview generated content",
     description:
-      "Add or remove content as needed. NoteFormula generates content in a structured format, making it easy to navigate and understand. Preview the generated content and make changes as needed.",
+      "Review the proposed topics, then add, remove, or reorder them before creating the final material.",
     image: "/home/feature_3.png",
   },
   {
     id: 4,
     title: "Your PDF is ready in minutes",
     description:
-      "PDF is ready in minutes. Download your study material in PDF format and start studying. NoteFormula makes it easy to generate, customize, and download study materials.",
+      "PDX generates each topic in the background, combines the completed sections, and adds the PDF to your materials page.",
     image: "/home/feature_4.png",
   },
 ];
