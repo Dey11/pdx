@@ -1,99 +1,58 @@
-import Link from "next/link";
+import { Suspense } from "react";
 
-import { Check, KeyRound } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { FAQ } from "@/components/pricing/faq";
+import PricingSection from "@/components/pricing/pricing-section";
+import { H1 } from "@/components/typography/h1";
+import { EMAIL } from "@/lib/constants";
 
 export const metadata = {
   title: "Pricing | PDX",
   description:
-    "PDX is free. Bring your own API key from an OpenAI-compatible provider and pay that provider directly for your usage.",
+    "PDX is free with BYOK. The previous pricing plans remain visible for reference, but purchasing is disabled.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://pdx.sdey.me/pricing",
+    siteName: "PDX",
+    title: "PDX - AI Study Material Generator | Pricing",
+    description:
+      "PDX is free with BYOK. Connect an OpenAI-compatible provider and generate study materials without buying a PDX plan.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PDX - Transform Your Study Experience",
+      },
+    ],
+  },
 };
 
-const included = [
-  "Theory notes and question-bank PDFs",
-  "Any supported OpenAI-compatible provider",
-  "No PDX subscription, credits, or checkout",
-  "Encrypted provider-key storage",
-] as const;
+const PricingPage = () => {
+  return (
+    <div className="mx-auto min-h-screen max-w-[1400px] pt-[20dvh] text-center">
+      <div className="container">
+        <H1 className="text-brand-heading">Plans made for</H1>
+        <H1 className="text-brand-blue">Your needs</H1>
 
-const PricingPage = () => (
-  <main className="mx-auto min-h-[80dvh] max-w-5xl px-5 py-20 sm:py-28">
-    <header className="mx-auto max-w-3xl text-center">
-      <p className="text-brand-yellow text-sm font-medium tracking-[0.18em] uppercase">
-        Free with BYOK
-      </p>
-      <h1 className="text-brand-heading mt-4 text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-        Pricing isn&apos;t needed anymore
-      </h1>
-      <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-pretty">
-        PDX is free. Bring an API key from your preferred OpenAI-compatible
-        provider and use its models directly. We do not sell plans or credits.
-      </p>
-    </header>
-
-    <section className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-[1.35fr_0.65fr]">
-      <article className="border-brand-yellow/25 bg-brand-bg rounded-3xl border p-7 shadow-[0_18px_70px_rgba(0,0,0,0.24)] sm:p-9">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-brand-heading text-xl font-semibold">PDX</p>
-            <p className="text-muted-foreground mt-1 text-sm">
-              The complete study-material generator
-            </p>
-          </div>
-          <span className="bg-brand-yellow/10 text-brand-yellow rounded-full px-3 py-1 text-xs font-medium">
-            Free
-          </span>
-        </div>
-
-        <div className="mt-8 flex items-end gap-2">
-          <span className="text-brand-heading text-6xl font-semibold tracking-tight tabular-nums">
-            $0
-          </span>
-          <span className="text-muted-foreground pb-2">from PDX</span>
-        </div>
-
-        <ul className="mt-8 space-y-3">
-          {included.map((item) => (
-            <li
-              key={item}
-              className="text-brand-heading flex items-start gap-3"
-            >
-              <Check
-                aria-hidden="true"
-                className="text-brand-yellow mt-0.5 size-5 shrink-0"
-              />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-
-        <Button asChild className="mt-9 h-11 w-full active:scale-[0.96]">
-          <Link href="/login">Create a free account</Link>
-        </Button>
-      </article>
-
-      <aside className="border-brand-blue/20 bg-brand-bg/70 rounded-3xl border p-7 sm:p-8">
-        <div className="bg-brand-blue/10 text-brand-blue flex size-11 items-center justify-center rounded-2xl">
-          <KeyRound aria-hidden="true" className="size-5" />
-        </div>
-        <h2 className="text-brand-heading mt-6 text-xl font-semibold text-balance">
-          You control provider costs
-        </h2>
-        <p className="text-muted-foreground mt-3 leading-relaxed text-pretty">
-          Your provider may charge for the tokens you use. Those charges go
-          directly to that provider under its own pricing and limits. PDX does
-          not add a fee.
+        <p className="text-muted-foreground mx-auto mt-6 max-w-2xl px-4 text-base leading-relaxed sm:text-lg">
+          PDX is now free with BYOK. Bring your own OpenAI-compatible API key;
+          no PDX plan or payment is required.
         </p>
-        <Link
-          href="/settings"
-          className="text-brand-yellow mt-6 inline-flex min-h-10 items-center text-sm font-medium underline-offset-4 hover:underline"
-        >
-          Manage your provider
-        </Link>
-      </aside>
-    </section>
-  </main>
-);
+
+        <Suspense>
+          <PricingSection />
+        </Suspense>
+
+        <FAQ />
+
+        <p>
+          Still have queries? Mail us at{" "}
+          <span className="text-brand-yellow">{EMAIL}</span>
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default PricingPage;
